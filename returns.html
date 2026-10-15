@@ -3,51 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo/logo.png" type="image/png">
 <title>Returns & Refunds — NeoFragrances</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
 <link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/pages.css">
 </head>
 <body>
 
-<header class="site-header">
-  <div class="container navbar">
-    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="nav-icons">
-      <a href="login.html" title="Login / Register" class="icon-secondary"><i class="fa-regular fa-user"></i></a>
-      <a href="wishlist.html" title="Wishlist" class="icon-secondary"><i class="fa-regular fa-heart"></i></a>
-      <a href="my-orders.html" title="My Orders" class="icon-secondary"><i class="fa-solid fa-receipt"></i></a>
-      <a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-      <button class="nav-toggle" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
-    </div>
-  </div>
-</header>
-
-<section>
-  <div class="container" style="max-width:760px;">
-    <span class="eyebrow">Support</span>
-    <h1 class="section-title">Returns & Refunds</h1>
-    <p class="section-sub" style="max-width:100%;">Our policy for returns, exchanges, and refunds.</p>
-    <div style="color:var(--ink-soft); line-height:1.8; font-size:14px;">
-      <p>This page is a placeholder — NeoFragrances has not published detailed returns and refunds content yet. Check back soon, or <a href="contact.html" style="color:var(--wine); font-weight:600;">contact us</a> with any questions in the meantime.</p>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
+<section class="nf-coming-soon">
+  <div class="container nf-coming-soon-inner">
+    <span class="nf-eyebrow">Help</span>
+    <h1>Returns &amp; refunds</h1>
+    <span class="nf-coming-soon-badge">Coming soon</span>
+    <p>Our returns and refunds policy is being finalised. Until it's published, please contact us with any questions about an order.</p>
+    <div class="nf-coming-soon-actions">
+      <a href="contact.html" class="btn btn-primary">Contact us</a>
+      <a href="track-order.html" class="btn btn-outline">Track an order</a>
     </div>
   </div>
 </section>
 
-<footer class="site-footer">
-  <div class="container footer-bottom">
-    <span>&copy; 2026 NeoFragrances. All rights reserved.</span>
-  </div>
-</footer>
+</main>
+
+<div id="site-footer"></div>
 
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/toast.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>

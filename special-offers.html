@@ -7,40 +7,27 @@
 <meta name="description" content="Exclusive deals on your favorite fragrances. Discover discounted, promotional, and limited-time perfumes at NeoFragrances.">
 <meta property="og:title" content="Special Offers — NeoFragrances">
 <meta property="og:description" content="Exclusive deals on your favorite fragrances — limited time, while stocks last.">
-<meta property="og:image" content="https://neofragrances.netlify.app/images/logo/logo.png">
-<meta property="og:url" content="https://neofragrances.netlify.app/special-offers.html">
+<meta property="og:image" content="https://neofragrances-gh.netlify.app/images/logo/logo.png">
+<meta property="og:url" content="https://neofragrances-gh.netlify.app/special-offers.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="images/logo/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
 <link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
 </head>
 <body>
 
-<header class="site-header">
-<div class="container navbar">
-<a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-<ul class="nav-links">
-<li><a href="index.html">Home</a></li>
-<li><a href="products.html">Products</a></li>
-<li><a href="special-offers.html">Special Offers</a></li>
-<li><a href="about.html">About</a></li>
-<li><a href="contact.html">Contact</a></li>
-<li class="mobile-account-item"><a href="login.html"><i class="fa-regular fa-user"></i> &nbsp;Login / Register</a></li>
-<li class="mobile-account-item"><a href="wishlist.html"><i class="fa-regular fa-heart"></i> &nbsp;Wishlist</a></li>
-<li class="mobile-account-item"><a href="my-orders.html"><i class="fa-solid fa-receipt"></i> &nbsp;My Orders</a></li>
-</ul>
-<div class="nav-icons">
-<a href="login.html" title="Login / Register" class="icon-secondary"><i class="fa-regular fa-user"></i></a>
-<a href="wishlist.html" title="Wishlist" class="icon-secondary"><i class="fa-regular fa-heart"></i></a>
-<a href="my-orders.html" title="My Orders" class="icon-secondary"><i class="fa-solid fa-receipt"></i></a>
-<a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-<button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-</div>
-</div>
-</header>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
 
 <!-- Hero -->
 <section class="offers-hero" style="padding-bottom:0;">
@@ -84,20 +71,16 @@
 
     <div class="trust-strip">
       <div class="trust-item">
-        <div class="trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
-        <div><strong>100% Authentic</strong><span>Guaranteed original products</span></div>
-      </div>
-      <div class="trust-item">
         <div class="trust-icon"><i class="fa-solid fa-lock"></i></div>
-        <div><strong>Secure Payment</strong><span>Pay safely via Paystack</span></div>
+        <div><strong>Secure Checkout</strong><span>Payments processed by Paystack</span></div>
       </div>
       <div class="trust-item">
-        <div class="trust-icon"><i class="fa-solid fa-truck"></i></div>
-        <div><strong>Fast Delivery</strong><span>3–5 business days</span></div>
+        <div class="trust-icon"><i class="fa-solid fa-location-crosshairs"></i></div>
+        <div><strong>Order Tracking</strong><span>Follow your order with its number</span></div>
       </div>
       <div class="trust-item">
-        <div class="trust-icon"><i class="fa-solid fa-rotate-left"></i></div>
-        <div><strong>Easy Returns</strong><span>30-day return policy</span></div>
+        <div class="trust-icon"><i class="fa-brands fa-whatsapp"></i></div>
+        <div><strong>Direct Support</strong><span>Call, email or WhatsApp us</span></div>
       </div>
     </div>
 
@@ -108,44 +91,14 @@
   </div>
 </section>
 
-<footer class="site-footer">
-<div class="container footer-grid">
-<div>
-<a href="index.html" class="logo">Neo<span>Fragrances</span></a>
-<p>Authentic luxury fragrances, from timeless classics to modern masterpieces.</p>
-<div class="social-row">
-<a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-<a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-<a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-</div>
-</div>
-<div class="footer-col">
-<h5>Shop</h5>
-<a href="products.html">All Products</a>
-<a href="special-offers.html">Special Offers</a>
-<a href="products.html?category=men">Men's</a>
-<a href="products.html?category=women">Women's</a>
-</div>
-<div class="footer-col">
-<h5>Company</h5>
-<a href="about.html">About Us</a>
-<a href="contact.html">Contact</a>
-<a href="login.html">Login</a>
-<a href="track-order.html">Track Order</a>
-</div>
-<div class="footer-col">
-<h5>Contact</h5>
-<a href="tel:0597015869">0597 015 869</a>
-<a href="mailto:hello@neofragrances.com">hello@neofragrances.com</a>
-</div>
-</div>
-<div class="container footer-bottom">
-<span>&copy; 2026 NeoFragrances. All rights reserved.</span>
-<span>We offer perfection in fragrances</span>
-</div>
-</footer>
+</main>
+
+<div id="site-footer"></div>
 
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/toast.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>

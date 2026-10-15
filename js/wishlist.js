@@ -1,7 +1,7 @@
 /* ============================================
    NeoFragrances — wishlist.js (Phase 4)
-   Heart-button save/remove on every product card,
-   plus rendering the dedicated wishlist.html page.
+   Heart-button save/remove on every product card;
+   the full list lives in My Account (account.js).
    ============================================ */
 
 let WISHLIST_IDS = new Set();
@@ -16,6 +16,12 @@ async function loadWishlist() {
     const res = await fetch(`${API_BASE}/api/wishlist`, {
       headers: { Authorization: `Bearer ${auth.token}` },
     });
+    // A stale/expired token: forget it quietly so the page stops acting logged in.
+    if (res.status === 401) {
+      if (typeof clearAuth === "function") clearAuth();
+      WISHLIST_IDS = new Set();
+      return;
+    }
     if (!res.ok) return;
     const data = await res.json();
     WISHLIST_IDS = new Set(data.map(p => p.id));
@@ -50,7 +56,9 @@ function refreshWishlistIcons() {
 async function toggleWishlist(productId, btn) {
   if (typeof isLoggedIn !== "function" || !isLoggedIn()) {
     if (confirm("You need to be logged in to save items. Go to the login page?")) {
-      window.location.href = "login.html";
+      window.location.href = typeof nfLoginRedirectUrl === "function"
+        ? nfLoginRedirectUrl().replace("&expired=1", "")
+        : "login.html";
     }
     return;
   }
@@ -59,41 +67,31 @@ async function toggleWishlist(productId, btn) {
   const inWishlist = WISHLIST_IDS.has(productId);
 
   try {
+    let res;
     if (inWishlist) {
-      await fetch(`${API_BASE}/api/wishlist/${productId}`, {
+      res = await fetch(`${API_BASE}/api/wishlist/${productId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${auth.token}` },
       });
-      WISHLIST_IDS.delete(productId);
     } else {
-      await fetch(`${API_BASE}/api/wishlist`, {
+      res = await fetch(`${API_BASE}/api/wishlist`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${auth.token}` },
         body: JSON.stringify({ productId }),
       });
-      WISHLIST_IDS.add(productId);
     }
+    if (res.status === 401 && typeof nfHandleExpiredSession === "function") return nfHandleExpiredSession();
+    if (!res.ok) throw new Error("Wishlist update failed");
+    if (inWishlist) WISHLIST_IDS.delete(productId); else WISHLIST_IDS.add(productId);
     refreshWishlistIcons();
-    if (document.getElementById("wishlist-grid")) renderWishlistPage();
     if (typeof showToast === "function") showToast(inWishlist ? "Removed from wishlist" : "Saved to wishlist");
   } catch (err) {
     if (typeof showToast === "function") showToast("Something went wrong updating your wishlist.", "error");
   }
 }
 
-function renderWishlistPage() {
-  const grid = document.getElementById("wishlist-grid");
-  if (!grid) return;
-  const items = PRODUCTS.filter(p => WISHLIST_IDS.has(p.id));
-  grid.innerHTML = items.length
-    ? items.map(productCard).join("")
-    : `<p style="grid-column:1/-1; color:var(--ink-soft); padding:40px 0;">Your wishlist is empty. <a href="products.html" style="color:var(--wine); font-weight:600;">Browse fragrances</a></p>`;
-  refreshWishlistIcons();
-}
-
 document.addEventListener("productsReady", async (e) => {
   if (!e.detail.success) return;
   await loadWishlist();
   refreshWishlistIcons();
-  if (document.getElementById("wishlist-grid")) renderWishlistPage();
 });

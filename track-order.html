@@ -3,125 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo/logo.png" type="image/png">
 <title>Track Your Order — NeoFragrances</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/account.css">
 </head>
-<body>
+<body class="nf-account-page">
 
-<header class="site-header">
-  <div class="container navbar">
-   <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="nav-icons">
-      <a href="products.html" title="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
-      <a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-      <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
+
+  <section class="nf-account-head">
+    <div class="container">
+      <nav class="nf-breadcrumb" aria-label="Breadcrumb">
+        <ol><li><a href="index.html">Home</a></li><li aria-current="page">Track an order</li></ol>
+      </nav>
+      <h1>Track an order</h1>
+      <p class="nf-account-greeting">Enter your order number and the email address you used at checkout.</p>
     </div>
-  </div>
-</header>
+  </section>
 
-<section>
-  <div class="container" style="max-width:520px; text-align:center;">
-    <div style="width:64px; height:64px; background:var(--bg); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
-      <i class="fa-solid fa-box" style="font-size:24px; color:var(--wine);"></i>
-    </div>
-    <h1 class="section-title">Track Your Order</h1>
-    <p class="section-sub" style="margin:0 auto 32px;">Enter your order number and the email you used at checkout.</p>
-
-    <div class="auth-card" style="text-align:left;">
-      <form id="track-order-form">
-        <div class="field">
-          <label for="track-order-id">Order Number</label>
-          <input type="text" id="track-order-id" placeholder="e.g. 47" required>
+  <div class="container nf-track">
+    <div class="nf-track-grid">
+      <form id="track-order-form" class="nf-acc-form nf-track-form" novalidate>
+        <div class="nf-form-grid nf-form-grid--narrow">
+          <div class="nf-field">
+            <label for="track-order-id">Order number</label>
+            <input type="text" id="track-order-id" inputmode="numeric" autocomplete="off" placeholder="e.g. 47" required aria-describedby="track-order-id-error">
+            <p class="nf-form-status is-error" id="track-order-id-error" hidden></p>
+          </div>
+          <div class="nf-field">
+            <label for="track-order-email">Email address</label>
+            <input type="email" id="track-order-email" autocomplete="email" placeholder="Email used at checkout" required aria-describedby="track-order-email-error">
+            <p class="nf-form-status is-error" id="track-order-email-error" hidden></p>
+          </div>
         </div>
-        <div class="field">
-          <label for="track-order-email">Email Address</label>
-          <input type="email" id="track-order-email" placeholder="Email used at checkout" required>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-magnifying-glass"></i>&nbsp; Track Order</button>
+        <button type="submit" class="btn btn-primary">Track order</button>
+        <p class="nf-acc-note" id="track-signed-in-note" hidden>Signed in? All your orders are under <a href="my-account.html#orders">My account → Orders</a>.</p>
       </form>
-      <div id="track-order-result" style="margin-top:24px;"></div>
-    </div>
-  </div>
-</section>
 
-<footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <a href="index.html" class="logo">Neo<span>Fragrances</span></a>
-      <p>Authentic luxury fragrances, from timeless classics to modern masterpieces.</p>
-    </div>
-    <div class="footer-col">
-      <h5>Shop</h5>
-      <a href="products.html">All Products</a>
-      <a href="wishlist.html">Wishlist</a>
-    </div>
-    <div class="footer-col">
-      <h5>Company</h5>
-      <a href="about.html">About Us</a>
-      <a href="contact.html">Contact</a>
-      <a href="track-order.html">Track Order</a>
+      <div id="track-order-result" class="nf-track-result" aria-live="polite"></div>
     </div>
   </div>
-  <div class="container footer-bottom">
-    <span>&copy; 2026 NeoFragrances. All rights reserved.</span>
-  </div>
-</footer>
+
+</main>
+
+<div id="site-footer"></div>
 
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/cart.js"></script>
-  <link rel="stylesheet" href="css/mobile-drawer.css">
+<script src="js/auth.js"></script>
+<script src="js/orders-common.js"></script>
+<script src="js/track-order.js"></script>
 <script src="js/mobile-drawer.js"></script>
-<script>
-document.getElementById("track-order-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const orderId = document.getElementById("track-order-id").value.trim();
-  const email = document.getElementById("track-order-email").value.trim();
-  const resultEl = document.getElementById("track-order-result");
-  const btn = e.target.querySelector("button[type=submit]");
-  btn.disabled = true;
-  btn.innerHTML = "Searching...";
-
-  try {
-    const res = await fetch(`${API_BASE}/api/track-order`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId, email }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Could not find that order.");
-
-    resultEl.innerHTML = `
-      <div style="border-top:1px solid var(--line); padding-top:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-          <strong>Order #${data.id}</strong>
-          <span class="badge-status badge-${data.status.toLowerCase()}">${data.status}</span>
-        </div>
-        ${data.items.map(item => `
-          <div style="display:flex; justify-content:space-between; font-size:14px; padding:6px 0;">
-            <span>${item.name} &times; ${item.quantity}</span>
-            <span>$${(item.price_at_purchase * item.quantity).toFixed(2)}</span>
-          </div>
-        `).join("")}
-        <div style="border-top:1px solid var(--line); margin-top:10px; padding-top:10px; display:flex; justify-content:space-between; font-weight:700;">
-          <span>Total</span><span>$${Number(data.total).toFixed(2)}</span>
-        </div>
-        <p style="font-size:12px; color:var(--ink-soft); margin-top:14px;">Placed on ${new Date(data.created_at).toLocaleDateString()}</p>
-      </div>`;
-  } catch (err) {
-    resultEl.innerHTML = `<p style="color:var(--wine); font-size:14px;">${err.message}</p>`;
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i>&nbsp; Track Order`;
-  }
-});
-</script>
 </body>
 </html>

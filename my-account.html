@@ -3,71 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo/logo.png" type="image/png">
 <title>My Account — NeoFragrances</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/account.css">
 </head>
-<body>
+<body class="nf-account-page">
 
-<header class="site-header">
-  <div class="container navbar">
-    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li class="mobile-account-item"><a href="login.html"><i class="fa-regular fa-user"></i> &nbsp;Login / Register</a></li>
-      <li class="mobile-account-item"><a href="wishlist.html"><i class="fa-regular fa-heart"></i> &nbsp;Wishlist</a></li>
-      <li class="mobile-account-item"><a href="my-orders.html"><i class="fa-solid fa-receipt"></i> &nbsp;My Orders</a></li>
-    </ul>
-    <div class="nav-icons">
-      <a href="products.html" title="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
-      <a href="login.html" title="Login / Register" class="icon-secondary"><i class="fa-regular fa-user"></i></a>
-      <a href="wishlist.html" title="Wishlist" class="icon-secondary"><i class="fa-regular fa-heart"></i></a>
-      <a href="my-orders.html" title="My Orders" class="icon-secondary"><i class="fa-solid fa-receipt"></i></a>
-      <a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-      <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
+
+  <section class="nf-account-head">
+    <div class="container">
+      <nav class="nf-breadcrumb" aria-label="Breadcrumb">
+        <ol><li><a href="index.html">Home</a></li><li aria-current="page">My account</li></ol>
+      </nav>
+      <h1 id="account-title">My account</h1>
+      <p class="nf-account-greeting" id="account-greeting" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <div class="container nf-account-layout">
+    <nav class="nf-account-nav" aria-label="Account sections">
+      <ul>
+        <li><a href="#overview" data-section="overview"><i class="fa-solid fa-house" aria-hidden="true"></i><span>Overview</span></a></li>
+        <li><a href="#profile" data-section="profile"><i class="fa-regular fa-user" aria-hidden="true"></i><span>Profile</span></a></li>
+        <li><a href="#orders" data-section="orders"><i class="fa-solid fa-receipt" aria-hidden="true"></i><span>Orders</span></a></li>
+        <li><a href="#addresses" data-section="addresses"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span>Addresses</span></a></li>
+        <li><a href="#wishlist" data-section="wishlist"><i class="fa-regular fa-heart" aria-hidden="true"></i><span>Wishlist</span></a></li>
+        <li><a href="#security" data-section="security"><i class="fa-solid fa-lock" aria-hidden="true"></i><span>Security</span></a></li>
+      </ul>
+      <button type="button" class="nf-account-logout" id="account-logout-btn"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i><span>Log out</span></button>
+    </nav>
+
+    <div class="nf-account-content">
+      <section class="nf-account-panel" id="panel-overview" data-panel="overview" aria-labelledby="h-overview" hidden>
+        <h2 id="h-overview" tabindex="-1">Overview</h2>
+        <div id="overview-body"><div class="nf-acc-skeleton" aria-hidden="true"><span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span></div></div>
+      </section>
+
+      <section class="nf-account-panel" id="panel-profile" data-panel="profile" aria-labelledby="h-profile" hidden>
+        <h2 id="h-profile" tabindex="-1">Profile</h2>
+        <div id="profile-body"></div>
+      </section>
+
+      <section class="nf-account-panel" id="panel-orders" data-panel="orders" aria-labelledby="h-orders" hidden>
+        <h2 id="h-orders" tabindex="-1">Orders</h2>
+        <div id="orders-body"></div>
+      </section>
+
+      <section class="nf-account-panel" id="panel-addresses" data-panel="addresses" aria-labelledby="h-addresses" hidden>
+        <h2 id="h-addresses" tabindex="-1">Addresses</h2>
+        <div id="addresses-body"></div>
+      </section>
+
+      <section class="nf-account-panel" id="panel-wishlist" data-panel="wishlist" aria-labelledby="h-wishlist" hidden>
+        <h2 id="h-wishlist" tabindex="-1">Wishlist</h2>
+        <div id="wishlist-body"></div>
+      </section>
+
+      <section class="nf-account-panel" id="panel-security" data-panel="security" aria-labelledby="h-security" hidden>
+        <h2 id="h-security" tabindex="-1">Security</h2>
+        <div id="security-body"></div>
+      </section>
     </div>
   </div>
-</header>
 
-<div class="auth-wrap">
-  <div class="auth-card">
-    <h1>My Account</h1>
-    <p class="sub">Your NeoFragrances profile.</p>
-    <div id="account-details"></div>
-    <div style="margin-top:28px; display:flex; flex-direction:column; gap:12px;">
-      <a href="my-orders.html" class="btn btn-outline btn-block">View My Orders</a>
-      <a href="wishlist.html" class="btn btn-outline btn-block">View My Wishlist</a>
-      <button class="btn btn-block" id="account-logout-btn" style="background:#C0392B; color:white; border:none;">Logout</button>
+</main>
+
+<!-- Confirmation dialog (destructive actions) -->
+<div class="nf-dialog-backdrop" id="confirm-dialog" hidden>
+  <div class="nf-dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <h2 id="confirm-title">Are you sure?</h2>
+    <p id="confirm-text"></p>
+    <div class="nf-dialog-actions">
+      <button type="button" class="btn btn-outline btn-sm" id="confirm-cancel">Cancel</button>
+      <button type="button" class="btn btn-primary btn-sm nf-btn-danger" id="confirm-ok">Confirm</button>
     </div>
   </div>
 </div>
 
+<div id="site-footer"></div>
+
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
+<script src="js/toast.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
-  <link rel="stylesheet" href="css/mobile-drawer.css">
+<script src="js/wishlist.js"></script>
+<script src="js/orders-common.js"></script>
+<script src="js/account.js"></script>
 <script src="js/mobile-drawer.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const wrap = document.getElementById("account-details");
-  const auth = getAuth();
-  if (!auth || !auth.user) {
-    window.location.href = "login.html";
-    return;
-  }
-  wrap.innerHTML = `
-    <div class="field"><label>Full Name</label><div style="padding:12px 14px; background:var(--bg); border-radius:4px; font-size:14px;">${auth.user.full_name}</div></div>
-    <div class="field"><label>Email</label><div style="padding:12px 14px; background:var(--bg); border-radius:4px; font-size:14px;">${auth.user.email}</div></div>
-  `;
-  document.getElementById("account-logout-btn").addEventListener("click", () => {
-    if (confirm("Log out of your account?")) logoutUser();
-  });
-});
-</script>
 </body>
 </html>

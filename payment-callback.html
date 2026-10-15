@@ -3,80 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo/logo.png" type="image/png">
 <title>Confirming Payment — NeoFragrances</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/cart.css">
 </head>
 <body>
 
-<header class="site-header">
-  <div class="container navbar">
-    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-    <div class="nav-icons">
-      <a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-    </div>
-  </div>
-</header>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
 
-<div class="auth-wrap">
-  <div class="auth-card" id="callback-content" style="text-align:center;">
-    <i class="fa-solid fa-spinner fa-spin" style="font-size:32px; color:var(--wine); margin-bottom:16px;"></i>
-    <h1>Confirming your payment...</h1>
-    <p class="sub">Please don't close this page.</p>
-  </div>
-</div>
+  <section class="nf-result">
+    <div class="nf-result-card" id="callback-content" aria-live="polite" aria-busy="true">
+      <span class="nf-spinner" aria-hidden="true"></span>
+      <h1>Confirming your payment…</h1>
+      <p>This usually takes a few seconds. Please keep this page open.</p>
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
 
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const params = new URLSearchParams(window.location.search);
-  const reference = params.get("reference") || params.get("trxref");
-  const content = document.getElementById("callback-content");
-
-  if (!reference) {
-    content.innerHTML = `
-      <i class="fa-solid fa-circle-xmark" style="font-size:32px; color:var(--wine); margin-bottom:16px;"></i>
-      <h1>Something went wrong</h1>
-      <p class="sub">No payment reference was found.</p>
-      <a href="cart.html" class="btn btn-primary btn-block" style="margin-top:16px;">Back to Cart</a>`;
-    return;
-  }
-
-  const auth = getAuth();
-  if (!auth || !auth.token) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  try {
-    const res = await fetch(`${API_BASE}/api/payments/verify/${reference}`, {
-      headers: { Authorization: `Bearer ${auth.token}` },
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Payment could not be verified.");
-
-    localStorage.removeItem("neofragrances_cart");
-    updateCartCount();
-
-    content.innerHTML = `
-      <i class="fa-solid fa-circle-check" style="font-size:32px; color:#22733B; margin-bottom:16px;"></i>
-      <h1>Payment Successful!</h1>
-      <p class="sub">Order #${data.orderId} — total $${Number(data.total).toFixed(2)}</p>
-      <div style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
-        <a href="my-orders.html" class="btn btn-primary btn-block">View My Orders</a>
-        <a href="products.html" class="btn btn-outline btn-block">Continue Shopping</a>
-      </div>`;
-  } catch (err) {
-    content.innerHTML = `
-      <i class="fa-solid fa-circle-xmark" style="font-size:32px; color:var(--wine); margin-bottom:16px;"></i>
-      <h1>Payment Not Confirmed</h1>
-      <p class="sub">${err.message}</p>
-      <a href="cart.html" class="btn btn-primary btn-block" style="margin-top:16px;">Back to Cart</a>`;
-  }
-});
-</script>
+<script src="js/mobile-drawer.js"></script>
+<script src="js/payment-result.js"></script>
 </body>
 </html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Transient page: never index it, and never let it be cached as the site. -->
+<meta name="robots" content="noindex, nofollow">
+<title>We'll be back soon — NeoFragrances</title>
+<link rel="icon" href="images/logo/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/maintenance.css">
+<!--
+  Deliberately loads NO storefront JavaScript. main.js, catalog.js, cart.js and
+  layout.js all call the API, which is returning 503 while maintenance is on —
+  they would loop on failed requests and fill the console with errors on the one
+  page that is supposed to look calm.
+
+  The one exception is the small inline script at the end of the body: a single
+  read of /api/system/status, which is on the server's maintenance bypass list
+  and therefore still answers while everything else is 503. It only fills in the
+  status message and the progress percentage. If it never answers, the static
+  markup below is what the customer sees.
+-->
+</head>
+<body class="nf-maint">
+
+<main class="maint" role="main">
+  <img class="maint-logo" src="images/logo/logo.png" alt="NeoFragrances" width="72" height="72">
+  <p class="maint-brand">Neo<span>Fragrances</span></p>
+
+  <span class="maint-icon" aria-hidden="true"><i class="fa-solid fa-wrench"></i></span>
+
+  <h1 class="maint-title">We&rsquo;ll Be Back Soon</h1>
+  <p class="maint-lead">
+    We&rsquo;re making a few improvements to the store. Nothing is wrong with your
+    account or any order you&rsquo;ve already placed.
+  </p>
+
+  <!-- Determinate: the width is the percentage the admin set, as validated by
+       the server. The static values here are the honest starting state for a
+       customer whose browser never gets an answer — 0% and the default message,
+       never a fake 100%. -->
+  <div class="maint-progress" role="progressbar"
+       aria-label="Maintenance progress"
+       aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+       aria-valuetext="Maintenance is 0% done.">
+    <span class="maint-progress-bar" style="width:0%"></span>
+  </div>
+  <p class="maint-status">Status: NeoFragrances is currently undergoing maintenance.</p>
+  <p class="maint-done">Maintenance is 0% done.</p>
+
+  <div class="maint-contact">
+    <p class="maint-contact-title">Need help in the meantime?</p>
+    <ul class="maint-contact-list">
+      <li><i class="fa-solid fa-envelope" aria-hidden="true"></i> <a href="mailto:Ambitiousn9@icloud.com">Ambitiousn9@icloud.com</a></li>
+      <li><i class="fa-solid fa-phone" aria-hidden="true"></i> <a href="tel:+233505731824">0505731824</a></li>
+    </ul>
+    <!-- Only WhatsApp is shown: it is the single social/contact channel that
+         actually exists in this project. No other accounts were invented. -->
+    <a class="maint-whatsapp" href="https://wa.me/233505731824?text=Hello%20NeoFragrances%2C%20I%20need%20some%20help." target="_blank" rel="noopener">
+      <i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Message us on WhatsApp
+    </a>
+  </div>
+
+  <p class="maint-foot">Thank you for your patience.</p>
+</main>
+
+<script>
+(function () {
+  // Host rule duplicated from js/main.js on purpose: main.js cannot be loaded
+  // on this page (see the note in <head>), and this is the only thing it needs.
+  const LOCAL_HOSTNAMES = ["localhost", "127.0.0.1"];
+  const API_BASE = LOCAL_HOSTNAMES.includes(window.location.hostname)
+    ? "http://localhost:5000"
+    : "https://neofragrances-server.onrender.com";
+
+  const DEFAULT_MESSAGE = "NeoFragrances is currently undergoing maintenance.";
+  const track = document.querySelector(".maint-progress");
+  const bar = document.querySelector(".maint-progress-bar");
+  const statusEl = document.querySelector(".maint-status");
+  const doneEl = document.querySelector(".maint-done");
+
+  // The server validates and clamps already; this repeats it because the value
+  // arrives over the network and nothing about the page should depend on that
+  // being well-formed. Anything unusable reads as 0, never as complete.
+  function clampPct(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 0;
+    return Math.min(100, Math.max(0, Math.round(n)));
+  }
+
+  function paint(progress, message) {
+    const pct = clampPct(progress);
+    const text = (typeof message === "string" ? message.trim() : "") || DEFAULT_MESSAGE;
+    // textContent, never innerHTML. The message is operator-entered free text
+    // and must reach the page as text, not as markup to be parsed.
+    statusEl.textContent = `Status: ${text}`;
+    doneEl.textContent = `Maintenance is ${pct}% done.`;
+    bar.style.width = `${pct}%`;
+    track.setAttribute("aria-valuenow", String(pct));
+    track.setAttribute("aria-valuetext", `Maintenance is ${pct}% done.`);
+  }
+
+  fetch(`${API_BASE}/api/system/status`, { cache: "no-store" })
+    .then(res => (res.ok ? res.json() : null))
+    .then(data => { if (data) paint(data.progress, data.message); })
+    .catch(() => { /* Unreachable API is not an error worth showing here. The
+                      static 0% and default message already on the page stand. */ });
+})();
+</script>
+
+</body>
+</html>

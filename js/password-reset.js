@@ -55,10 +55,10 @@ function initForgotPasswordForm() {
       resultEl.innerHTML = `
         <div class="fp-success">
           <i class="fa-solid fa-envelope-circle-check"></i>
-          <p>${data.message}</p>
+          <p>${escapeHtml(data.message)}</p>
         </div>`;
     } catch (err) {
-      resultEl.innerHTML = `<p class="fp-error"><i class="fa-solid fa-circle-exclamation"></i>&nbsp; ${err.message}</p>`;
+      resultEl.innerHTML = `<p class="fp-error"><i class="fa-solid fa-circle-exclamation"></i>&nbsp; ${escapeHtml(err.message)}</p>`;
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalLabel;
@@ -142,7 +142,7 @@ async function initResetPasswordPage() {
         showInvalid();
         return;
       }
-      resultEl.innerHTML = `<p class="fp-error"><i class="fa-solid fa-circle-exclamation"></i>&nbsp; ${err.message}</p>`;
+      resultEl.innerHTML = `<p class="fp-error"><i class="fa-solid fa-circle-exclamation"></i>&nbsp; ${escapeHtml(err.message)}</p>`;
       btn.disabled = false;
       btn.innerHTML = originalLabel;
     }

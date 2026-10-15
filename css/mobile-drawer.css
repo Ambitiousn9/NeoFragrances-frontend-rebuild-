@@ -1,7 +1,7 @@
 /* ============================================
    NeoFragrances — mobile-drawer.css
    Slide-in mobile navigation drawer.
-   Active only at <=768px (drawer + overlay are
+   Active only at <=960px (drawer + overlay are
    hidden entirely above that, matching the
    existing .nav-toggle visibility breakpoint).
    ============================================ */
@@ -11,7 +11,7 @@
 
 body.mnav-lock-scroll { overflow: hidden; }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) { /* matches the header collapse in layout.css */
   .mnav-overlay {
     display: block;
     position: fixed;

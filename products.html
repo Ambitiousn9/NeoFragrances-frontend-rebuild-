@@ -4,164 +4,134 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shop All Fragrances — NeoFragrances</title>
-<meta name="description" content="Browse the full NeoFragrances collection — men's, women's, and unisex fragrances. Filter by category, price, and brand.">
+<meta name="description" content="Browse the full NeoFragrances collection — men's, women's, and unisex fragrances. Filter by category, house, price and availability.">
 <meta property="og:title" content="Shop All Fragrances — NeoFragrances">
 <meta property="og:description" content="Browse the full NeoFragrances collection — men's, women's, and unisex fragrances.">
-<meta property="og:image" content="https://neofragrances.netlify.app/images/logo/logo.png">
-<meta property="og:url" content="https://neofragrances.netlify.app/products.html">
+<meta property="og:image" content="https://neofragrances-gh.netlify.app/images/logo/logo.png">
+<meta property="og:url" content="https://neofragrances-gh.netlify.app/products.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="images/logo/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
 <link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/products.css">
 </head>
-<body>
+<body class="nf-shop-page">
 
-<header class="site-header">
-<div class="container navbar">
-<a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-<ul class="nav-links">
-<li><a href="index.html">Home</a></li>
-<li><a href="products.html">Products</a></li>
-<li><a href="special-offers.html">Special Offers</a></li>
-<li><a href="about.html">About</a></li>
-<li><a href="contact.html">Contact</a></li>
-<li class="mobile-account-item"><a href="login.html"><i class="fa-regular fa-user"></i> &nbsp;Login / Register</a></li>
-<li class="mobile-account-item"><a href="wishlist.html"><i class="fa-regular fa-heart"></i> &nbsp;Wishlist</a></li>
-<li class="mobile-account-item"><a href="my-orders.html"><i class="fa-solid fa-receipt"></i> &nbsp;My Orders</a></li>
-</ul>
-<div class="nav-icons">
-<a href="login.html" title="Login / Register" class="icon-secondary"><i class="fa-regular fa-user"></i></a>
-<a href="wishlist.html" title="Wishlist" class="icon-secondary"><i class="fa-regular fa-heart"></i></a>
-<a href="my-orders.html" title="My Orders" class="icon-secondary"><i class="fa-solid fa-receipt"></i></a>
-<a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-<button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-</div>
-</div>
-</header>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
 
-<section style="padding-bottom:0;">
-<div class="container">
-<span class="eyebrow">Shop</span>
-<h1 class="section-title" data-aos="fade-up">All Fragrances</h1>
-<p class="section-sub"><span id="results-count">0</span> fragrances found</p>
+  <!-- Page heading (title/breadcrumb follow the active filters) -->
+  <section class="nf-shop-hero">
+    <div class="container">
+      <nav class="nf-breadcrumb" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">Shop</a></li>
+          <li aria-current="page" id="breadcrumb-current">All fragrances</li>
+        </ol>
+      </nav>
+      <h1 id="shop-title">All Fragrances</h1>
+      <p class="nf-shop-intro" id="shop-intro">Designer icons and Arabian perfumery, curated in one collection.</p>
+    </div>
+  </section>
 
-<div class="toolbar">
-<div class="search-box">
-<i class="fa-solid fa-magnifying-glass" style="color:var(--ink-soft)"></i>
-<input type="text" id="search-input" placeholder="Search by name or brand">
-</div>
-<button class="btn btn-outline btn-sm filter-toggle-btn" id="filter-toggle-btn"><i class="fa-solid fa-sliders"></i>&nbsp; Filter &amp; Sort</button>
-</div>
+  <section class="nf-shop" aria-label="Products">
+    <div class="container nf-shop-layout">
 
-<div class="filter-panel" id="filter-panel">
-<div class="filter-panel-header">
-<h3>Filter &amp; Sort</h3>
-<button class="filter-panel-close" id="filter-panel-close"><i class="fa-solid fa-xmark"></i></button>
-</div>
-<div class="chip-row" id="brand-chips"></div>
-<div class="filters">
-<select id="category-filter" class="filter-select">
-<option value="all">All Categories</option>
-<option value="men">Men's</option>
-<option value="women">Women's</option>
-<option value="unisex">Unisex</option>
-</select>
-<select id="price-filter" class="filter-select">
-<option value="all">Any Price</option>
-<option value="under100">Under GH₵100</option>
-<option value="100to130">GH₵100 – GH₵130</option>
-<option value="over130">Over GH₵130</option>
-</select>
-<select id="sort-select" class="filter-select">
-<option value="featured">Sort: Featured</option>
-<option value="price-low">Price: Low to High</option>
-<option value="price-high">Price: High to Low</option>
-<option value="newest">Newest</option>
-<option value="popular">Popular</option>
-</select>
-</div>
-<button class="btn btn-primary btn-block filter-panel-apply" id="filter-panel-apply">Show Results</button>
-</div>
-<div class="filter-panel-overlay" id="filter-panel-overlay"></div>
-</div>
-</section>
+      <!-- Filters: sidebar on desktop, slide-in drawer on smaller screens -->
+      <aside class="nf-filters" id="nf-filters" aria-labelledby="filters-title" tabindex="-1">
+        <div class="nf-filters-head">
+          <h2 id="filters-title">Filter</h2>
+          <button type="button" class="nf-icon-btn nf-filters-close" id="filters-close" aria-label="Close filters"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="nf-filters-body" id="filters-body">
+          <div class="nf-filters-loading" aria-hidden="true">
+            <span class="skeleton-line skeleton-shimmer w-60"></span>
+            <span class="skeleton-line skeleton-shimmer w-80"></span>
+            <span class="skeleton-line skeleton-shimmer w-40"></span>
+            <span class="skeleton-line skeleton-shimmer w-80"></span>
+          </div>
+        </div>
+        <div class="nf-filters-foot">
+          <button type="button" class="btn btn-outline btn-sm" id="filters-clear">Clear all</button>
+          <button type="button" class="btn btn-primary btn-sm" id="filters-apply">Show results</button>
+        </div>
+      </aside>
 
-<section style="padding-top:0;">
-<div class="container">
-<div class="product-grid" id="product-grid"></div>
-<div class="trust-strip">
-<div class="trust-item">
-<div class="trust-icon"><i class="fa-solid fa-truck"></i></div>
-<div><strong>Free Delivery</strong><span>On orders over GH₵100</span></div>
-</div>
-<div class="trust-item">
-<div class="trust-icon"><i class="fa-solid fa-shield-halved"></i></div>
-<div><strong>100% Authentic</strong><span>Guaranteed original products</span></div>
-</div>
-<div class="trust-item">
-<div class="trust-icon"><i class="fa-solid fa-rotate-left"></i></div>
-<div><strong>Easy Returns</strong><span>30-day return policy</span></div>
-</div>
-</div>
-</div>
-</section>
+      <div class="nf-shop-main" id="shop-main">
+        <div class="nf-shop-toolbar" id="shop-toolbar">
+          <div class="nf-shop-search">
+            <label for="search-input" class="sr-only">Search fragrances or houses</label>
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input type="search" id="search-input" placeholder="Search fragrances or houses" enterkeyhint="search" maxlength="80">
+            <button type="button" class="nf-shop-search-clear" id="search-clear" aria-label="Clear search" hidden><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+          </div>
+          <div class="nf-shop-controls">
+            <button type="button" class="nf-filter-toggle" id="filter-toggle" aria-controls="nf-filters" aria-expanded="false">
+              <i class="fa-solid fa-sliders" aria-hidden="true"></i> Filter <span class="nf-filter-count" id="filter-count" hidden></span>
+            </button>
+            <div class="nf-sort">
+              <label for="sort-select">Sort</label>
+              <select id="sort-select"></select>
+            </div>
+          </div>
+        </div>
 
-<footer class="site-footer">
-<div class="container footer-grid">
-<div>
-<a href="index.html" class="logo">Neo<span>Fragrances</span></a>
-<p>Authentic luxury fragrances, from timeless classics to modern masterpieces.</p>
-<div class="social-row">
-<a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-<a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-<a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-</div>
-</div>
-<div class="footer-col">
-<h5>Shop</h5>
-<a href="products.html">All Products</a>
-<a href="special-offers.html">Special Offers</a>
-<a href="products.html?category=men">Men's</a>
-<a href="products.html?category=women">Women's</a>
-</div>
-<div class="footer-col">
-<h5>Company</h5>
-<a href="about.html">About Us</a>
-<a href="contact.html">Contact</a>
-<a href="login.html">Login</a>
-<a href="track-order.html">Track Order</a>
-</div>
-<div class="footer-col">
-<h5>Contact</h5>
-<a href="tel:0597015869">0597 015 869</a>
-<a href="mailto:hello@neofragrances.com">hello@neofragrances.com</a>
-</div>
-</div>
-<div class="container footer-bottom">
-<span>&copy; 2026 NeoFragrances. All rights reserved.</span>
-<span>We offer perfection in fragrances</span>
-</div>
-</footer>
+        <div class="nf-shop-status">
+          <p class="nf-results-count" id="results-count" role="status" aria-live="polite">Loading the collection…</p>
+          <div class="nf-active-filters" id="active-filters"></div>
+        </div>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <div class="product-grid nf-shop-grid" id="product-grid"></div>
+
+        <nav class="nf-pagination" id="pagination" aria-label="Product pages" hidden></nav>
+      </div>
+    </div>
+  </section>
+
+  <section class="nf-section nf-section--tight">
+    <div class="container">
+      <div class="trust-strip">
+        <div class="trust-item">
+          <div class="trust-icon"><i class="fa-solid fa-lock"></i></div>
+          <div><strong>Secure Checkout</strong><span>Payments processed by Paystack</span></div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon"><i class="fa-solid fa-location-crosshairs"></i></div>
+          <div><strong>Order Tracking</strong><span>Follow your order with its number</span></div>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon"><i class="fa-brands fa-whatsapp"></i></div>
+          <div><strong>Direct Support</strong><span>Call, email or WhatsApp us</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="nf-filters-overlay" id="filters-overlay" hidden></div>
+<div id="site-footer"></div>
+
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/toast.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/wishlist.js"></script>
 <script src="js/search.js"></script>
 <script src="js/mobile-drawer.js"></script>
-<script>
-const params = new URLSearchParams(window.location.search);
-const cat = params.get("category");
-if (cat) {
-  document.getElementById("category-filter").value = cat;
-  applyFilters();
-}
-</script>
 </body>
 </html>

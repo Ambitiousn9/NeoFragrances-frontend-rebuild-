@@ -3,240 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Login — NeoFragrances</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../images/logo/logo.png" type="image/png">
+<title>Admin sign in — NeoFragrances</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/admin.css">
-<style>
-  body { margin: 0; }
-  .al-wrap {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-  .al-brand {
-    background: var(--ink);
-    color: rgba(255,255,255,0.9);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 60px 64px;
-    position: relative;
-  }
-  .al-brand::after {
-    content: "";
-    position: absolute;
-    left: 64px; right: 64px; bottom: 64px;
-    height: 1px;
-    background: rgba(201,141,160,0.35);
-  }
-  .al-portal-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--rose);
-    margin-bottom: 18px;
-  }
-  .al-logo {
-    font-family: var(--font-display);
-    font-size: 32px;
-    font-weight: 500;
-    color: var(--white);
-    margin-bottom: 14px;
-  }
-  .al-logo span { color: var(--gold); }
-  .al-tagline {
-    font-size: 15px;
-    color: rgba(255,255,255,0.6);
-    max-width: 320px;
-    line-height: 1.6;
-  }
-  .al-form-side {
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 32px;
-  }
-  .al-form-wrap { width: 100%; max-width: 360px; }
-  .al-form-wrap h1 {
-    font-size: 24px;
-    margin-bottom: 6px;
-  }
-  .al-form-wrap .al-sub {
-    font-size: 14px;
-    color: var(--ink-soft);
-    margin-bottom: 32px;
-  }
-  .al-field { margin-bottom: 18px; }
-  .al-field label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--ink);
-  }
-  .al-field input {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    background: var(--white);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  .al-field input:focus {
-    outline: none;
-    border-color: var(--rose);
-    box-shadow: 0 0 0 3px rgba(201,141,160,0.18);
-  }
-  .al-password-wrap { position: relative; }
-  .al-password-wrap input { padding-right: 42px; }
-  .al-toggle-pw {
-    position: absolute;
-    right: 12px; top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--ink-soft);
-    font-size: 13px;
-    cursor: pointer;
-    padding: 4px;
-  }
-  .al-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 22px;
-    font-size: 13px;
-  }
-  .al-remember { display: flex; align-items: center; gap: 7px; color: var(--ink-soft); }
-  .al-remember input { width: auto; margin: 0; }
-  .al-row a { color: var(--rose); text-decoration: none; font-weight: 600; }
-  .al-row a:hover { text-decoration: underline; }
-  .al-submit-btn {
-    width: 100%;
-    padding: 13px;
-    background: var(--wine);
-    color: var(--white);
-    border: none;
-    border-radius: 6px;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  .al-submit-btn:hover { background: #571f2d; }
-  .al-submit-btn:disabled { opacity: 0.6; cursor: default; }
-  .al-msg { font-size: 13px; margin-top: 14px; color: var(--wine); min-height: 18px; }
-  .al-notice {
-    font-size: 12px;
-    color: var(--ink-soft);
-    text-align: center;
-    margin-top: 26px;
-  }
-  .al-back {
-    display: block;
-    text-align: center;
-    margin-top: 14px;
-    font-size: 13px;
-    color: var(--ink-soft);
-    text-decoration: none;
-  }
-  .al-back:hover { color: var(--ink); }
-
-  @media (max-width: 900px) {
-    .al-wrap { grid-template-columns: 1fr; }
-    .al-brand {
-      padding: 32px 28px;
-      text-align: left;
-    }
-    .al-brand::after { display: none; }
-    .al-logo { font-size: 24px; margin-bottom: 4px; }
-    .al-tagline { display: none; }
-    .al-form-side { padding: 40px 24px; }
-  }
-</style>
 </head>
-<body>
+<body class="nf-admin" data-catalog="off">
 
-<div class="al-wrap">
-  <div class="al-brand">
-    <div class="al-portal-label"><i class="fa-solid fa-lock" style="margin-right:6px;"></i>Administrator Portal</div>
-    <div class="al-logo">Neo<span>Fragrances</span></div>
-    <p class="al-tagline">Manage your fragrance business with ease — products, orders, customers, and reports, all in one place.</p>
-  </div>
+<div class="adm-login">
+  <aside class="adm-login-brand">
+    <a class="adm-brand" href="../index.html" aria-label="NeoFragrances store"><span class="adm-brand-mark">Neo</span><span class="adm-brand-word">Fragrances</span><span class="adm-brand-tag">Admin</span></a>
+    <div>
+      <h2>Store operations</h2>
+      <p>Manage products, stock, offers, orders, customers and reviews for NeoFragrances.</p>
+    </div>
+    <span class="adm-note" style="color:rgba(250,246,240,0.5)">Authorised staff only.</span>
+  </aside>
 
-  <div class="al-form-side">
-    <div class="al-form-wrap">
-      <h1>Sign In</h1>
-      <p class="al-sub">Enter your administrator credentials to continue.</p>
-
-      <form id="admin-login-form">
-        <div class="al-field">
+  <main class="adm-login-panel" id="adm-main">
+    <div class="adm-login-card">
+      <h1>Sign in</h1>
+      <p>Use your administrator account.</p>
+      <p class="adm-login-notice" id="login-notice" role="status" hidden></p>
+      <form id="admin-login-form" novalidate>
+        <div class="adm-field">
           <label for="admin-email">Email address</label>
-          <input type="email" id="admin-email" placeholder="admin@neofragrances.com" required>
+          <input class="adm-input" type="email" id="admin-email" autocomplete="username" required>
         </div>
-
-        <div class="al-field">
+        <div class="adm-field">
           <label for="admin-password">Password</label>
-          <div class="al-password-wrap">
-            <input type="password" id="admin-password" placeholder="••••••••" required>
-            <button type="button" class="al-toggle-pw" id="al-toggle-pw">Show</button>
+          <div class="adm-pw">
+            <input class="adm-input" type="password" id="admin-password" autocomplete="current-password" required>
+            <button type="button" id="toggle-pw" aria-label="Show password" aria-pressed="false">Show</button>
           </div>
         </div>
-
-        <div class="al-row">
-          <label class="al-remember"><input type="checkbox" checked> Remember me</label>
-          <a href="../forgot-password.html">Forgot password?</a>
-        </div>
-
-        <button type="submit" class="al-submit-btn">Sign In</button>
-        <p class="al-msg" id="admin-login-msg"></p>
+        <button type="submit" class="adm-btn adm-btn--primary">Sign in</button>
+        <p class="adm-login-msg" id="admin-login-msg" role="alert"></p>
       </form>
-
-      <p class="al-notice">Authorized personnel only.</p>
-      <a href="index.html" class="logo"><img src="../images/logo/logo.png" alt="NeoFragrances" style="height:70px; width:auto;"></a>
+      <div class="adm-login-links">
+        <a href="../forgot-password.html">Forgot password?</a>
+        <a href="../index.html">Back to store</a>
+      </div>
     </div>
-  </div>
+  </main>
 </div>
 
 <script src="../js/main.js"></script>
 <script src="../js/auth.js"></script>
 <script>
-document.getElementById("al-toggle-pw").addEventListener("click", () => {
-  const input = document.getElementById("admin-password");
-  const btn = document.getElementById("al-toggle-pw");
-  const isHidden = input.type === "password";
-  input.type = isHidden ? "text" : "password";
-  btn.textContent = isHidden ? "Hide" : "Show";
-});
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const target = safeRedirectTarget(params.get("redirect"), "dashboard.html");
+  const notice = document.getElementById("login-notice");
+  if (params.get("expired") === "1") { notice.textContent = "Your session has expired. Please sign in again."; notice.hidden = false; }
+  if (params.get("denied") === "1") { notice.textContent = "That account doesn't have admin access. Sign in with an administrator account."; notice.hidden = false; }
 
-document.getElementById("admin-login-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("admin-email").value.trim();
-  const password = document.getElementById("admin-password").value;
-  const msg = document.getElementById("admin-login-msg");
-  const btn = e.target.querySelector("button[type=submit]");
-  btn.disabled = true;
-  btn.textContent = "Signing in...";
-
-  try {
-    const user = await loginUser({ email, password });
-    if (user.role !== "admin") {
-      clearAuth();
-      throw new Error("This account doesn't have admin access.");
-    }
-    window.location.href = "dashboard.html";
-  } catch (err) {
-    msg.textContent = err.message;
-    btn.disabled = false;
-    btn.textContent = "Sign In";
+  // Already signed in as an admin (and not bounced here by the server) → straight in.
+  const auth = getAuth();
+  if (auth && auth.token && auth.user && auth.user.role === "admin" && !params.has("expired") && !params.has("denied")) {
+    window.location.replace(target);
+    return;
   }
-});
+
+  document.getElementById("toggle-pw").addEventListener("click", e => {
+    const input = document.getElementById("admin-password");
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    e.currentTarget.textContent = show ? "Hide" : "Show";
+    e.currentTarget.setAttribute("aria-pressed", String(show));
+    e.currentTarget.setAttribute("aria-label", show ? "Hide password" : "Show password");
+  });
+
+  document.getElementById("admin-login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("admin-email").value.trim();
+    const password = document.getElementById("admin-password").value;
+    const msg = document.getElementById("admin-login-msg");
+    const btn = e.target.querySelector("button[type=submit]");
+    msg.textContent = "";
+    if (!email || !password) { msg.textContent = "Enter your email and password."; return; }
+    btn.disabled = true;
+    btn.textContent = "Signing in…";
+    try {
+      const user = await loginUser({ email, password });
+      if (user.role !== "admin") {
+        clearAuth();
+        throw new Error("This account doesn't have admin access.");
+      }
+      window.location.href = target;
+    } catch (err) {
+      msg.textContent = err.message;
+      btn.disabled = false;
+      btn.textContent = "Sign in";
+    }
+  });
+})();
 </script>
 </body>
 </html>

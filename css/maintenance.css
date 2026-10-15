@@ -1,0 +1,200 @@
+/* ============================================
+   maintenance.css — the maintenance page only.
+   Dark minimalist ground with the existing gold
+   accent from css/tokens.css (--nf-gold). Nothing
+   here is shared with the storefront, so it can
+   never affect a normal page.
+   ============================================ */
+
+:root {
+  --maint-bg: #121011;
+  --maint-bg-soft: #1b1819;
+  --maint-line: rgba(232, 220, 198, 0.14);
+  --maint-text: #ece7df;
+  --maint-muted: #a39b91;
+}
+
+* { box-sizing: border-box; }
+
+body.nf-maint {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+  background:
+    radial-gradient(900px 500px at 50% -10%, rgba(184, 147, 95, 0.13), transparent 70%),
+    var(--maint-bg);
+  color: var(--maint-text);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.maint {
+  width: 100%;
+  max-width: 540px;
+  text-align: center;
+}
+
+.maint-logo { display: block; margin: 0 auto 10px; border-radius: 50%; }
+
+.maint-brand {
+  margin: 0 0 30px;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 19px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--maint-text);
+}
+.maint-brand span { color: var(--nf-gold, #B8935F); }
+
+.maint-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  margin-bottom: 22px;
+  border: 1px solid var(--maint-line);
+  border-radius: 50%;
+  background: var(--maint-bg-soft);
+  color: var(--nf-gold, #B8935F);
+  font-size: 25px;
+}
+
+.maint-title {
+  margin: 0 0 14px;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(27px, 6vw, 38px);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.maint-lead {
+  margin: 0 auto 30px;
+  max-width: 430px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--maint-muted);
+}
+
+/* Determinate bar: a gold fill over a muted track, 4px tall. The WIDTH is the
+   validated percentage and is set inline by the script in maintenance.html —
+   there is no width here to override it, only the 0 it starts from. */
+.maint-progress {
+  position: relative;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(232, 220, 198, 0.1);
+  overflow: hidden;
+}
+
+.maint-progress-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--nf-gold-soft, #E9DCC6), var(--nf-gold, #B8935F));
+  transition: width 0.6s ease;
+}
+
+/* The only moving part is a highlight travelling across the fill, drawn on a
+   pseudo-element so the animation can never affect the bar's real width. */
+.maint-progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  animation: maint-shimmer 1.9s ease-in-out infinite;
+}
+
+@keyframes maint-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Respect the OS setting by removing the MOTION only. The width stays exactly
+   the reported percentage: a reduced-motion user must read the same progress as
+   everyone else, so this must never fill the bar to 100%. */
+@media (prefers-reduced-motion: reduce) {
+  .maint-progress-bar {
+    transition: none;
+  }
+  .maint-progress-bar::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.maint-status {
+  margin: 14px 0 6px;
+  font-size: 12.5px;
+  letter-spacing: 0.085em;
+  text-transform: uppercase;
+  color: var(--nf-gold, #B8935F);
+}
+
+/* "Maintenance is n% done." — the percentage in words, under the bar. Quieter
+   than the status line so the operator's message stays the headline. */
+.maint-done {
+  margin: 0 0 34px;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--maint-muted);
+}
+
+.maint-contact {
+  padding: 22px 20px;
+  border: 1px solid var(--maint-line);
+  border-radius: 14px;
+  background: var(--maint-bg-soft);
+}
+
+.maint-contact-title {
+  margin: 0 0 14px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--maint-muted);
+}
+
+.maint-contact-list {
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  font-size: 14.5px;
+}
+.maint-contact-list i { color: var(--nf-gold, #B8935F); margin-right: 8px; }
+.maint-contact-list a { color: var(--maint-text); text-decoration: none; }
+.maint-contact-list a:hover,
+.maint-contact-list a:focus-visible { text-decoration: underline; }
+
+.maint-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 19px;
+  border-radius: 999px;
+  background: var(--nf-gold, #B8935F);
+  color: #17120c;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 0.15s ease;
+}
+.maint-whatsapp:hover { filter: brightness(1.08); }
+
+/* Keyboard focus must stay obvious on a dark ground. */
+.maint a:focus-visible {
+  outline: 2px solid var(--nf-gold, #B8935F);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.maint-foot {
+  margin: 26px 0 0;
+  font-size: 13px;
+  color: var(--maint-muted);
+}

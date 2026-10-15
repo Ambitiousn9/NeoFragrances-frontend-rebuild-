@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../images/logo/logo.png" type="image/png">
+<title>Maintenance — NeoFragrances Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="nf-admin" data-admin-page="maintenance" data-catalog="off">
+
+<main id="adm-main" class="adm-main">
+  <div class="adm-page-head">
+    <div>
+      <h1 id="page-title">Maintenance</h1>
+      <p id="page-sub">Take the storefront offline for planned work. The admin portal stays reachable while maintenance is on, so you can always switch it back off from here.</p>
+    </div>
+    <div class="adm-page-actions" id="page-actions"></div>
+  </div>
+  <div id="page-root" aria-live="polite" aria-busy="true">
+    <div class="adm-panel adm-panel-body"><span class="adm-skel adm-skel--lg"></span><br><span class="adm-skel"></span></div>
+  </div>
+</main>
+
+<script src="../js/main.js"></script>
+<script src="../js/toast.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/admin-core.js"></script>
+<script src="../js/admin-maintenance.js"></script>
+</body>
+</html>

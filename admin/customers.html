@@ -3,58 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Customers — NeoFragrances</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../images/logo/logo.png" type="image/png">
+<title>Customers — NeoFragrances Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body>
+<body class="nf-admin" data-admin-page="customers" data-catalog="off">
 
-<div class="admin-body">
-  <div class="admin-sidebar">
-    <a href="index.html" class="logo"><img src="../images/logo/logo.png" alt="NeoFragrances" style="height:70px; width:auto;"></a>
-    <nav class="admin-nav">
-      <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-      <a href="products.html"><i class="fa-solid fa-flask"></i> Products</a>
-      <a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i> Inventory <span class="nav-badge" id="low-stock-badge"></span></a>
-      <a href="orders.html"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
-      <a href="special-offers.html"><i class="fa-solid fa-tag"></i> Special Offers</a>
-      <a href="customers.html" class="active"><i class="fa-solid fa-users"></i> Customers</a>
-      <a href="reports.html"><i class="fa-solid fa-chart-line"></i> Reports</a>
-      <div class="divider"></div>
-      <a href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-    </nav>
+<main id="adm-main" class="adm-main">
+  <div class="adm-page-head">
+    <div>
+      <h1 id="page-title">Customers</h1>
+      <p id="page-sub">Registered customer accounts. Passwords are never shown or stored in readable form.</p>
+    </div>
+    <div class="adm-page-actions" id="page-actions"></div>
   </div>
-
-  <div class="admin-main">
-    <div class="admin-topbar">
-      <div>
-        <h1>Customers</h1>
-        <div class="admin-sub">Everyone who has shopped at NeoFragrances.</div>
-      </div>
-      <div class="admin-user"><div class="avatar">A</div> Admin</div>
-    </div>
-
-    <div class="admin-toolbar">
-      <div class="search-box" style="max-width:320px;">
-        <i class="fa-solid fa-magnifying-glass" style="color:var(--ink-soft)"></i>
-        <input type="text" id="admin-customer-search" placeholder="Search customers...">
-      </div>
-    </div>
-    <div class="admin-table-wrap">
-      <table class="admin-table">
-        <thead>
-          <tr><th>Name</th><th>Email</th><th>Orders</th><th>Joined</th></tr>
-        </thead>
-        <tbody id="customers-table-body"></tbody>
-      </table>
-    </div>
+  <div id="page-root" aria-live="polite" aria-busy="true">
+    <div class="adm-panel adm-panel-body"><span class="adm-skel adm-skel--lg"></span><br><span class="adm-skel"></span></div>
   </div>
-</div>
+</main>
 
 <script src="../js/main.js"></script>
 <script src="../js/toast.js"></script>
 <script src="../js/auth.js"></script>
-<script src="../js/admin.js"></script>
+<script src="../js/admin-core.js"></script>
+<script src="../js/admin-customers.js"></script>
 </body>
 </html>

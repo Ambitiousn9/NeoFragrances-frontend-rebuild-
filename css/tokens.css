@@ -1,0 +1,104 @@
+/* ============================================
+   NeoFragrances — design tokens
+   Single source of truth for colour, type,
+   spacing, radius, elevation and motion.
+   Load FIRST on every page (customer + admin).
+   ============================================ */
+
+:root {
+  /* ---- Brand palette ---- */
+  --nf-ivory: #FAF6F0;
+  --nf-ivory-deep: #F3ECE2;
+  --nf-paper: #FFFFFF;
+  --nf-plum: #2B1B2E;
+  --nf-plum-soft: #3B2A3E;
+  --nf-plum-deep: #1E1220;
+  --nf-gold: #B8935F;
+  --nf-gold-soft: #E9DCC6;
+  --nf-wine: #6B2737;
+  --nf-wine-deep: #561E2C;
+  --nf-rose: #C98DA0;
+  --nf-rose-soft: #F4E6EA;
+
+  /* ---- Neutrals & text ---- */
+  --nf-text: #2B1B2E;
+  --nf-text-soft: #5C4A5E;
+  --nf-text-muted: #85758A;
+  --nf-line: #E4DAD0;
+  --nf-line-strong: #D3C4B5;
+
+  /* ---- Status ---- */
+  --nf-success: #2F6B4F;
+  --nf-success-soft: #E4F0E9;
+  --nf-danger: #A23B3B;
+  --nf-danger-soft: #F6E3E3;
+
+  /* ---- Typography ---- */
+  --nf-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --nf-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --nf-text-xs: 0.75rem;
+  --nf-text-sm: 0.875rem;
+  --nf-text-base: 1rem;
+  --nf-text-lg: 1.125rem;
+  --nf-text-xl: 1.375rem;
+  --nf-display-sm: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
+  --nf-display-md: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  --nf-display-lg: clamp(2.75rem, 1.8rem + 4vw, 4.75rem);
+  --nf-tracking-caps: 0.18em;
+
+  /* ---- Spacing ---- */
+  --nf-space-1: 4px;
+  --nf-space-2: 8px;
+  --nf-space-3: 12px;
+  --nf-space-4: 16px;
+  --nf-space-5: 24px;
+  --nf-space-6: 32px;
+  --nf-space-7: 48px;
+  --nf-space-8: 64px;
+  --nf-space-9: 96px;
+  --nf-section-y: clamp(64px, 5vw + 40px, 112px);
+  --nf-container: 1240px;
+  --nf-gutter: clamp(16px, 3vw, 32px);
+
+  /* ---- Radius ---- */
+  --nf-radius-xs: 2px;
+  --nf-radius-sm: 4px;
+  --nf-radius-md: 8px;
+  --nf-radius-lg: 12px;
+  --nf-radius-pill: 999px;
+
+  /* ---- Elevation ---- */
+  --nf-shadow-sm: 0 1px 2px rgba(43, 27, 46, 0.06);
+  --nf-shadow-md: 0 8px 24px -12px rgba(43, 27, 46, 0.18);
+  --nf-shadow-lg: 0 24px 48px -24px rgba(43, 27, 46, 0.28);
+
+  /* ---- Motion ---- */
+  --nf-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --nf-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --nf-dur-fast: 160ms;
+  --nf-dur: 280ms;
+  --nf-dur-slow: 640ms;
+
+  /* ---- Layers ---- */
+  --nf-z-header: 100;
+  --nf-z-overlay: 400;
+  --nf-z-toast: 600;
+
+  /* ---- Legacy aliases (used by existing CSS — keep until migrated) ---- */
+  --bg: var(--nf-ivory);
+  --ink: var(--nf-text);
+  --ink-soft: var(--nf-text-soft);
+  --gold: var(--nf-gold);
+  --wine: var(--nf-wine);
+  --rose: var(--nf-rose);
+  --line: var(--nf-line);
+  --white: var(--nf-paper);
+  --radius: var(--nf-radius-xs);
+  --font-display: var(--nf-font-display);
+  --font-body: var(--nf-font-body);
+  /* Off-brand legacy colours remapped onto the brand palette */
+  --teal: var(--nf-wine);
+  --teal-deep: var(--nf-wine-deep);
+  --purple: var(--nf-plum);
+  --purple-deep: var(--nf-plum-deep);
+}

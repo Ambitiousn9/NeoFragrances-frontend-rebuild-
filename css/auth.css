@@ -1,0 +1,72 @@
+/* ============================================
+   NeoFragrances — auth.css
+   Sign in, create account, forgot / reset password
+   and email verification. Refines the legacy
+   .auth-* styles in style.css; scoped to .auth-wrap.
+   ============================================ */
+
+.auth-wrap { min-height: 72vh; padding: clamp(32px, 6vw, 72px) var(--nf-gutter); background: var(--nf-ivory); }
+.auth-wrap .auth-container { max-width: 460px; }
+.auth-wrap .auth-card {
+  max-width: 460px;
+  padding: clamp(28px, 5vw, 44px);
+  background: var(--nf-paper);
+  border: 1px solid var(--nf-line);
+  border-radius: var(--nf-radius-md);
+  box-shadow: var(--nf-shadow-md);
+}
+.auth-wrap .auth-card h1 { font-family: var(--nf-font-display); font-size: clamp(28px, 4vw, 34px); font-weight: 400; line-height: 1.1; color: var(--nf-text); margin-bottom: 8px; }
+.auth-wrap .auth-card .sub { font-size: var(--nf-text-sm); color: var(--nf-text-soft); line-height: 1.65; margin-bottom: 28px; }
+.auth-wrap .auth-back-link { font-size: 13px; color: var(--nf-text-muted); min-height: 32px; }
+.auth-wrap .auth-back-link:hover { color: var(--nf-wine); }
+
+.auth-wrap .field label { font-size: 12px; font-weight: 600; color: var(--nf-text); letter-spacing: 0.01em; }
+.auth-wrap .field input {
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--nf-line-strong);
+  border-radius: var(--nf-radius-sm);
+  background: var(--nf-paper);
+  font: 400 var(--nf-text-base) var(--nf-font-body);
+  color: var(--nf-text);
+}
+.auth-wrap .field input:focus { border-color: var(--nf-plum); box-shadow: 0 0 0 3px rgba(43, 27, 46, 0.1); background: var(--nf-paper); }
+.auth-wrap .field input[aria-invalid="true"] { border-color: var(--nf-danger); }
+.auth-wrap .auth-password-wrap input { padding-right: 72px; }
+.auth-wrap .auth-toggle-pw { right: 6px; min-width: 56px; height: 36px; border-radius: var(--nf-radius-sm); color: var(--nf-wine); }
+.auth-wrap .auth-toggle-pw:hover { background: var(--nf-ivory-deep); }
+.auth-field-hint { font-size: 12px; color: var(--nf-text-muted); margin-top: 6px; }
+
+.auth-wrap .btn-block { min-height: 52px; }
+.auth-wrap .btn-pill { border-radius: var(--nf-radius-pill); font-weight: 600; font-size: var(--nf-text-sm); letter-spacing: 0.04em; }
+.auth-wrap .auth-links { justify-content: flex-end; margin-top: 4px; }
+.auth-wrap .auth-links a, .auth-wrap .auth-switch a, .auth-wrap .auth-switch-prominent a, .auth-wrap .auth-terms a { color: var(--nf-wine); font-weight: 600; }
+.auth-wrap .auth-switch, .auth-wrap .auth-switch-prominent { font-size: var(--nf-text-sm); color: var(--nf-text-soft); }
+.auth-wrap .auth-switch-prominent { border-top-color: var(--nf-line); }
+.auth-wrap .auth-divider { color: var(--nf-text-muted); font-weight: 600; letter-spacing: var(--nf-tracking-caps); }
+.auth-wrap .auth-divider::before, .auth-wrap .auth-divider::after { background: var(--nf-line); }
+
+/* Notices (e.g. "your session expired") */
+.auth-notice {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px 14px;
+  margin: -8px 0 22px;
+  border-left: 2px solid var(--nf-gold);
+  background: var(--nf-ivory);
+  border-radius: 0 var(--nf-radius-sm) var(--nf-radius-sm) 0;
+  font-size: 13px; line-height: 1.55; color: var(--nf-text-soft);
+}
+.auth-notice i { color: var(--nf-gold); margin-top: 3px; }
+
+/* Status states (verify email / reset password) */
+.auth-state-icon { font-size: 34px; }
+.auth-state-icon--muted { color: var(--nf-wine); }
+.auth-state-icon--success { color: var(--nf-success); }
+.auth-state-icon--error { color: var(--nf-danger); }
+.auth-resend-msg { margin-top: 14px; font-size: 13px; color: var(--nf-text-soft); }
+.auth-wrap .rp-state p { color: var(--nf-text-soft); }
+.auth-wrap .rp-hint { color: var(--nf-text-muted); }
+
+@media (max-width: 520px) {
+  .auth-wrap .field-row { flex-direction: column; gap: 0; }
+}

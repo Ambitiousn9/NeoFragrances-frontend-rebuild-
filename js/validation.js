@@ -213,7 +213,7 @@ function initLoginValidation() {
       const user = await loginUser({ email: emailInput.value.trim(), password: passwordInput.value });
       showFormSuccess(form, `Welcome back, ${user.full_name}! Redirecting...`);
       const params = new URLSearchParams(window.location.search);
-      const redirectTo = params.get("redirect") || "index.html";
+      const redirectTo = safeRedirectTarget(params.get("redirect"), "index.html");
       setTimeout(() => (window.location.href = redirectTo), 1200);
     } catch (err) {
       if (err.requiresVerification) {

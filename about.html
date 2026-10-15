@@ -4,114 +4,161 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About Us — NeoFragrances</title>
+<meta name="description" content="NeoFragrances brings designer icons and celebrated Arabian fragrance houses together in one curated collection.">
+<link rel="icon" href="images/logo/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/pages.css">
 </head>
 <body>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
 
-<header class="site-header">
-  <div class="container navbar">
-    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    <li class="mobile-account-item"><a href="login.html"><i class="fa-regular fa-user"></i> &nbsp;Login / Register</a></li>
-      <li class="mobile-account-item"><a href="wishlist.html"><i class="fa-regular fa-heart"></i> &nbsp;Wishlist</a></li>
-      <li class="mobile-account-item"><a href="my-orders.html"><i class="fa-solid fa-receipt"></i> &nbsp;My Orders</a></li>
-    </ul>
-    <div class="nav-icons">
-      <a href="login.html" title="Login / Register" class="icon-secondary"><i class="fa-regular fa-user"></i></a>
-      <a href="wishlist.html" title="Wishlist" class="icon-secondary"><i class="fa-regular fa-heart"></i></a>
-      <a href="my-orders.html" title="My Orders" class="icon-secondary"><i class="fa-solid fa-receipt"></i></a>
-      <a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-      <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+<main id="main">
+
+  <!-- Brand introduction -->
+  <section class="nf-about-hero">
+    <div class="container nf-about-hero-grid">
+      <div>
+        <span class="nf-eyebrow">About NeoFragrances</span>
+        <h1>Fragrance, <em>chosen with care.</em></h1>
+      </div>
+      <p class="nf-about-hero-lede">NeoFragrances brings designer icons and celebrated Arabian houses together in one considered collection — for anyone who believes a scent is part of who they are.</p>
     </div>
-  </div>
-</header>
+  </section>
 
-<section style="padding-bottom:40px;">
-  <div class="container" style="max-width:760px;">
-    <span class="eyebrow">Our Story</span>
-    <h1 class="section-title" data-aos="fade-up">Built by People Who Love Scent</h1>
-    <p class="section-sub" style="max-width:100%;">
-      NeoFragrances started with a simple frustration: authentic, well-made perfume was hard to find online without paying department-store markups or risking counterfeits. We set out to fix that — sourcing directly from licensed distributors and small independent houses, and pricing fairly.
-    </p>
-  </div>
-</section>
-
-<section class="section-alt">
-  <div class="container" style="display:grid; grid-template-columns:1fr 1fr; gap:30px; max-width:900px;">
-    <div>
-      <div class="why-icon" style="margin-bottom:16px;"><i class="fa-solid fa-bullseye"></i></div>
-      <h3 style="margin-bottom:10px;" data-aos="fade-up">Our Mission</h3>
-      <p style="color:var(--ink-soft);">To make authentic, high-quality fragrance accessible to everyone — no guesswork, no counterfeits, fair prices.</p>
+  <!-- Live collection facts (computed from the catalog) -->
+  <section class="nf-about-facts" id="about-facts" aria-label="Our collection today" hidden>
+    <div class="container nf-about-facts-grid">
+      <div><span class="nf-about-fact" id="fact-products"></span><span class="nf-about-fact-label">Fragrances in the collection</span></div>
+      <div><span class="nf-about-fact" id="fact-brands"></span><span class="nf-about-fact-label">Fragrance houses</span></div>
+      <div><span class="nf-about-fact" id="fact-categories"></span><span class="nf-about-fact-label">Collections: men, women &amp; unisex</span></div>
     </div>
-    <div>
-      <div class="why-icon" style="margin-bottom:16px;"><i class="fa-solid fa-eye"></i></div>
-      <h3 style="margin-bottom:10px;" data-aos="fade-up">Our Vision</h3>
-      <p style="color:var(--ink-soft);">To become the most trusted fragrance destination in the region, known for authenticity and genuine care for customers.</p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section>
-  <div class="container">
-    <span class="eyebrow text-center">Why Choose Us</span>
-    <h2 class="section-title text-center" >What Sets Us Apart</h2>
-    <div class="why-grid mt-lg">
-      <div class="why-card"><div class="why-icon"><i class="fa-solid fa-certificate"></i></div><h4>Authentic Perfumes</h4><p>Every bottle verified and sourced directly.</p></div>
-      <div class="why-card"><div class="why-icon"><i class="fa-solid fa-truck-fast"></i></div><h4>Fast Delivery</h4><p>2–4 business days nationwide.</p></div>
-      <div class="why-card"><div class="why-icon"><i class="fa-solid fa-lock"></i></div><h4>Secure Payment</h4><p>Encrypted, protected checkout.</p></div>
-      <div class="why-card"><div class="why-icon"><i class="fa-solid fa-tag"></i></div><h4>Affordable Prices</h4><p>Luxury without the markup.</p></div>
-    </div>
-  </div>
-</section>
-
-<footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <a href="index.html" class="logo">Neo<span>Fragrances</span></a>
-      <p>Authentic luxury fragrances, from timeless classics to modern masterpieces.</p>
-      <div class="social-row">
-        <a href="#"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+  <!-- Philosophy -->
+  <section class="nf-section" aria-labelledby="philosophy-title">
+    <div class="container nf-split">
+      <div data-reveal>
+        <span class="nf-eyebrow">Our Philosophy</span>
+        <h2 id="philosophy-title" class="nf-split-title">A scent is the most personal thing you wear.</h2>
+      </div>
+      <div class="nf-prose" data-reveal data-reveal-delay="1">
+        <p>It arrives before you do and lingers after you leave. It marks occasions, recalls places and quietly becomes part of how people remember you.</p>
+        <p>That's why we believe choosing a fragrance deserves more than a quick scroll through an endless list. NeoFragrances exists to make that choice feel considered — a focused collection, clear information and people you can talk to.</p>
       </div>
     </div>
-    <div class="footer-col">
-      <h5>Shop</h5>
-      <a href="products.html">All Products</a>
-      <a href="products.html?category=men">Men's</a>
-      <a href="products.html?category=women">Women's</a>
+  </section>
+
+  <!-- What we stand for -->
+  <section class="nf-section nf-section--paper" aria-labelledby="values-title">
+    <div class="container">
+      <div class="nf-section-head" data-reveal>
+        <div>
+          <span class="nf-eyebrow">What We Stand For</span>
+          <h2 id="values-title">Three things guide everything we do</h2>
+        </div>
+      </div>
+      <div class="nf-value-grid">
+        <article class="nf-value" data-reveal>
+          <span class="nf-value-num">I</span>
+          <h3>Curation over clutter</h3>
+          <p>A collection shaped around houses people genuinely love — from designer classics to the richness of Arabian perfumery — rather than everything at once.</p>
+        </article>
+        <article class="nf-value" data-reveal data-reveal-delay="1">
+          <span class="nf-value-num">II</span>
+          <h3>Clarity at every step</h3>
+          <p>Prices shown in Ghana cedis before you check out, stock shown on every product, and order status you can follow yourself.</p>
+        </article>
+        <article class="nf-value" data-reveal data-reveal-delay="2">
+          <span class="nf-value-num">III</span>
+          <h3>Real people, real help</h3>
+          <p>When you have a question, you reach us directly — by phone, email or WhatsApp — not a ticket queue.</p>
+        </article>
+      </div>
     </div>
-    <div class="footer-col">
-      <h5>Company</h5>
-      <a href="about.html">About Us</a>
-      <a href="contact.html">Contact</a>
-      <a href="login.html">Login</a>
-      <a href="track-order.html">Track Order</a>
+  </section>
+
+  <!-- Product curation: live list of houses -->
+  <section class="nf-section nf-section--plum" aria-labelledby="houses-title" id="about-houses" hidden>
+    <div class="container nf-split">
+      <div data-reveal>
+        <span class="nf-eyebrow">The Collection</span>
+        <h2 id="houses-title" class="nf-split-title">The houses you'll find here.</h2>
+        <p class="nf-split-lede">Explore any house to see its fragrances in our collection.</p>
+        <a href="products.html" class="btn btn-light">Shop all fragrances</a>
+      </div>
+      <ul class="nf-house-list" id="house-list" data-reveal data-reveal-delay="1"></ul>
     </div>
-    <div class="footer-col">
-      <h5>Contact</h5>
-      <a href="tel:0597015869">0505 731 824</a>
-      <a href="mailto:hello@neofragrances.com">Somuahdenix@gmail.com</a>
+  </section>
+
+  <!-- Customer experience (features that exist today) -->
+  <section class="nf-section" aria-labelledby="experience-title">
+    <div class="container">
+      <div class="nf-section-head nf-section-head--center" data-reveal>
+        <span class="nf-eyebrow">Shopping With Us</span>
+        <h2 id="experience-title">Designed to be simple</h2>
+      </div>
+      <div class="nf-card-grid">
+        <div class="nf-info-card" data-reveal><span class="nf-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></span><h3>Secure checkout</h3><p>Payments are processed by Paystack. Your order is confirmed by email once payment succeeds.</p></div>
+        <div class="nf-info-card" data-reveal data-reveal-delay="1"><span class="nf-icon"><i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i></span><h3>Follow your order</h3><p>Track any order with its number and your email, or see every order in your account.</p></div>
+        <div class="nf-info-card" data-reveal data-reveal-delay="2"><span class="nf-icon"><i class="fa-regular fa-heart" aria-hidden="true"></i></span><h3>Your account, your list</h3><p>Save favourites to your wishlist and keep your delivery addresses ready for checkout.</p></div>
+        <div class="nf-info-card" data-reveal data-reveal-delay="3"><span class="nf-icon"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></span><h3>Help when you need it</h3><p>Not sure what to choose? Tell us what you enjoy and we'll suggest options.</p></div>
+      </div>
     </div>
-  </div>
-  <div class="container footer-bottom">
-    <span>&copy; 2026 NeoFragrances. All rights reserved.</span>
-    <span>We offer perfection in fragrances</span>
-  </div>
-</footer>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  </section>
+
+  <!-- CTA -->
+  <section class="nf-final-band">
+    <div class="container nf-final-band-inner" data-reveal>
+      <h2>Find your next signature.</h2>
+      <div class="nf-final-band-actions">
+        <a href="products.html" class="btn btn-light">Explore the collection</a>
+        <a href="contact.html" class="btn btn-ghost-light">Contact us</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/toast.js"></script>
 <script src="js/cart.js"></script>
-  <link rel="stylesheet" href="css/mobile-drawer.css">
+<script src="js/auth.js"></script>
+<script src="js/wishlist.js"></script>
 <script src="js/mobile-drawer.js"></script>
+<script>
+// Collection facts and houses are computed from the live catalog — never hardcoded.
+document.addEventListener("productsReady", (e) => {
+  if (!e.detail.success) return; // sections stay hidden
+  const counts = {};
+  PRODUCTS.forEach(p => { counts[p.brand] = (counts[p.brand] || 0) + 1; });
+  const brands = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b));
 
+  document.getElementById("fact-products").textContent = PRODUCTS.length;
+  document.getElementById("fact-brands").textContent = brands.length;
+  document.getElementById("fact-categories").textContent = new Set(PRODUCTS.map(p => p.category)).size;
+  document.getElementById("about-facts").hidden = false;
+
+  document.getElementById("house-list").innerHTML = brands.map(b =>
+    `<li><a href="products.html?brand=${encodeURIComponent(b)}">${escapeHtml(b)}<span>${counts[b]}</span></a></li>`
+  ).join("");
+  document.getElementById("about-houses").hidden = false;
+  nfReveal(document.getElementById("about-houses"));
+});
+</script>
 </body>
 </html>

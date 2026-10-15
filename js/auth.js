@@ -104,6 +104,38 @@ function logoutUser() {
   clearAuth();
   window.location.href = "index.html";
 }
+
+/* ---------- Authenticated requests + expired sessions ----------
+   nfAuthFetch adds the saved token. If the server says the session is no
+   longer valid (401), the stale login is cleared and the customer is sent to
+   the login page, returning to the current page afterwards. */
+function nfLoginRedirectUrl() {
+  const here = (window.location.pathname.split("/").pop() || "index.html") + window.location.search + window.location.hash;
+  return `login.html?redirect=${encodeURIComponent(here)}&expired=1`;
+}
+
+function nfHandleExpiredSession() {
+  clearAuth();
+  window.location.replace(nfLoginRedirectUrl());
+}
+
+async function nfAuthFetch(path, options = {}) {
+  const auth = getAuth();
+  if (!auth || !auth.token) { nfHandleExpiredSession(); throw new Error("Not logged in"); }
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: { ...(options.body ? { "Content-Type": "application/json" } : {}), ...(options.headers || {}), Authorization: `Bearer ${auth.token}` },
+  });
+  if (res.status === 401) { nfHandleExpiredSession(); throw new Error("Session expired"); }
+  return res;
+}
+
+// Keeps the saved user (shown in the header/drawer) in sync after a profile change.
+function updateSavedUser(changes) {
+  const auth = getAuth();
+  if (!auth) return;
+  saveAuth(auth.token, { ...auth.user, ...changes });
+}
 function updateAccountNav() {
   const auth = getAuth();
   if (!auth || !auth.user) return;
@@ -113,14 +145,14 @@ function updateAccountNav() {
     const loginItem = Array.from(mobileItems).find(li => li.querySelector('a[href="login.html"]'));
 
     if (loginItem) {
-      loginItem.innerHTML = `<div style="padding:4px 0; font-weight:700; color:var(--ink);">${auth.user.full_name}</div>`;
+      loginItem.innerHTML = `<div style="padding:4px 0; font-weight:700; color:var(--ink);">${escapeHtml(auth.user.full_name)}</div>`;
 
       const accountLi = document.createElement("li");
       accountLi.className = "mobile-account-item";
       accountLi.innerHTML = `<a href="my-account.html"><i class="fa-regular fa-id-badge"></i>&nbsp;My Account</a>`;
       loginItem.after(accountLi);
 
-      const ordersItem = Array.from(mobileItems).find(li => li.querySelector('a[href="my-orders.html"]'));
+      const ordersItem = Array.from(mobileItems).find(li => li.querySelector('a[href="my-account.html#orders"]'));
       if (ordersItem && !document.getElementById("mobile-logout-btn")) {
         const logoutLi = document.createElement("li");
         logoutLi.className = "mobile-account-item";

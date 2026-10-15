@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo/logo.png" type="image/png">
+<title>Order details — NeoFragrances</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/account.css">
+</head>
+<body class="nf-account-page">
+
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
+  <section class="nf-account-head">
+    <div class="container">
+      <nav class="nf-breadcrumb" aria-label="Breadcrumb">
+        <ol><li><a href="index.html">Home</a></li><li><a href="my-account.html">My account</a></li><li><a href="my-account.html#orders">Orders</a></li><li aria-current="page" id="crumb-order">Order</li></ol>
+      </nav>
+    </div>
+  </section>
+  <div class="container nf-order-page" id="order-root" aria-live="polite">
+    <div class="nf-acc-skeleton" aria-hidden="true"><span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span></div>
+    <p class="sr-only" role="status">Loading your order…</p>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
+<script src="js/toast.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/orders-common.js"></script>
+<script src="js/order.js"></script>
+<script src="js/mobile-drawer.js"></script>
+</body>
+</html>

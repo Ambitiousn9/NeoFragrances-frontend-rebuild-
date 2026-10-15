@@ -1,0 +1,313 @@
+/* ============================================
+   NeoFragrances — learn.css
+   Fragrance Guide (learn.html): contents rail,
+   editorial sections, concentration table,
+   scent-family cards and the A–Z glossary.
+   Builds on tokens.css, components.css
+   (.nf-eyebrow, .nf-section, .btn, .nf-text-link)
+   and pages.css (.nf-about-hero, .nf-steps,
+   .nf-accordion).
+   ============================================ */
+
+/* Anchored targets clear the sticky header (72px desktop, 62px mobile). */
+.nf-guide-section,
+.nf-guide-family,
+.nf-glossary-letter,
+.nf-glossary dl > div { scroll-margin-top: 96px; }
+
+/* ---------- Introduction ---------- */
+.nf-guide-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+}
+.nf-guide-hero-copy h1 { margin-bottom: var(--nf-space-6); }
+.nf-guide-intro { max-width: 56ch; }
+.nf-guide-intro p { font-size: var(--nf-text-lg); line-height: 1.75; color: var(--nf-text-soft); }
+.nf-guide-intro p + p { margin-top: var(--nf-space-4); }
+.nf-guide-hero-media { justify-self: end; width: 100%; max-width: 440px; }
+.nf-guide-hero-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--nf-radius-sm);
+  background: var(--nf-ivory-deep);
+  box-shadow: var(--nf-shadow-lg);
+}
+
+/* ---------- Editorial images inside sections ---------- */
+.nf-guide-figure { margin: var(--nf-space-6) 0 0; max-width: 68ch; }
+.nf-guide-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--nf-radius-sm);
+  background: var(--nf-ivory-deep);
+}
+/* The petal band spans the card grid as a slim texture, desaturated toward the brand's wine tones. */
+.nf-guide-band { max-width: none; }
+.nf-guide-band img { aspect-ratio: 4 / 1; filter: saturate(0.7); }
+
+/* ---------- Layout: contents rail + reading column ---------- */
+.nf-guide-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+  padding-top: var(--nf-section-y);
+  padding-bottom: var(--nf-section-y);
+}
+
+.nf-guide-toc { position: sticky; top: 104px; }
+.nf-guide-toc-title {
+  font-family: var(--nf-font-body);
+  font-size: var(--nf-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nf-tracking-caps);
+  text-transform: uppercase;
+  color: var(--nf-text-soft);
+  margin-bottom: var(--nf-space-4);
+}
+.nf-guide-toc ol { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--nf-line); counter-reset: nf-toc; }
+.nf-guide-toc li { counter-increment: nf-toc; }
+.nf-guide-toc a {
+  display: flex; gap: var(--nf-space-3); align-items: baseline;
+  margin-left: -1px;
+  padding: 10px 0 10px var(--nf-space-4);
+  border-left: 2px solid transparent;
+  color: var(--nf-text-soft);
+  font-size: var(--nf-text-sm);
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color var(--nf-dur-fast) var(--nf-ease), border-color var(--nf-dur) var(--nf-ease);
+}
+.nf-guide-toc a::before {
+  content: counter(nf-toc, decimal-leading-zero);
+  font-family: var(--nf-font-display);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--nf-text-soft);
+}
+.nf-guide-toc a:hover { color: var(--nf-wine); }
+.nf-guide-toc a[aria-current="location"] { color: var(--nf-wine); border-left-color: var(--nf-wine); font-weight: 600; }
+
+.nf-guide-content { min-width: 0; }
+
+/* ---------- Sections ---------- */
+.nf-guide-section + .nf-guide-section {
+  margin-top: clamp(56px, 6vw, 88px);
+  padding-top: clamp(56px, 6vw, 88px);
+  border-top: 1px solid var(--nf-line);
+}
+.nf-guide-section > h2 { font-size: var(--nf-display-sm); line-height: 1.1; margin-bottom: var(--nf-space-5); }
+.nf-guide-subhead { font-size: var(--nf-text-xl); margin: var(--nf-space-7) 0 var(--nf-space-3); }
+
+.nf-guide-prose { max-width: 68ch; }
+.nf-guide-prose p { font-size: var(--nf-text-base); line-height: 1.8; color: var(--nf-text-soft); }
+.nf-guide-prose p + p,
+.nf-guide-prose ul + p { margin-top: var(--nf-space-4); }
+
+.nf-guide-terms { list-style: none; margin: var(--nf-space-4) 0 0; padding: 0; }
+.nf-guide-terms li { position: relative; padding-left: 20px; line-height: 1.75; color: var(--nf-text-soft); }
+.nf-guide-terms li + li { margin-top: var(--nf-space-2); }
+.nf-guide-terms li::before { content: ""; position: absolute; left: 0; top: 0.8em; width: 8px; height: 1px; background: var(--nf-gold); }
+.nf-guide-terms strong { color: var(--nf-text); font-weight: 600; }
+
+/* ---------- Notes: three stages + callouts ---------- */
+.nf-guide-steps { margin-top: var(--nf-space-6); max-width: 68ch; }
+.nf-guide-steps p { font-size: var(--nf-text-base); }
+
+.nf-guide-callout {
+  margin-top: var(--nf-space-6);
+  max-width: 68ch;
+  padding: var(--nf-space-5) var(--nf-space-6);
+  background: var(--nf-paper);
+  border: 1px solid var(--nf-line);
+  border-left: 2px solid var(--nf-gold);
+  border-radius: var(--nf-radius-sm);
+}
+.nf-guide-callout h3 { font-size: var(--nf-text-lg); margin-bottom: var(--nf-space-2); }
+.nf-guide-callout p { color: var(--nf-text-soft); line-height: 1.75; }
+.nf-guide-callout--tip { background: var(--nf-ivory-deep); border-left-color: var(--nf-wine); }
+.nf-guide-callout-label {
+  display: inline-block;
+  margin-right: 6px;
+  font-family: var(--nf-font-body);
+  font-size: var(--nf-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--nf-tracking-caps);
+  text-transform: uppercase;
+  color: var(--nf-wine);
+  vertical-align: 2px;
+}
+
+/* ---------- Concentrations table ---------- */
+.nf-guide-table {
+  width: 100%;
+  margin-top: var(--nf-space-6);
+  border-collapse: collapse;
+  background: var(--nf-paper);
+  border: 1px solid var(--nf-line);
+  border-radius: var(--nf-radius-md);
+  font-size: var(--nf-text-sm);
+}
+.nf-guide-table caption {
+  caption-side: top;
+  text-align: left;
+  padding-bottom: var(--nf-space-3);
+  font-family: var(--nf-font-display);
+  font-style: italic;
+  color: var(--nf-text-soft);
+}
+.nf-guide-table th,
+.nf-guide-table td { padding: var(--nf-space-4) var(--nf-space-5); text-align: left; vertical-align: top; border-bottom: 1px solid var(--nf-line); line-height: 1.65; }
+.nf-guide-table thead th {
+  font-size: var(--nf-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--nf-text-soft);
+  background: var(--nf-ivory-deep);
+}
+.nf-guide-table tbody th { font-family: var(--nf-font-display); font-size: 17px; font-weight: 500; color: var(--nf-plum); white-space: nowrap; }
+.nf-guide-table tbody td { color: var(--nf-text-soft); }
+.nf-guide-table tbody tr:last-child > * { border-bottom: none; }
+.nf-guide-note { margin-top: var(--nf-space-3); max-width: 68ch; font-size: var(--nf-text-sm); line-height: 1.7; color: var(--nf-text-soft); }
+
+/* ---------- Scent families ---------- */
+.nf-guide-families {
+  list-style: none;
+  margin: var(--nf-space-6) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: var(--nf-space-4);
+}
+.nf-guide-family {
+  padding: var(--nf-space-5);
+  background: var(--nf-paper);
+  border: 1px solid var(--nf-line);
+  border-top: 2px solid var(--nf-plum);
+  border-radius: var(--nf-radius-sm);
+}
+.nf-guide-family h3 { font-size: 22px; margin-bottom: 2px; }
+.nf-guide-family-tagline { font-family: var(--nf-font-display); font-style: italic; color: var(--nf-wine); margin-bottom: var(--nf-space-3); }
+.nf-guide-family p:not(.nf-guide-family-tagline) { font-size: var(--nf-text-sm); line-height: 1.7; color: var(--nf-text-soft); }
+.nf-guide-family:target { border-color: var(--nf-gold); box-shadow: var(--nf-shadow-md); }
+.nf-guide-closing-line { margin-top: var(--nf-space-6); max-width: 68ch; font-family: var(--nf-font-display); font-size: var(--nf-text-lg); line-height: 1.6; color: var(--nf-plum); }
+
+/* ---------- Wearing & care: accordions ---------- */
+.nf-guide-accordion { max-width: 68ch; }
+.nf-guide-accordion summary { font-size: 19px; }
+.nf-guide-accordion .nf-accordion-body p + p,
+.nf-guide-accordion .nf-accordion-body p + ul { margin-top: var(--nf-space-3); }
+.nf-guide-accordion .nf-guide-terms { margin-top: var(--nf-space-3); }
+
+/* ---------- Glossary ---------- */
+.nf-glossary-index { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--nf-space-2) 0 var(--nf-space-6); }
+.nf-glossary-index a {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 40px; height: 40px;
+  border: 1px solid var(--nf-line-strong);
+  border-radius: var(--nf-radius-sm);
+  font-family: var(--nf-font-display);
+  font-size: 17px;
+  color: var(--nf-plum);
+  text-decoration: none;
+  transition: background var(--nf-dur-fast) var(--nf-ease), color var(--nf-dur-fast) var(--nf-ease), border-color var(--nf-dur-fast) var(--nf-ease);
+}
+.nf-glossary-index a:hover { background: var(--nf-plum); border-color: var(--nf-plum); color: var(--nf-ivory); }
+
+.nf-glossary { columns: 2; column-gap: clamp(32px, 4vw, 56px); }
+.nf-glossary-group { break-inside: avoid; margin-bottom: var(--nf-space-6); }
+.nf-glossary-letter {
+  font-size: 30px;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--nf-wine);
+  line-height: 1;
+  padding-bottom: var(--nf-space-2);
+  border-bottom: 1px solid var(--nf-line-strong);
+}
+.nf-glossary dl { margin: 0; }
+.nf-glossary dl > div { padding: var(--nf-space-3) 0; border-bottom: 1px solid var(--nf-line); }
+.nf-glossary dt { font-family: var(--nf-font-display); font-size: 18px; font-weight: 500; color: var(--nf-text); margin-bottom: 2px; }
+.nf-glossary dd { margin: 0; font-size: var(--nf-text-sm); line-height: 1.7; color: var(--nf-text-soft); }
+.nf-glossary dd a { color: var(--nf-wine); font-weight: 600; }
+.nf-glossary dl > div:target { background: var(--nf-rose-soft); }
+
+/* ---------- Closing calls to action ---------- */
+.nf-guide-cta-inner { max-width: 760px; }
+.nf-guide-cta h2 { font-size: var(--nf-display-sm); font-weight: 400; line-height: 1.1; margin-bottom: var(--nf-space-4); }
+.nf-guide-cta p { font-size: var(--nf-text-lg); line-height: 1.7; max-width: 56ch; margin-bottom: var(--nf-space-6); }
+.nf-guide-cta-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--nf-space-5) var(--nf-space-6); }
+.nf-guide-cta-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--nf-space-5); }
+.nf-guide-cta .nf-text-link { color: var(--nf-ivory); }
+.nf-guide-cta .nf-text-link:hover { color: var(--nf-gold); }
+.nf-guide-cta-wa { margin-top: var(--nf-space-6); }
+.nf-guide-cta :focus-visible { outline-color: var(--nf-gold); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .nf-guide-hero-grid { grid-template-columns: 1fr; }
+  .nf-guide-hero-media { justify-self: stretch; max-width: 520px; }
+  .nf-guide-hero-media img { aspect-ratio: 1 / 1; object-position: 50% 45%; }
+}
+@media (max-width: 960px) {
+  .nf-guide-section,
+  .nf-guide-family,
+  .nf-glossary-letter,
+  .nf-glossary dl > div { scroll-margin-top: 80px; }
+  .nf-guide-layout { grid-template-columns: 1fr; padding-top: var(--nf-space-7); }
+  .nf-guide-toc {
+    position: static;
+    padding: var(--nf-space-5);
+    background: var(--nf-paper);
+    border: 1px solid var(--nf-line);
+    border-radius: var(--nf-radius-md);
+  }
+  .nf-guide-toc ol { border-left: none; display: flex; flex-wrap: wrap; gap: var(--nf-space-2); }
+  .nf-guide-toc a {
+    margin-left: 0;
+    padding: 8px 14px;
+    border: 1px solid var(--nf-line-strong);
+    border-radius: var(--nf-radius-pill);
+    min-height: 40px;
+    align-items: center;
+  }
+  .nf-guide-toc a[aria-current="location"] { border-color: var(--nf-wine); }
+}
+@media (max-width: 720px) {
+  .nf-glossary { columns: 1; }
+}
+@media (max-width: 640px) {
+  .nf-guide-callout { padding: var(--nf-space-4) var(--nf-space-5); }
+  .nf-guide-band img { aspect-ratio: 5 / 2; }
+  /* The table becomes one card per row, each cell labelled from data-label. */
+  .nf-guide-table, .nf-guide-table tbody, .nf-guide-table tr, .nf-guide-table th, .nf-guide-table td { display: block; }
+  .nf-guide-table { border: none; background: transparent; }
+  .nf-guide-table caption { display: block; }
+  .nf-guide-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .nf-guide-table tr { background: var(--nf-paper); border: 1px solid var(--nf-line); border-radius: var(--nf-radius-sm); }
+  .nf-guide-table tr + tr { margin-top: var(--nf-space-3); }
+  .nf-guide-table tbody th { white-space: normal; border-bottom: 1px solid var(--nf-line); }
+  .nf-guide-table td { padding-top: var(--nf-space-3); padding-bottom: var(--nf-space-3); }
+  .nf-guide-table td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: var(--nf-text-xs);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--nf-text-soft);
+  }
+  .nf-guide-table tbody tr:last-child > * { border-bottom: 1px solid var(--nf-line); }
+  .nf-guide-table tbody tr > td:last-child { border-bottom: none; }
+  .nf-guide-cta-links { gap: var(--nf-space-4); }
+}

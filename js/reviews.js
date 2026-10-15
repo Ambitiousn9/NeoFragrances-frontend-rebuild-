@@ -42,12 +42,12 @@ function renderReviewsList(reviews) {
     ? reviews.map(r => `
       <div style="border-bottom:1px solid var(--line); padding:18px 0;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
-          <strong>${r.full_name}</strong>
+          <strong>${escapeHtml(r.full_name)}</strong>
           ${r.is_verified_purchase ? `<span style="font-size:11px; color:#22733B; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Verified Purchase</span>` : ""}
         </div>
         <div style="margin-bottom:8px;">${starIcons(r.rating)}</div>
-        ${r.comment ? `<p style="color:var(--ink-soft); font-size:14px;">${r.comment}</p>` : ""}
-        <div style="font-size:12px; color:var(--ink-soft); margin-top:6px;">${new Date(r.created_at).toLocaleDateString()}</div>
+        ${r.comment ? `<p style="color:var(--ink-soft); font-size:14px;">${escapeHtml(r.comment)}</p>` : ""}
+        <div style="font-size:12px; color:var(--ink-soft); margin-top:6px;">${escapeHtml(new Date(r.created_at).toLocaleDateString())}</div>
       </div>
     `).join("")
     : `<p style="color:var(--ink-soft);">No reviews yet — be the first to review this fragrance.</p>`;
@@ -95,6 +95,15 @@ function renderReviewForm(productId) {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${auth.token}` },
         body: JSON.stringify({ rating, comment }),
       });
+      // A 401 here means the session is over - an expired token, or an account
+      // an administrator has disabled. Either way the saved login is stale, so
+      // it is cleared and the customer is sent to log in, exactly as
+      // nfAuthFetch and the wishlist do. Without this the server's message was
+      // shown as an inline form error while the page carried on looking signed
+      // in, which left the customer retrying a request that could never succeed.
+      if (res.status === 401 && typeof nfHandleExpiredSession === "function") {
+        return nfHandleExpiredSession();
+      }
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not submit review.");
       document.getElementById("review-msg").textContent = "Thanks for your review!";

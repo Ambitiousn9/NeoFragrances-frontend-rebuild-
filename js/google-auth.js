@@ -52,7 +52,7 @@ async function handleGoogleSignIn(response) {
     const user = await loginWithGoogleCredential(response.credential);
     setGoogleMsg(`Welcome, ${user.full_name}! Redirecting...`, "#22733B");
     const params = new URLSearchParams(window.location.search);
-    const redirectTo = params.get("redirect") || "index.html";
+    const redirectTo = safeRedirectTarget(params.get("redirect"), "index.html");
     setTimeout(() => (window.location.href = redirectTo), 900);
   } catch (err) {
     setGoogleMsg(err.message || "Could not sign in with Google. Please try again.", "var(--wine)");
@@ -102,7 +102,27 @@ async function initGoogleSignIn() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+// The Google block (divider, button, terms) starts hidden and is only shown when
+// the server reports a configured GOOGLE_CLIENT_ID. Email/password never depends on it.
+let googleConfigured = false;
+
+async function checkGoogleConfigured() {
+  try {
+    const res = await fetch(`${API_BASE}/api/config/google-client-id`);
+    const data = res.ok ? await res.json() : {};
+    return !!data.clientId;
+  } catch (err) {
+    return false;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const block = document.getElementById("google-auth-block");
+  if (!block) return;
+  googleConfigured = await checkGoogleConfigured();
+  if (!googleConfigured) return; // stays hidden: no empty divider, no fake button
+  block.hidden = false;
+
   const waitForGoogle = setInterval(() => {
     if (window.google && google.accounts && google.accounts.id) {
       clearInterval(waitForGoogle);
@@ -122,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 10000);
 });
 window.addEventListener("resize", () => {
+  if (!googleConfigured) return;
   clearTimeout(window._gsiResizeTimer);
   window._gsiResizeTimer = setTimeout(initGoogleSignIn, 300);
 });

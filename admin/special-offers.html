@@ -3,147 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Special Offers Management — NeoFragrances</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../images/logo/logo.png" type="image/png">
+<title>Special offers — NeoFragrances Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/tokens.css">
 <link rel="stylesheet" href="../css/admin.css">
 </head>
-<body>
+<body class="nf-admin" data-admin-page="offers" data-catalog="off">
 
-<div class="admin-body">
-  <div class="admin-sidebar">
-    <a href="index.html" class="logo"><img src="../images/logo/logo.png" alt="NeoFragrances" style="height:70px; width:auto;"></a>
-    <nav class="admin-nav">
-      <a href="dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-      <a href="products.html"><i class="fa-solid fa-flask"></i> Products</a>
-      <a href="inventory.html"><i class="fa-solid fa-boxes-stacked"></i> Inventory <span class="nav-badge" id="low-stock-badge"></span></a>
-      <a href="orders.html"><i class="fa-solid fa-bag-shopping"></i> Orders</a>
-      <a href="special-offers.html" class="active"><i class="fa-solid fa-tag"></i> Special Offers</a>
-      <a href="customers.html"><i class="fa-solid fa-users"></i> Customers</a>
-      <a href="reports.html"><i class="fa-solid fa-chart-line"></i> Reports</a>
-      <div class="divider"></div>
-      <a href="../index.html"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-    </nav>
-  </div>
-
-  <div class="admin-main">
-    <div class="admin-topbar">
-      <div>
-        <h1>Special Offers</h1>
-        <div class="admin-sub">Create and manage promotional offers and flash sales.</div>
-      </div>
-      <div class="admin-user"><div class="avatar">A</div> Admin</div>
+<main id="adm-main" class="adm-main">
+  <div class="adm-page-head">
+    <div>
+      <h1 id="page-title">Special offers</h1>
+      <p id="page-sub">Schedule sale prices. Only live offers appear on the store, and expired offers stop showing automatically.</p>
     </div>
-
-    <div class="summary-cards" id="offers-summary-cards"></div>
-
-    <div class="admin-toolbar">
-      <div></div>
-      <button class="btn btn-primary btn-sm" onclick="openOfferModal()"><i class="fa-solid fa-plus"></i>&nbsp; Create New Offer</button>
-    </div>
-
-    <div class="admin-table-wrap">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Product</th><th>Offer</th><th>Original Price</th><th>Sale Price</th>
-            <th>Discount</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Featured</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="offers-table-body"></tbody>
-      </table>
-    </div>
+    <div class="adm-page-actions" id="page-actions"></div>
   </div>
-</div>
-
-<!-- Create / Edit Offer Modal -->
-<div class="modal-overlay" id="offer-modal-overlay">
-  <div class="modal" style="max-width:560px;">
-    <button class="modal-close" onclick="closeOfferModal()"><i class="fa-solid fa-xmark"></i></button>
-    <h3 id="offer-modal-title">Create / Edit Special Offer</h3>
-    <form id="offer-form">
-      <div class="field">
-        <label>Offer Name</label>
-        <input type="text" name="otitle" placeholder="e.g. Flash Sale — Dior Sauvage" required>
-      </div>
-      <div class="field">
-        <label>Description</label>
-        <textarea name="odescription" rows="2" placeholder="Promotional description shown to customers"></textarea>
-      </div>
-      <div class="field">
-        <label>Select Product</label>
-        <select name="oproduct" id="offer-product-select" required></select>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Original Price</label>
-          <input type="number" name="ooriginal" min="0" step="0.01" required>
-        </div>
-        <div class="field">
-          <label>Sale Price</label>
-          <input type="number" name="osale" min="0" step="0.01" required>
-        </div>
-      </div>
-      <div class="field">
-        <label>Discount (auto-calculated)</label>
-        <input type="text" id="offer-discount-display" value="—" disabled>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Offer Type</label>
-          <select name="otype">
-            <option value="discount">Discount</option>
-            <option value="flash_sale">Flash Sale</option>
-            <option value="new_arrival">New Arrival</option>
-            <option value="bestseller">Bestseller</option>
-            <option value="limited">Limited Offer</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Badge</label>
-          <input type="text" name="obadge" placeholder="e.g. Flash Sale">
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Start Date &amp; Time</label>
-          <input type="datetime-local" name="ostart" required>
-        </div>
-        <div class="field">
-          <label>End Date &amp; Time</label>
-          <input type="datetime-local" name="oend" required>
-        </div>
-      </div>
-      <div class="field">
-        <label>Promotional Image Path <span style="text-transform:none; font-weight:400;">(optional — falls back to product image)</span></label>
-        <input type="text" name="oimage" placeholder="images/perfumes/your-file.jpg">
-      </div>
-      <div class="field-row">
-        <div class="field" style="display:flex; align-items:center; gap:10px; margin-top:22px;">
-          <input type="checkbox" name="oactive" id="offer-active-checkbox" style="width:auto;" checked>
-          <label for="offer-active-checkbox" style="margin:0;">Active</label>
-        </div>
-        <div class="field" style="display:flex; align-items:center; gap:10px; margin-top:22px;">
-          <input type="checkbox" name="ofeatured" id="offer-featured-checkbox" style="width:auto;">
-          <label for="offer-featured-checkbox" style="margin:0;">Featured Offer</label>
-        </div>
-      </div>
-      <div class="field">
-        <label>Display Order</label>
-        <input type="number" name="oorder" min="0" value="0">
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-outline" onclick="closeOfferModal()">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save Offer</button>
-      </div>
-    </form>
+  <div id="page-root" aria-live="polite" aria-busy="true">
+    <div class="adm-panel adm-panel-body"><span class="adm-skel adm-skel--lg"></span><br><span class="adm-skel"></span></div>
   </div>
-</div>
+</main>
 
 <script src="../js/main.js"></script>
 <script src="../js/toast.js"></script>
 <script src="../js/auth.js"></script>
-<script src="../js/admin.js"></script>
+<script src="../js/admin-core.js"></script>
 <script src="../js/admin-offers.js"></script>
 </body>
 </html>

@@ -35,33 +35,31 @@ function mnavBuildMarkup() {
         <div class="mnav-section">
           <div class="mnav-section-title">Shop</div>
           <a href="index.html" class="mnav-link" data-page="index.html"><i class="fa-solid fa-house"></i> Home</a>
-          <a href="products.html" class="mnav-link" data-page="products.html"><i class="fa-solid fa-flask"></i> Products</a>
-          <a href="products.html" class="mnav-link"><i class="fa-solid fa-border-all"></i> Categories</a>
-          <a href="special-offers.html" class="mnav-link" data-page="special-offers.html">
-            <i class="fa-solid fa-tag"></i> Special Offers
-            <span class="mnav-badge-new">New</span>
-          </a>
+          <a href="products.html" class="mnav-link" data-page="products.html"><i class="fa-solid fa-flask"></i> Shop All</a>
+          <a href="products.html?category=men" class="mnav-link"><i class="fa-solid fa-mars"></i> Men</a>
+          <a href="products.html?category=women" class="mnav-link"><i class="fa-solid fa-venus"></i> Women</a>
+          <a href="products.html?category=unisex" class="mnav-link"><i class="fa-solid fa-venus-mars"></i> Unisex</a>
+          <a href="special-offers.html" class="mnav-link" data-page="special-offers.html"><i class="fa-solid fa-tag"></i> Special Offers</a>
         </div>
 
         <div class="mnav-section">
-          <div class="mnav-section-title">About</div>
-          <a href="about.html" class="mnav-link" data-page="about.html"><i class="fa-regular fa-circle-info"></i> About Us</a>
+          <div class="mnav-section-title">Help</div>
+          <a href="about.html" class="mnav-link" data-page="about.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
           <a href="contact.html" class="mnav-link" data-page="contact.html"><i class="fa-solid fa-phone"></i> Contact Us</a>
+          <a href="track-order.html" class="mnav-link" data-page="track-order.html"><i class="fa-solid fa-truck-fast"></i> Track an Order</a>
           <a href="shipping.html" class="mnav-link" data-page="shipping.html"><i class="fa-solid fa-truck"></i> Shipping &amp; Delivery</a>
-          <a href="returns.html" class="mnav-link" data-page="returns.html"><i class="fa-regular fa-hand"></i> Returns &amp; Refunds</a>
-          <a href="faq.html" class="mnav-link" data-page="faq.html"><i class="fa-regular fa-circle-question"></i> FAQ</a>
+          <a href="returns.html" class="mnav-link" data-page="returns.html"><i class="fa-solid fa-rotate-left"></i> Returns &amp; Refunds</a>
+          <a href="FAQ.html" class="mnav-link" data-page="FAQ.html"><i class="fa-regular fa-circle-question"></i> FAQ</a>
         </div>
 
         <div class="mnav-section">
           <div class="mnav-section-title">Account</div>
-          <a href="my-account.html" class="mnav-link" data-page="my-account.html"><i class="fa-regular fa-user"></i> My Profile</a>
-          <a href="wishlist.html" class="mnav-link" data-page="wishlist.html">
+          <a href="my-account.html" class="mnav-link" data-page="my-account.html"><i class="fa-regular fa-user"></i> My Account</a>
+          <a href="my-account.html#wishlist" class="mnav-link" data-page="my-account.html#wishlist">
             <i class="fa-regular fa-heart"></i> Wishlist
             <span class="mnav-badge-count" id="mnav-wishlist-count" style="display:none;">0</span>
           </a>
-          <a href="my-orders.html" class="mnav-link" data-page="my-orders.html"><i class="fa-regular fa-clipboard"></i> My Orders</a>
-          <a href="cart.html" class="mnav-link"><i class="fa-solid fa-location-dot"></i> Addresses</a>
-          <a href="my-account.html" class="mnav-link"><i class="fa-solid fa-gear"></i> Account Settings</a>
+          <a href="my-account.html#orders" class="mnav-link" data-page="my-account.html#orders"><i class="fa-regular fa-clipboard"></i> My Orders</a>
           <button class="mnav-link mnav-logout" id="mnav-logout-btn" type="button">
             <i class="fa-solid fa-right-from-bracket"></i> Logout
           </button>
@@ -69,10 +67,8 @@ function mnavBuildMarkup() {
       </nav>
 
       <div class="mnav-trust">
-        <div class="mnav-trust-item"><i class="fa-solid fa-shield-halved"></i><div><strong>100% Authentic</strong><span>Premium fragrances</span></div></div>
-        <div class="mnav-trust-item"><i class="fa-solid fa-lock"></i><div><strong>Secure Payment</strong><span>Pay safely</span></div></div>
-        <div class="mnav-trust-item"><i class="fa-solid fa-truck-fast"></i><div><strong>Fast Delivery</strong><span>3–5 business days</span></div></div>
-        <div class="mnav-trust-item"><i class="fa-solid fa-rotate-left"></i><div><strong>Easy Returns</strong><span>14-day returns</span></div></div>
+        <div class="mnav-trust-item"><i class="fa-solid fa-lock"></i><div><strong>Secure checkout</strong><span>Payments processed by Paystack</span></div></div>
+        <div class="mnav-trust-item"><i class="fa-brands fa-whatsapp"></i><div><strong>Talk to us</strong><span>Call, email or WhatsApp</span></div></div>
       </div>
     </aside>
   `;
@@ -84,17 +80,19 @@ function mnavRenderProfile() {
   if (!el) return;
 
   const auth = (typeof getAuth === "function") ? getAuth() : null;
+  const logoutBtn = document.getElementById("mnav-logout-btn");
+  if (logoutBtn) logoutBtn.hidden = !(auth && auth.user);
 
   if (auth && auth.user) {
     const initial = (auth.user.full_name || "?").charAt(0).toUpperCase();
     const roleLabel = (auth.user.role || "customer").replace(/^\w/, c => c.toUpperCase());
     el.innerHTML = `
       <a href="my-account.html" class="mnav-profile-card">
-        <div class="mnav-avatar">${initial}</div>
+        <div class="mnav-avatar">${escapeHtml(initial)}</div>
         <div class="mnav-profile-info">
-          <strong>${auth.user.full_name}</strong>
-          <span>${auth.user.email}</span>
-          <span class="mnav-role-badge"><i class="fa-solid fa-crown"></i> ${roleLabel}</span>
+          <strong>${escapeHtml(auth.user.full_name)}</strong>
+          <span>${escapeHtml(auth.user.email)}</span>
+          <span class="mnav-role-badge"><i class="fa-solid fa-crown"></i> ${escapeHtml(roleLabel)}</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </a>`;

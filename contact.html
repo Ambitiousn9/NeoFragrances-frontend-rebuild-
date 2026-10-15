@@ -3,130 +3,142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact Us — NeoFragrances</title>
+<title>Contact &amp; Support — NeoFragrances</title>
+<meta name="description" content="Contact NeoFragrances by phone, email or WhatsApp for help with fragrances, orders and payments.">
 <link rel="icon" href="images/logo/logo.png" type="image/png">
-
-<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/pages.css">
 </head>
 <body>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
 
-<header class="site-header">
-  <div class="container navbar">
-    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    <li class="mobile-account-item"><a href="login.html"><i class="fa-regular fa-user"></i> &nbsp;Login / Register</a></li>
-      <li class="mobile-account-item"><a href="wishlist.html"><i class="fa-regular fa-heart"></i> &nbsp;Wishlist</a></li>
-      <li class="mobile-account-item"><a href="my-orders.html"><i class="fa-solid fa-receipt"></i> &nbsp;My Orders</a></li>
-    </ul>
-    <div class="nav-icons">
-      <a href="login.html" title="Login / Register" class="icon-secondary"><i class="fa-regular fa-user"></i></a>
-      <a href="wishlist.html" title="Wishlist" class="icon-secondary"><i class="fa-regular fa-heart"></i></a>
-      <a href="my-orders.html" title="My Orders" class="icon-secondary"><i class="fa-solid fa-receipt"></i></a>
-      <a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-      <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+<main id="main">
+
+  <section class="nf-page-hero nf-page-hero--plum nf-contact-hero">
+    <div class="container">
+      <span class="nf-eyebrow">Contact &amp; Support</span>
+      <h1>We're here to help.</h1>
+      <p>Questions about a fragrance, an order or a payment? Reach the NeoFragrances team directly — by WhatsApp, phone or email.</p>
     </div>
-  </div>
-</header>
+  </section>
 
-<section>
-  <div class="container">
-    <span class="eyebrow">Get in Touch</span>
-    <h1 class="section-title" data-aos="fade-up">Contact Us</h1>
-    <p class="section-sub">Questions about an order, a scent, or a bulk request? We'd love to hear from you.</p>
-
-    <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:50px; margin-top:20px;" class="cart-layout">
-      <form onsubmit="return false;">
-        <div class="field-row">
-          <div class="field"><label for="c-name">Full Name</label><input type="text" id="c-name" placeholder="Your name" required></div>
-          <div class="field"><label for="c-email">Email</label><input type="email" id="c-email" placeholder="you@example.com" required></div>
-        </div>
-        <div class="field"><label for="c-subject">Subject</label><input type="text" id="c-subject" placeholder="How can we help?"></div>
-        <div class="field"><label for="c-message">Message</label><textarea id="c-message" rows="5" placeholder="Write your message..." required></textarea></div>
-        <button type="submit" class="btn btn-primary">Send Message</button>
-      </form>
-
-      <div>
-        <div style="margin-bottom:24px;">
-          <div class="why-icon" style="margin-bottom:10px;"><i class="fa-solid fa-phone"></i></div>
-          <h4>Phone</h4>
-          <p style="color:var(--ink-soft); font-size:14px;">0597 015 869 / 0505 731 824</p>
-        </div>
-        <div style="margin-bottom:24px;">
-          <div class="why-icon" style="margin-bottom:10px;"><i class="fa-solid fa-envelope"></i></div>
-          <h4>Email</h4>
-          <p style="color:var(--ink-soft); font-size:14px;">hello@neofragrances.com</p>
-        </div>
-        <div style="margin-bottom:24px;">
-          <div class="why-icon" style="margin-bottom:10px;"><i class="fa-solid fa-location-dot"></i></div>
-          <h4>Store Location</h4>
-          <p style="color:var(--ink-soft); font-size:14px;">Accra, Ghana</p>
-        </div>
-        <div style="height:200px; border-radius:2px; border:1px solid var(--line); overflow:hidden;">
-<iframe
-  title="NeoFragrances location — Accra, Ghana"
-  src="https://maps.google.com/maps?q=Accra%2C%20Ghana&t=&z=12&ie=UTF8&iwloc=&output=embed"
-  width="100%" height="100%" style="border:0;" loading="lazy"
-  referrerpolicy="no-referrer-when-downgrade"></iframe>
-</div>
-
+  <!-- Contact channels -->
+  <section class="nf-section nf-section--tight nf-contact-channels" aria-labelledby="channels-title">
+    <div class="container">
+      <h2 id="channels-title" class="sr-only">Ways to reach us</h2>
+      <div class="nf-channel-grid">
+        <a class="nf-channel nf-channel--primary" data-contact="whatsapp" href="https://wa.me/233505731824?text=Hello%20NeoFragrances%2C%20I%20need%20some%20help." target="_blank" rel="noopener" data-reveal>
+          <span class="nf-channel-icon"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></span>
+          <span class="nf-channel-label">WhatsApp</span>
+          <span class="nf-channel-value">0505 731 824</span>
+          <span class="nf-channel-cta">Send a message <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </a>
+        <a class="nf-channel" data-contact="phone" href="tel:+233505731824" data-reveal data-reveal-delay="1">
+          <span class="nf-channel-icon"><i class="fa-solid fa-phone" aria-hidden="true"></i></span>
+          <span class="nf-channel-label">Call us</span>
+          <span class="nf-channel-value">0505 731 824</span>
+          <span class="nf-channel-cta">Call now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </a>
+        <a class="nf-channel" data-contact="email" href="mailto:Ambitiousn9@icloud.com" data-reveal data-reveal-delay="2">
+          <span class="nf-channel-icon"><i class="fa-regular fa-envelope" aria-hidden="true"></i></span>
+          <span class="nf-channel-label">Email</span>
+          <span class="nf-channel-value">Ambitiousn9@icloud.com</span>
+          <span class="nf-channel-cta">Write to us <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+        </a>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <a href="index.html" class="logo">Neo<span>Fragrances</span></a>
-      <p>Authentic luxury fragrances, from timeless classics to modern masterpieces.</p>
-      <div class="social-row">
-        <a href="#"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+  <!-- Order support guidance -->
+  <section class="nf-section nf-section--paper" aria-labelledby="order-help-title">
+    <div class="container nf-split">
+      <div data-reveal>
+        <span class="nf-eyebrow">Order Support</span>
+        <h2 id="order-help-title" class="nf-split-title">Help us help you faster.</h2>
+        <p class="nf-split-lede">A few details make it much quicker for us to find your order and sort things out.</p>
+        <div class="nf-split-actions">
+          <a href="track-order.html" class="btn btn-primary">Track an order</a>
+          <a href="my-account.html#orders" class="nf-text-link">View my orders <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <ol class="nf-steps">
+        <li data-reveal data-reveal-delay="1">
+          <span class="nf-steps-num">01</span>
+          <div><h3>Have your order number ready</h3><p>It's in your order confirmation email and listed under My Orders when you're signed in.</p></div>
+        </li>
+        <li data-reveal data-reveal-delay="2">
+          <span class="nf-steps-num">02</span>
+          <div><h3>Use the email on your account</h3><p>Order tracking and account help are matched to the email address you used to order.</p></div>
+        </li>
+        <li data-reveal data-reveal-delay="3">
+          <span class="nf-steps-num">03</span>
+          <div><h3>For payment questions, share your reference</h3><p>Payments are processed by Paystack. If you have the payment reference from your receipt, include it in your message.</p></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Help topics -->
+  <section class="nf-section" aria-labelledby="topics-title">
+    <div class="container nf-narrow">
+      <div class="nf-section-head nf-section-head--center" data-reveal>
+        <span class="nf-eyebrow">Common Questions</span>
+        <h2 id="topics-title">Quick answers</h2>
+      </div>
+      <div class="nf-accordion" data-reveal>
+        <details>
+          <summary>How do I track my order?</summary>
+          <div class="nf-accordion-body"><p>Use <a href="track-order.html">Track an Order</a> with your order number and the email you ordered with. If you're signed in, all your orders are listed under <a href="my-account.html#orders">My Orders</a>.</p></div>
+        </details>
+        <details>
+          <summary>I didn't receive my verification or password-reset email.</summary>
+          <div class="nf-accordion-body"><p>Check your spam or junk folder first. You can request a new verification link from the <a href="login.html">login page</a>, or a new reset link from <a href="forgot-password.html">Forgot Password</a>. Still nothing? Contact us and we'll help.</p></div>
+        </details>
+        <details>
+          <summary>How do I pay for my order?</summary>
+          <div class="nf-accordion-body"><p>Checkout is completed securely through Paystack. Once your payment is confirmed, your order appears under My Orders and a confirmation is sent to your email.</p></div>
+        </details>
+        <details>
+          <summary>Can you help me choose a fragrance?</summary>
+          <div class="nf-accordion-body"><p>Of course. Send us a message on <a data-contact="whatsapp" href="https://wa.me/233505731824?text=Hello%20NeoFragrances%2C%20I%20need%20some%20help." target="_blank" rel="noopener">WhatsApp</a> with the scents you usually enjoy, and we'll suggest options from the collection.</p></div>
+        </details>
+        <details>
+          <summary>Where can I find your shipping and returns information?</summary>
+          <div class="nf-accordion-body"><p>Our <a href="shipping.html">shipping</a> and <a href="returns.html">returns</a> pages are being prepared. Until they're published, please contact us before ordering if you have any questions about delivery or returns.</p></div>
+        </details>
       </div>
     </div>
-    <div class="footer-col">
-      <h5>Shop</h5>
-      <a href="products.html">All Products</a>
-      <a href="products.html?category=men">Men's</a>
-      <a href="products.html?category=women">Women's</a>
-    </div>
-    <div class="footer-col">
-      <h5>Company</h5>
-      <a href="about.html">About Us</a>
-      <a href="contact.html">Contact</a>
-      <a href="login.html">Login</a>
-      <a href="track-order.html">Track Order</a>
-    </div>
-    <div class="footer-col">
-      <h5>Contact</h5>
-      <a href="tel:0597015869">0597 015 869</a>
-      <a href="mailto:hello@neofragrances.com">hello@neofragrances.com</a>
-    </div>
-  </div>
-  <div class="container footer-bottom">
-    <span>&copy; 2026 NeoFragrances. All rights reserved.</span>
-    <span>We offer perfection in fragrances</span>
+  </section>
 
-  </div>
-</footer>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <section class="nf-final-band">
+    <div class="container nf-final-band-inner" data-reveal>
+      <h2>Prefer to browse first?</h2>
+      <a href="products.html" class="btn btn-light">Explore the collection</a>
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/toast.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/wishlist.js"></script>
-<script src="js/validation.js"></script>
-</body>
-
-  <link rel="stylesheet" href="css/mobile-drawer.css">
 <script src="js/mobile-drawer.js"></script>
-
 </body>
 </html>

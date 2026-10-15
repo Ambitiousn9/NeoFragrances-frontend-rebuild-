@@ -17,8 +17,10 @@ function showToast(message, type = "success") {
   toast.className = `toast toast-${type}`;
   toast.innerHTML = `
     <i class="fa-solid ${type === "success" ? "fa-circle-check" : "fa-circle-exclamation"}"></i>
-    <span>${message}</span>
+    <span></span>
   `;
+  // Messages can contain API data (product names, server errors) — set as text, never HTML.
+  toast.querySelector("span").textContent = message;
   container.appendChild(toast);
 
   requestAnimationFrame(() => toast.classList.add("show"));

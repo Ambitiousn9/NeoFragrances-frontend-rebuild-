@@ -3,30 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo/logo.png" type="image/png">
 <title>Register — NeoFragrances</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
 
-<header class="site-header">
-  <div class="container navbar">
-    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="nav-icons">
-      <a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-      <button class="nav-toggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-    </div>
-  </div>
-</header>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
 
 <div class="auth-wrap">
+  <div class="auth-container">
+    <a href="index.html" class="auth-back-link"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to store</a>
   <div class="auth-card">
     <h1>Create an Account</h1>
     <p class="sub">Join NeoFragrances for faster checkout and order tracking.</p>
@@ -34,57 +33,69 @@
     <form onsubmit="return false;">
       <div class="field">
         <label for="fullname">Full Name</label>
-        <input type="text" id="fullname" placeholder="Ama Owusu" required>
+        <input type="text" id="fullname" placeholder="Ama Owusu" autocomplete="name" required>
       </div>
       <div class="field">
         <label for="reg-email">Email</label>
-        <input type="email" id="reg-email" placeholder="you@example.com" required>
+        <input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email" required>
       </div>
       <div class="field">
         <label for="phone">Phone</label>
-        <input type="tel" id="phone" placeholder="+233 55 000 0000" required>
+        <input type="tel" id="phone" placeholder="+233 55 000 0000" autocomplete="tel" required>
       </div>
       <div class="field-row">
        <div class="field">
   <label for="reg-password">Password</label>
   <div class="auth-password-wrap">
-    <input type="password" id="reg-password" placeholder="••••••••" required>
+    <input type="password" id="reg-password" placeholder="••••••••" autocomplete="new-password" required aria-describedby="reg-password-hint">
     <button type="button" class="auth-toggle-pw" id="toggle-reg-pw" aria-label="Show password">Show</button>
   </div>
+  <p class="auth-field-hint" id="reg-password-hint">At least 6 characters.</p>
 </div>
 <div class="field">
   <label for="confirm-password">Confirm Password</label>
   <div class="auth-password-wrap">
-    <input type="password" id="confirm-password" placeholder="••••••••" required>
+    <input type="password" id="confirm-password" placeholder="••••••••" autocomplete="new-password" required>
     <button type="button" class="auth-toggle-pw" id="toggle-confirm-pw" aria-label="Show password">Show</button>
   </div>
 </div>
       </div>
-     <button type="submit" class="btn btn-primary btn-block" style="margin-top:10px;">Create Account</button>
+     <button type="submit" class="btn btn-primary btn-block btn-pill" style="margin-top:10px;">Create Account</button>
     </form>
 
-    <div class="auth-divider"><span>OR</span></div>
+    <!-- Google sign-in: hidden unless the server has GOOGLE_CLIENT_ID (see js/google-auth.js) -->
+    <div id="google-auth-block" hidden>
+      <div class="auth-divider"><span>OR</span></div>
 
-    <div class="google-btn-wrap">
-      <div id="google-signin-btn"></div>
+      <div class="google-btn-wrap">
+        <div id="google-signin-btn"></div>
+      </div>
+      <p id="google-signin-msg" class="google-signin-msg"></p>
+
+      <p class="auth-terms">
+        By continuing with Google you agree to our
+        <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.
+      </p>
     </div>
-    <p id="google-signin-msg" class="google-signin-msg"></p>
-
-    <p class="auth-terms">
-      By continuing with Google you agree to our
-      <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.
-    </p>
 
     <p class="auth-switch">Already have an account? <a href="login.html">Login</a></p>
   </div>
+  </div>
 </div>
+</main>
+
+<div id="site-footer"></div>
 
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/validation.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="js/google-auth.js"></script>
+<script src="js/mobile-drawer.js"></script>
 
   <script>
 ["reg-password", "confirm-password"].forEach(fieldId => {

@@ -3,162 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Cart — NeoFragrances</title>
+<link rel="icon" href="images/logo/logo.png" type="image/png">
+<title>Your Bag — NeoFragrances</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/mobile-drawer.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/cart.css">
 </head>
-<body>
+<body class="nf-checkout-page">
 
-<header class="site-header">
-  <div class="container navbar">
-    <a href="index.html" class="logo"><img src="images/logo/logo.png" alt="NeoFragrances" style="height:50px; width:auto;"></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="products.html">Categories</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li class="mobile-account-item"><a href="login.html"><i class="fa-regular fa-user"></i> &nbsp;Login / Register</a></li>
-      <li class="mobile-account-item"><a href="wishlist.html"><i class="fa-regular fa-heart"></i> &nbsp;Wishlist</a></li>
-      <li class="mobile-account-item"><a href="my-orders.html"><i class="fa-solid fa-receipt"></i> &nbsp;My Orders</a></li>
-    </ul>
-    <div class="nav-icons">
-      <a href="login.html" title="Login / Register" class="icon-secondary"><i class="fa-regular fa-user"></i></a>
-      <a href="wishlist.html" title="Wishlist" class="icon-secondary"><i class="fa-regular fa-heart"></i></a>
-      <a href="my-orders.html" title="My Orders" class="icon-secondary"><i class="fa-solid fa-receipt"></i></a>
-      <a href="cart.html" title="Cart"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count">0</span></a>
-      <button class="nav-toggle" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
-    </div>
-  </div>
-</header>
+<div id="site-header"></div>
+<script src="js/layout.js"></script>
+<main id="main">
 
-<section>
-  <div class="container">
-    <div class="cart-page-header">
-      <span class="eyebrow">Cart</span>
-      <h1 class="section-title">Your Shopping Cart</h1>
-      <p class="section-sub">Review your items and proceed to checkout.</p>
-    </div>
-
-    <div class="cart-layout mt-lg">
-      <div id="cart-list" aria-live="polite"></div>
-
-      <div>
-        <div class="section-card" id="address-section">
-          <div class="section-card-header">
-            <h3 class="section-card-title"><i class="fa-solid fa-location-dot"></i> Shipping Address</h3>
-          </div>
-          <div id="address-list" role="radiogroup" aria-label="Choose a shipping address"></div>
-          <button class="btn btn-outline btn-add-address" id="add-address-btn" type="button">
-            <i class="fa-solid fa-plus"></i>&nbsp; Add New Address
-          </button>
-          <div id="address-form-wrap" class="hidden" style="margin-top:16px;"></div>
-        </div>
-
-        <div class="section-card">
-          <div class="section-card-header">
-            <h3 class="section-card-title"><i class="fa-solid fa-tag"></i> Have a promo code?</h3>
-          </div>
-          <div class="promo-input-row">
-            <label for="coupon-input" class="sr-only">Promo code</label>
-            <input type="text" id="coupon-input" placeholder="Enter promo code" aria-describedby="coupon-msg">
-            <button class="btn btn-primary btn-sm" id="apply-coupon-btn" type="button">Apply</button>
-          </div>
-          <p id="coupon-msg" style="font-size:12px; margin-top:8px; min-height:16px;" aria-live="polite"></p>
-          <div id="promo-applied-wrap"></div>
-        </div>
-
-        <div class="order-summary-card">
-          <h3 class="order-summary-title">Order Summary</h3>
-          <div class="summary-row-v2"><span>Subtotal</span><span id="summary-subtotal">$0.00</span></div>
-          <div class="summary-row-v2 discount" id="summary-discount-row" style="display:none;"><span id="summary-discount-label">Discount</span><span id="summary-discount">-$0.00</span></div>
-          <div class="summary-row-v2"><span>Shipping</span><span id="summary-shipping">—</span></div>
-
-          <div class="summary-total-v2">
-            <span class="label">Total</span>
-            <span class="amount" id="summary-total">$0.00</span>
-          </div>
-          <div class="summary-saved" id="summary-saved" style="display:none;"></div>
-
-          <div class="delivery-note">
-            <i class="fa-solid fa-truck-fast"></i>
-            <span>Estimated delivery: 2–4 business days, as stated at checkout.</span>
-          </div>
-
-          <button class="btn btn-primary checkout-cta" id="checkout-btn" type="button">
-            <i class="fa-solid fa-lock"></i> Proceed to Checkout
-          </button>
-
-          <div class="trust-row-cart">
-            <div class="trust-mini"><i class="fa-solid fa-shield-halved"></i><strong>Authentic</strong>Fragrances</div>
-            <div class="trust-mini"><i class="fa-solid fa-lock"></i><strong>Secure</strong>Checkout</div>
-            <div class="trust-mini"><i class="fa-solid fa-truck"></i><strong>Order</strong>Tracking</div>
-            <div class="trust-mini"><i class="fa-solid fa-credit-card"></i><strong>Secure Payment</strong>via Paystack</div>
-          </div>
-        </div>
-
-        <p class="trust-footer-line"><i class="fa-solid fa-circle-check"></i>100% authentic &nbsp;·&nbsp; Original brands &nbsp;·&nbsp; Secure shopping</p>
+  <section class="nf-checkout-head">
+    <div class="container">
+      <nav class="nf-breadcrumb" aria-label="Breadcrumb">
+        <ol><li><a href="index.html">Home</a></li><li><a href="products.html">Shop</a></li><li aria-current="page">Bag</li></ol>
+      </nav>
+      <div class="nf-checkout-titlebar">
+        <h1>Your bag <span class="nf-checkout-count" id="bag-count"></span></h1>
+        <ol class="nf-steps-bar" id="steps-bar" aria-label="Checkout progress">
+          <li data-step="bag"><span>1</span>Bag</li>
+          <li data-step="delivery"><span>2</span>Delivery</li>
+          <li data-step="payment"><span>3</span>Payment</li>
+        </ol>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<div class="cart-sticky-bar" id="cart-sticky-bar">
-  <div class="sticky-total">
-    <span>Total</span>
-    <span id="sticky-total-amount" style="font-size:16px; color:var(--ink);">$0.00</span>
+  <div class="container nf-checkout-layout" id="checkout-layout">
+    <div class="nf-checkout-main">
+
+      <!-- 1. Bag -->
+      <section class="nf-panel" id="bag-panel" aria-labelledby="bag-title">
+        <header class="nf-panel-head">
+          <h2 id="bag-title"><span class="nf-step-num" aria-hidden="true">1</span> Your items</h2>
+          <a href="products.html" class="nf-text-link nf-panel-link">Continue shopping <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </header>
+        <div id="cart-list" class="nf-lines" role="list" aria-describedby="bag-title">
+          <div class="nf-line nf-line--skeleton" aria-hidden="true"><span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span></div>
+          <div class="nf-line nf-line--skeleton" aria-hidden="true"><span class="skeleton-shimmer"></span><span class="skeleton-shimmer"></span></div>
+        </div>
+      </section>
+
+      <!-- 2. Delivery -->
+      <section class="nf-panel" id="delivery-panel" aria-labelledby="delivery-title">
+        <header class="nf-panel-head">
+          <h2 id="delivery-title"><span class="nf-step-num" aria-hidden="true">2</span> Delivery address</h2>
+        </header>
+        <div id="delivery-body" aria-live="polite"></div>
+      </section>
+
+      <!-- 3. Payment -->
+      <section class="nf-panel" id="payment-panel" aria-labelledby="payment-title">
+        <header class="nf-panel-head">
+          <h2 id="payment-title"><span class="nf-step-num" aria-hidden="true">3</span> Payment</h2>
+        </header>
+        <div class="nf-pay-method" role="radiogroup" aria-labelledby="payment-title">
+          <label class="nf-pay-option is-selected">
+            <input type="radio" name="payment-method" value="paystack" checked>
+            <span class="nf-pay-option-icon" aria-hidden="true"><i class="fa-solid fa-lock"></i></span>
+            <span class="nf-pay-option-text">
+              <strong>Pay securely with Paystack</strong>
+              <span>After you select Pay, you'll be taken to Paystack's secure checkout to complete your payment, then brought back here to confirm your order.</span>
+            </span>
+          </label>
+        </div>
+      </section>
+    </div>
+
+    <!-- Order summary (server-priced) -->
+    <aside class="nf-summary" id="order-summary" aria-labelledby="summary-title">
+      <div class="nf-summary-card">
+        <h2 id="summary-title">Order summary</h2>
+
+        <details class="nf-promo" id="promo">
+          <summary>Have a promo code?</summary>
+          <div class="nf-promo-body">
+            <div class="nf-promo-row">
+              <label for="coupon-input" class="sr-only">Promo code</label>
+              <input type="text" id="coupon-input" placeholder="Enter code" autocomplete="off" autocapitalize="characters" maxlength="50" aria-describedby="coupon-msg">
+              <button class="btn btn-outline btn-sm" id="apply-coupon-btn" type="button">Apply</button>
+            </div>
+            <p class="nf-promo-msg" id="coupon-msg" role="status"></p>
+          </div>
+        </details>
+        <div class="nf-promo-applied" id="promo-applied" hidden></div>
+
+        <dl class="nf-totals" id="totals">
+          <div><dt>Subtotal</dt><dd id="summary-subtotal">—</dd></div>
+          <div class="nf-totals-saving" id="summary-offer-row" hidden><dt>Offer savings</dt><dd id="summary-offer-savings"></dd></div>
+          <div class="nf-totals-saving" id="summary-discount-row" hidden><dt id="summary-discount-label">Promo code</dt><dd id="summary-discount"></dd></div>
+          <div><dt>Shipping</dt><dd id="summary-shipping">—</dd></div>
+          <div class="nf-totals-total"><dt>Total</dt><dd id="summary-total">—</dd></div>
+        </dl>
+        <p class="nf-summary-note" id="summary-note" aria-live="polite"></p>
+
+        <div class="nf-summary-alert" id="summary-alert" role="alert" hidden></div>
+
+        <button class="btn btn-primary nf-pay-btn" id="checkout-btn" type="button" disabled>
+          <i class="fa-solid fa-lock" aria-hidden="true"></i> <span id="checkout-btn-label">Pay securely</span>
+        </button>
+        <p class="nf-pay-hint" id="pay-hint"></p>
+
+        <ul class="nf-summary-assurance">
+          <li><i class="fa-solid fa-lock" aria-hidden="true"></i> Payments processed by Paystack</li>
+          <li><i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i> Track your order after purchase</li>
+          <li><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Questions? <a href="contact.html">Contact us</a></li>
+        </ul>
+      </div>
+    </aside>
   </div>
-  <button class="btn btn-primary" id="sticky-checkout-btn" type="button">Checkout</button>
+
+  <!-- Empty bag (shown instead of the checkout layout) -->
+  <section class="container nf-bag-empty" id="bag-empty" hidden>
+    <div class="nf-bag-empty-inner">
+      <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+      <h2>Your bag is empty</h2>
+      <p>Discover a fragrance you'll love — every product shows real stock and price before you add it.</p>
+      <div class="nf-bag-empty-actions">
+        <a href="products.html" class="btn btn-primary">Shop fragrances</a>
+        <a href="special-offers.html" class="btn btn-outline">See offers</a>
+      </div>
+    </div>
+    <div class="nf-bag-suggest" id="bag-suggest" hidden>
+      <h3>Popular right now</h3>
+      <div class="product-grid" id="bag-suggest-grid"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Mobile pay bar -->
+<div class="nf-paybar" id="paybar" hidden>
+  <div class="nf-paybar-total"><span>Total</span><strong id="paybar-total">—</strong></div>
+  <button class="btn btn-primary" id="sticky-checkout-btn" type="button" disabled><i class="fa-solid fa-lock" aria-hidden="true"></i> <span id="paybar-label">Pay</span></button>
 </div>
 
-<footer class="site-footer">
-  <div class="container footer-grid">
-    <div>
-      <a href="index.html" class="logo">Neo<span>Fragrances</span></a>
-      <p>Authentic luxury fragrances, from timeless classics to modern masterpieces.</p>
-      <div class="social-row">
-        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h5>Shop</h5>
-      <a href="products.html">All Products</a>
-      <a href="products.html?category=men">Men's</a>
-      <a href="products.html?category=women">Women's</a>
-    </div>
-    <div class="footer-col">
-      <h5>Company</h5>
-      <a href="about.html">About Us</a>
-      <a href="contact.html">Contact</a>
-      <a href="login.html">Login</a>
-      <a href="track-order.html">Track Order</a>
-    </div>
-    <div class="footer-col">
-      <h5>Contact</h5>
-      <a href="tel:0597015869">0597 015 869</a>
-      <a href="mailto:hello@neofragrances.com">Somuahdenix@gmail.com</a>
-    </div>
+<!-- Redirect overlay -->
+<div class="nf-redirect" id="redirect-overlay" role="dialog" aria-modal="true" aria-labelledby="redirect-title" hidden>
+  <div class="nf-redirect-card">
+    <span class="nf-spinner" aria-hidden="true"></span>
+    <h2 id="redirect-title">Taking you to Paystack…</h2>
+    <p id="redirect-text">You'll complete your payment on Paystack's secure page.</p>
   </div>
-  <div class="container footer-bottom">
-    <span>&copy; 2026 NeoFragrances. All rights reserved.</span>
-    <span>We offer perfection in fragrances</span>
-  </div>
-</footer>
+</div>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<div id="site-footer"></div>
+
 <script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/search-suggest.js"></script>
+<script src="js/motion.js"></script>
 <script src="js/toast.js"></script>
 <script src="js/cart.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/wishlist.js"></script>
-<script src="js/checkout.js"></script>
-  <link rel="stylesheet" href="css/mobile-drawer.css">
+<script src="js/cart-page.js"></script>
 <script src="js/mobile-drawer.js"></script>
-
 </body>
 </html>

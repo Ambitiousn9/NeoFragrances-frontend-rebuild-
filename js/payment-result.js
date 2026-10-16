@@ -7,6 +7,17 @@
    ============================================ */
 
 const PAYRES_MAX_BUSY_RETRIES = 4;
+// A pending payment (e.g. Mobile Money awaiting approval) is re-checked automatically
+// at most this many times, after these delays; after that only the customer's own
+// "Check again" button asks the server again. Never an open-ended polling loop.
+const PAYRES_PENDING_AUTO_DELAYS_MS = [5000, 10000, 20000];
+let payResAutoChecks = 0;
+let payResTimer = null;
+
+function payResSchedule(fn, ms) {
+  clearTimeout(payResTimer);
+  payResTimer = setTimeout(fn, ms);
+}
 
 function payResCard(html, busy = false) {
   const card = document.getElementById("callback-content");
@@ -56,16 +67,63 @@ function payResSuccess(data) {
     </div>`);
 }
 
-function payResNotCompleted() {
+// Shown only for a DEFINITIVE unsuccessful state reported by Paystack
+// (PAYMENT_NOT_SUCCESSFUL), never for a timeout, an error or a pending payment.
+function payResNotCompleted(reference) {
   document.title = "Payment Not Completed — NeoFragrances";
   payResCard(`
     <span class="nf-result-icon nf-result-icon--warn" aria-hidden="true"><i class="fa-solid fa-xmark"></i></span>
     <h1>Your payment wasn't completed</h1>
     <p>No order was placed. Your bag is still saved, so you can review it and try again whenever you're ready.</p>
+    <p class="nf-result-small">If money did leave your account for this payment, please contact us with the reference below before paying again.</p>
+    ${payResReferenceBlock(reference)}
     <div class="nf-result-actions">
       <a href="cart.html" class="btn btn-primary">Return to your bag</a>
       <a href="contact.html" class="btn btn-outline">Get help</a>
     </div>`);
+}
+
+// Paystack reports the payment as still in progress. Nothing is confirmed, nothing
+// is cleared, and the customer is told not to pay again.
+function payResPending(reference) {
+  document.title = "Payment Being Confirmed — NeoFragrances";
+  const autoLeft = payResAutoChecks < PAYRES_PENDING_AUTO_DELAYS_MS.length;
+  payResCard(`
+    <span class="nf-result-icon" aria-hidden="true"><i class="fa-solid fa-hourglass-half"></i></span>
+    <h1>Your payment is still being confirmed</h1>
+    <p>Paystack hasn't confirmed this payment yet. If you're paying with Mobile Money, approve the prompt on your phone.</p>
+    <p><strong>Please don't pay again.</strong> ${autoLeft ? "We'll check again automatically in a few seconds." : "Use the button below to check again."}</p>
+    ${payResReferenceBlock(reference)}
+    <div class="nf-result-actions">
+      <button type="button" class="btn btn-primary" id="check-again">Check again</button>
+    </div>
+    <p class="nf-result-small">If it stays like this, contact us with the reference above — don't start a new payment.</p>
+    ${payResHelpLinks(reference)}`);
+  document.getElementById("check-again").addEventListener("click", () => { clearTimeout(payResTimer); verifyPayment(reference, 0); });
+  if (autoLeft) {
+    const delay = PAYRES_PENDING_AUTO_DELAYS_MS[payResAutoChecks];
+    payResAutoChecks++;
+    payResSchedule(() => verifyPayment(reference, 0), delay);
+  }
+}
+
+// The outcome could not be established (Paystack unreachable or timing out, the
+// server busy for too long, or the order could not be written yet). The payment may
+// well have succeeded, so the customer is never told that no order exists or
+// invited to pay again — only to check again or contact us.
+function payResUnconfirmed(message, reference) {
+  document.title = "Payment Not Yet Confirmed — NeoFragrances";
+  payResCard(`
+    <span class="nf-result-icon nf-result-icon--warn" aria-hidden="true"><i class="fa-solid fa-circle-exclamation"></i></span>
+    <h1>We couldn't confirm your payment yet</h1>
+    <p>${escapeHtml(message || "We couldn't confirm your payment right now.")}</p>
+    <p><strong>Please don't pay again.</strong> Your payment may already have gone through.</p>
+    ${payResReferenceBlock(reference)}
+    <div class="nf-result-actions">
+      <button type="button" class="btn btn-primary" id="retry-verify">Check again</button>
+    </div>
+    ${payResHelpLinks(reference)}`);
+  document.getElementById("retry-verify").addEventListener("click", () => { clearTimeout(payResTimer); verifyPayment(reference, 0); });
 }
 
 function payResNeedsHelp(message, reference) {
@@ -138,15 +196,24 @@ async function verifyPayment(reference, attempt) {
     return;
   }
 
-  if (res.ok) { payResSuccess(data); return; }
+  // Success only when the server returns the order it created (201) or found (200).
+  // This is the ONLY path that clears the bag.
+  if ((res.status === 200 || res.status === 201) && data && data.orderId) { payResSuccess(data); return; }
+  if (res.status === 202 || data.code === "PAYMENT_PENDING") { payResPending(reference); return; }
   if (res.status === 401) { clearAuth(); payResLogin(reference); return; }
   if (res.status === 403) { payResWrongAccount(reference); return; }
   if (data.code === "VERIFY_BUSY" && attempt < PAYRES_MAX_BUSY_RETRIES) {
-    setTimeout(() => verifyPayment(reference, attempt + 1), 1500);
+    payResSchedule(() => verifyPayment(reference, attempt + 1), 1500);
     return;
   }
-  if (data.code === "PAYMENT_NOT_SUCCESSFUL") { payResNotCompleted(); return; }
+  if (data.code === "PAYMENT_NOT_SUCCESSFUL") { payResNotCompleted(reference); return; }
   if (data.code === "INVALID_REFERENCE") { payResNeedsHelp("This payment link isn't valid.", reference); return; }
+  if (["PAYMENT_VERIFY_UNAVAILABLE", "VERIFY_BUSY", "SETTLEMENT_ERROR"].includes(data.code) || (res.status >= 500 && !data.code)) {
+    payResUnconfirmed(data.error, data.reference || reference);
+    return;
+  }
+  // Verified but blocked (sold out after payment, amount/snapshot mismatch, coupon
+  // used up, …): the payment exists but no order was created. Never a success.
   payResNeedsHelp(data.error, data.reference || reference);
 }
 

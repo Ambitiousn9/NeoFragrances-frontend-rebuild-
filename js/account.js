@@ -367,7 +367,11 @@ async function wishlistAction(action, productId) {
   try {
     if (action === "move-to-bag") {
       const offer = typeof ACTIVE_OFFER_BY_PRODUCT !== "undefined" ? ACTIVE_OFFER_BY_PRODUCT[p.id] : null;
-      addToCart(p.id, 1, offer ? offer.id : null);
+      // Not saved to the bag: keep it in the wishlist (no DELETE) and say so.
+      if (!addToCart(p.id, 1, offer ? offer.id : null)) {
+        if (typeof showToast === "function") showToast(CART_SAVE_ERROR, "error");
+        return;
+      }
     }
     const res = await nfAuthFetch(`/api/wishlist/${productId}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Could not update your wishlist.");

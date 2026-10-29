@@ -540,7 +540,11 @@ function bindCheckoutEvents() {
     if (btn.dataset.action === "undo" && checkout.removed) {
       const r = checkout.removed;
       checkout.removed = null;
-      addToCart(r.id, r.qty, r.offerId);
+      // Not saved: keep the undo available so the shopper can try again.
+      if (!addToCart(r.id, r.qty, r.offerId)) {
+        checkout.removed = r;
+        if (typeof showToast === "function") showToast(CART_SAVE_ERROR, "error");
+      }
       return;
     }
     const row = btn.closest(".nf-line");

@@ -81,7 +81,7 @@ document.addEventListener("productsReady", async (e) => {
         <h2>Product not found</h2>
         <p>This fragrance isn't available — it may have been removed, or the link may be incomplete.</p>
         <div class="nf-empty-actions">
-          <a class="btn btn-primary btn-sm" href="products.html">Browse all fragrances</a>
+          <a class="btn btn-primary btn-sm nf-btn-pill" href="products.html">Browse all fragrances</a>
           <a class="btn btn-outline btn-sm" href="index.html">Go to homepage</a>
         </div>
       </div>`;
@@ -231,10 +231,11 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
     document.getElementById("sticky-price").textContent = money(activeOffer ? activeOffer.sale_price : p.price);
   document.getElementById("sticky-add-cart").disabled = !p.stock;
   document.getElementById("sticky-add-cart").addEventListener("click", () => {
-    addToCart(p.id, qty, activeOffer ? activeOffer.id : null);
-    const stickyBtn = document.getElementById("sticky-add-cart");
-    stickyBtn.innerHTML = "Added ✓";
-    setTimeout(() => (stickyBtn.innerHTML = `<i class="fa-solid fa-bag-shopping"></i>&nbsp; Add to Cart`), 1200);
+    if (!addToCart(p.id, qty, activeOffer ? activeOffer.id : null)) {
+      if (typeof showToast === "function") showToast(CART_SAVE_ERROR, "error");
+      return;
+    }
+    showAddedState(document.getElementById("sticky-add-cart"), `<i class="fa-solid fa-bag-shopping"></i>&nbsp; Add to Cart`);
     if (typeof showToast === "function") showToast("Added to cart");
   });
   window.addEventListener("scroll", () => {
@@ -252,9 +253,12 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
     qty = Math.max(1, qty - 1); document.getElementById("qty-value").textContent = qty;
   });
     document.getElementById("pd-add-cart").addEventListener("click", (e) => {
-  addToCart(p.id, qty, activeOffer ? activeOffer.id : null);
-  e.target.textContent = "Added ✓";
-  setTimeout(() => (e.target.innerHTML = `<i class="fa-solid fa-bag-shopping"></i>&nbsp; Add to Cart`), 1200);
+  if (!addToCart(p.id, qty, activeOffer ? activeOffer.id : null)) {
+    if (typeof showToast === "function") showToast(CART_SAVE_ERROR, "error");
+    return;
+  }
+  // currentTarget: the button itself, even when the click landed on its icon.
+  showAddedState(e.currentTarget, `<i class="fa-solid fa-bag-shopping"></i>&nbsp; Add to Cart`);
   if (typeof showToast === "function") showToast("Added to cart");
 });
 

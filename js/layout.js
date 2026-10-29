@@ -96,48 +96,82 @@ function nfHeaderHTML() {
 
 function nfFooterHTML() {
   const year = new Date().getFullYear();
+  const newTab = `<span class="sr-only"> (opens in a new tab)</span>`;
+  const links = (items) => items.map(([href, label]) => `<li><a href="${href}">${label}</a></li>`).join("");
+  const shop = [
+    ["products.html", "All Fragrances"],
+    ["products.html?category=men", "Men"],
+    ["products.html?category=women", "Women"],
+    ["products.html?category=unisex", "Unisex"],
+    ["special-offers.html", "Special Offers"],
+  ];
+  const care = [
+    ["contact.html", "Contact Us"],
+    ["track-order.html", "Track an Order"],
+    ["shipping.html", "Shipping &amp; Delivery"],
+    ["returns.html", "Returns &amp; Refunds"],
+    ["FAQ.html", "FAQ"],
+  ];
+  const account = [
+    ["my-account.html", "My Account"],
+    ["my-account.html#orders", "My Orders"],
+    ["my-account.html#wishlist", "Wishlist"],
+    ["cart.html", "Cart"],
+  ];
+  const legal = [
+    ["about.html", "About Us"],
+    ["privacy.html", "Privacy Policy"],
+    ["terms.html", "Terms of Service"],
+  ];
+
+  // There is no newsletter backend, so the "stay informed" invitation is a WhatsApp message
+  // to the confirmed business number — no form, no stored email, no pretend subscription.
   return `
   <footer class="site-footer nf-footer">
-    <div class="container nf-footer-grid">
+    <div class="container nf-footer-main">
       <div class="nf-footer-brand">
-        <a href="index.html" class="nf-wordmark" aria-label="NeoFragrances home"><span class="nf-wordmark-neo">Neo</span><span class="nf-wordmark-rest">Fragrances</span></a>
-        <p>Fragrances from the houses you love, curated in one place.</p>
-        <a class="nf-footer-wa" href="${nfWhatsAppLink("Hello NeoFragrances, I have a question.")}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Chat on WhatsApp</a>
+        <a href="index.html" class="nf-wordmark nf-wordmark--footer" aria-label="NeoFragrances home"><span class="nf-wordmark-neo">Neo</span><span class="nf-wordmark-rest">Fragrances</span></a>
+        <p class="nf-footer-statement">Fragrance as signature — designer icons and Arabian perfumery, chosen for who you are.</p>
       </div>
-      <div class="nf-footer-col">
-        <h2 class="nf-footer-title">Shop</h2>
-        <a href="products.html">All Fragrances</a>
-        <a href="products.html?category=men">Men</a>
-        <a href="products.html?category=women">Women</a>
-        <a href="products.html?category=unisex">Unisex</a>
-        <a href="special-offers.html">Special Offers</a>
-      </div>
-      <div class="nf-footer-col">
-        <h2 class="nf-footer-title">Help</h2>
-        <a href="contact.html">Contact Us</a>
-        <a href="track-order.html">Track an Order</a>
-        <a href="shipping.html">Shipping &amp; Delivery</a>
-        <a href="returns.html">Returns &amp; Refunds</a>
-        <a href="FAQ.html">FAQ</a>
-      </div>
-      <div class="nf-footer-col">
-        <h2 class="nf-footer-title">Account</h2>
-        <a href="my-account.html">My Account</a>
-        <a href="my-account.html#orders">My Orders</a>
-        <a href="my-account.html#wishlist">Wishlist</a>
-        <a href="cart.html">Cart</a>
-      </div>
-      <div class="nf-footer-col">
-        <h2 class="nf-footer-title">Contact</h2>
-        <a href="${NF_CONTACT.phoneHref}"><i class="fa-solid fa-phone" aria-hidden="true"></i> ${NF_CONTACT.phoneDisplay}</a>
-        <a href="mailto:${NF_CONTACT.email}"><i class="fa-regular fa-envelope" aria-hidden="true"></i> ${NF_CONTACT.email}</a>
-        <a href="${nfWhatsAppLink()}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> WhatsApp</a>
+
+      <section class="nf-footer-updates" aria-labelledby="nf-footer-updates-title">
+        <span class="nf-footer-kicker">Stay in the know</span>
+        <h2 class="nf-footer-updates-title" id="nf-footer-updates-title">New arrivals, first.</h2>
+        <p>Hear about new fragrances, launches and special offers — straight to your WhatsApp.</p>
+        <a class="nf-footer-wa-cta" href="${nfWhatsAppLink("Hello NeoFragrances, please let me know about new arrivals and special offers.")}" target="_blank" rel="noopener">
+          <i class="fa-brands fa-whatsapp" aria-hidden="true"></i><span>Get updates on WhatsApp</span><i class="fa-solid fa-arrow-right nf-footer-wa-arrow" aria-hidden="true"></i>${newTab}
+        </a>
+      </section>
+
+      <nav class="nf-footer-nav" aria-label="Footer">
+        <div class="nf-footer-group nf-footer-group--shop">
+          <h2 class="nf-footer-title" id="nf-footer-shop">Shop</h2>
+          <ul class="nf-footer-pills" aria-labelledby="nf-footer-shop">${shop.map(([href, label]) => `<li><a class="nf-pill nf-pill--dark" href="${href}">${label}</a></li>`).join("")}</ul>
+        </div>
+        <div class="nf-footer-group">
+          <h2 class="nf-footer-title" id="nf-footer-care">Customer Care</h2>
+          <ul class="nf-footer-links" aria-labelledby="nf-footer-care">${links(care)}</ul>
+        </div>
+        <div class="nf-footer-group">
+          <h2 class="nf-footer-title" id="nf-footer-account">Account</h2>
+          <ul class="nf-footer-links" aria-labelledby="nf-footer-account">${links(account)}</ul>
+        </div>
+      </nav>
+
+      <div class="nf-footer-contact">
+        <h2 class="nf-footer-title">Talk to us</h2>
+        <a class="nf-footer-wa" href="${nfWhatsAppLink("Hello NeoFragrances, I have a question.")}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Chat on WhatsApp${newTab}</a>
+        <ul class="nf-footer-contact-list">
+          <li><a href="${NF_CONTACT.phoneHref}"><i class="fa-solid fa-phone" aria-hidden="true"></i><span class="sr-only">Phone: </span>${NF_CONTACT.phoneDisplay}</a></li>
+          <li><a href="mailto:${NF_CONTACT.email}"><i class="fa-regular fa-envelope" aria-hidden="true"></i><span class="sr-only">Email: </span>${NF_CONTACT.email}</a></li>
+        </ul>
       </div>
     </div>
+
     <div class="container nf-footer-bottom">
-      <span>&copy; ${year} NeoFragrances. All rights reserved.</span>
-      <span class="nf-footer-legal"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></span>
-      <span class="nf-footer-pay"><i class="fa-solid fa-lock" aria-hidden="true"></i> Payments processed by Paystack</span>
+      <p class="nf-footer-copy">&copy; ${year} NeoFragrances. All rights reserved.</p>
+      <ul class="nf-footer-legal" aria-label="Company and legal">${links(legal)}</ul>
+      <p class="nf-footer-pay"><i class="fa-solid fa-lock" aria-hidden="true"></i> Payments processed by Paystack</p>
     </div>
   </footer>`;
 }

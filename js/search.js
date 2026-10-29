@@ -66,6 +66,14 @@ function syncControls() {
   if (shop.sort) shop.sort.value = SHOP_STATE.sort;
 }
 
+// Collection pills: the pill for the current category reads as the current page.
+function syncCollectionPills(category) {
+  document.querySelectorAll("#collection-pills a[data-category]").forEach(a => {
+    if (a.dataset.category === (category || "")) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
+}
+
 /* ---------- headings ---------- */
 function shopHeading(state) {
   const catLabel = NFCatalog.categoryLabel(state.category);
@@ -293,6 +301,7 @@ function renderShop() {
     history.replaceState(null, "", `${window.location.pathname}${NFCatalog.serializeState(SHOP_STATE)}`);
   }
   renderHeading(result);
+  syncCollectionPills(SHOP_STATE.category);
   renderFilters(result);
   renderChips();
   renderGrid(result);
@@ -410,6 +419,16 @@ function bindShopEvents() {
     if (e.target.closest("#brands-more")) { shopBrandsExpanded = !shopBrandsExpanded; renderFilters(NFCatalog.query(PRODUCTS, SHOP_STATE)); document.getElementById("brands-more")?.focus(); }
   });
 
+  // Collection pills apply the category in place, the same way the Category filter does.
+  // Modified clicks (new tab/window) and Special Offers (no data-category) follow the link.
+  document.getElementById("collection-pills")?.addEventListener("click", (e) => {
+    const pill = e.target.closest("a[data-category]");
+    if (!pill || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    setShopState({ category: pill.dataset.category, page: 1 });
+    syncControls();
+  });
+
   const clearAll = () => { shopBrandFilterText = ""; setShopState({ ...NFCatalog.DEFAULT_STATE, brands: [], sort: SHOP_STATE.sort }); syncControls(); };
   document.getElementById("filters-clear").addEventListener("click", clearAll);
   document.getElementById("filters-apply").addEventListener("click", () => { closeFilterDrawer(); scrollToResults(); });
@@ -464,6 +483,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Pre-fill the search box from the URL so it doesn't flash empty while loading.
   const q = new URLSearchParams(window.location.search).get("q");
   if (q) shop.search.value = q;
+  // Mark the pill from the URL straight away; renderShop() keeps it in step afterwards.
+  syncCollectionPills(new URLSearchParams(window.location.search).get("category") || "");
   nfLoadActiveOffers(); // in parallel with the product request
 });
 

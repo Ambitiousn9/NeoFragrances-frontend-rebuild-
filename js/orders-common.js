@@ -114,15 +114,18 @@ function orderHistoryListHTML(history) {
 
 // Re-adds an order's products to the bag using live stock (never more than available).
 function buyAgain(order) {
-  let added = 0, skipped = 0;
+  let added = 0, skipped = 0, failed = 0;
   (order.items || []).forEach(item => {
     const product = Array.isArray(PRODUCTS) ? PRODUCTS.find(p => p.id === Number(item.product_id)) : null;
     if (!product || !product.stock) { skipped++; return; }
-    addToCart(product.id, Math.max(1, Math.min(Number(item.quantity) || 1, product.stockQty)));
-    added++;
+    // Count only what the bag really saved (addToCart returns false if storage refused it).
+    if (addToCart(product.id, Math.max(1, Math.min(Number(item.quantity) || 1, product.stockQty)))) added++;
+    else failed++;
   });
   if (typeof showToast === "function") {
-    if (added && !skipped) showToast(`Added ${added} item${added !== 1 ? "s" : ""} to your bag`);
+    if (failed && !added) showToast(CART_SAVE_ERROR, "error");
+    else if (failed) showToast(`Added ${added} item${added !== 1 ? "s" : ""} to your bag, but ${failed} couldn't be saved — your browser isn't allowing this site to save data.${skipped ? ` ${skipped} ${skipped !== 1 ? "items are" : "item is"} no longer available.` : ""}`, "warning");
+    else if (added && !skipped) showToast(`Added ${added} item${added !== 1 ? "s" : ""} to your bag`);
     else if (added) showToast(`Added ${added} item${added !== 1 ? "s" : ""} — ${skipped} no longer available`);
     else showToast("These items aren't available right now", "error");
   }

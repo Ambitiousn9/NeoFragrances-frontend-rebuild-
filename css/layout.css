@@ -144,68 +144,342 @@ h1, h2, h3, h4 { font-family: var(--nf-font-display); font-weight: 500; letter-s
 }
 .nf-search-form input:focus { outline: none; border-bottom-color: var(--nf-wine); }
 
+/* ---------- Pills (collection navigation, footer shop links, CTAs) ---------- */
+/* Outlined, quiet, and the same everywhere: a hairline border that warms on hover, a filled
+   plum state for the current page, and a gold focus ring. No scaling, no glow. */
+.nf-pill {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 40px;
+  padding: 9px 18px;
+  border: 1px solid var(--nf-line-strong);
+  border-radius: var(--nf-radius-pill);
+  background: transparent;
+  color: var(--nf-plum);
+  font: 500 var(--nf-text-sm)/1.2 var(--nf-font-body);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--nf-dur-fast) var(--nf-ease), background-color var(--nf-dur-fast) var(--nf-ease), color var(--nf-dur-fast) var(--nf-ease);
+}
+.nf-pill:focus-visible { outline: 2px solid var(--nf-gold); outline-offset: 3px; }
+.nf-pill[aria-current="page"] { background: var(--nf-plum); border-color: var(--nf-plum); color: var(--nf-ivory); }
+@media (hover: hover) {
+  .nf-pill:not([aria-current="page"]):hover { border-color: var(--nf-plum); background: rgba(43, 27, 46, 0.04); }
+}
+/* On the plum footer */
+.nf-pill--dark { border-color: rgba(250, 246, 240, 0.24); color: rgba(250, 246, 240, 0.9); }
+@media (hover: hover) {
+  .nf-pill--dark:not([aria-current="page"]):hover { border-color: var(--nf-gold); background: rgba(184, 147, 95, 0.1); color: var(--nf-ivory); }
+}
+
+/* Collection calls to action ("Shop all fragrances", "Explore the collection"): the existing
+   .btn colours, in the pill shape, with a gold focus ring. */
+.btn.nf-btn-pill { border-radius: var(--nf-radius-pill); letter-spacing: 0.06em; padding-left: 28px; padding-right: 28px; }
+.btn.nf-btn-pill.btn-sm { padding-left: 20px; padding-right: 20px; }
+.btn.nf-btn-pill:focus-visible { outline: 2px solid var(--nf-gold); outline-offset: 3px; }
+
+/* Collection pill row (products page) */
+.nf-collection-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: var(--nf-space-5) 0 0;
+  padding: 0; list-style: none;
+}
+@media (max-width: 640px) {
+  .nf-collection-pills .nf-pill { min-height: 44px; padding: 10px 16px; }
+}
+
 /* ---------- Footer ---------- */
 .nf-footer {
+  position: relative;
   background: var(--nf-plum);
   color: rgba(250, 246, 240, 0.72);
-  padding: var(--nf-space-8) 0 var(--nf-space-5);
+  padding: clamp(56px, 6vw, 88px) 0 max(var(--nf-space-5), env(safe-area-inset-bottom));
   margin-top: 0;
+  overflow-wrap: anywhere;
 }
-.nf-footer-grid {
+/* A single gold hairline where the page meets the footer */
+.nf-footer::before {
+  content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: min(var(--nf-container), calc(100% - 2 * var(--nf-gutter)));
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 147, 95, 0.55) 20%, rgba(184, 147, 95, 0.55) 80%, transparent);
+}
+.nf-footer ul { list-style: none; margin: 0; padding: 0; }
+.nf-footer h2 { margin: 0; }
+
+/* Phone first: brand -> updates -> shop -> care/account -> contact (bottom bar below) */
+.nf-footer-main {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.45fr;
-  gap: var(--nf-space-6);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "brand" "updates" "nav" "contact";
+  gap: var(--nf-space-7);
 }
+.nf-footer-brand { grid-area: brand; }
+.nf-footer-updates { grid-area: updates; }
+.nf-footer-nav { grid-area: nav; }
+.nf-footer-contact { grid-area: contact; }
+
 .nf-wordmark { display: inline-flex; align-items: baseline; gap: 6px; text-decoration: none; margin-bottom: var(--nf-space-4); }
 .nf-wordmark-neo { font-family: var(--nf-font-display); font-style: italic; font-weight: 400; font-size: 34px; color: var(--nf-rose); line-height: 1; }
 .nf-wordmark-rest { font-family: var(--nf-font-body); font-weight: 500; font-size: 12px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--nf-ivory); }
-.nf-footer-brand p { max-width: 280px; font-size: var(--nf-text-sm); line-height: 1.7; margin-bottom: var(--nf-space-5); }
+.nf-wordmark--footer { flex-wrap: wrap; row-gap: 4px; margin-bottom: var(--nf-space-5); }
+.nf-wordmark--footer .nf-wordmark-neo { font-size: clamp(40px, 9vw, 52px); }
+.nf-wordmark--footer .nf-wordmark-rest { font-size: 13px; letter-spacing: 0.34em; }
+.nf-wordmark:focus-visible { outline: 2px solid var(--nf-gold); outline-offset: 6px; border-radius: 2px; }
+
+.nf-footer-statement {
+  max-width: 34ch;
+  font-family: var(--nf-font-display);
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.3rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(250, 246, 240, 0.86);
+  margin: 0;
+}
+
+.nf-footer-kicker,
+.nf-footer-title {
+  display: block;
+  font: 600 var(--nf-text-xs)/1.4 var(--nf-font-body);
+  letter-spacing: var(--nf-tracking-caps);
+  text-transform: uppercase;
+  color: var(--nf-gold);
+}
+.nf-footer-title { margin-bottom: var(--nf-space-4); }
+
+/* "Stay in the know" card — invites a WhatsApp message (there is no newsletter backend) */
+.nf-footer-updates {
+  padding: clamp(22px, 4vw, 32px);
+  border: 1px solid rgba(250, 246, 240, 0.12);
+  border-radius: var(--nf-radius-lg);
+  background: rgba(250, 246, 240, 0.035);
+}
+.nf-footer .nf-footer-updates-title {
+  margin: var(--nf-space-2) 0 var(--nf-space-3);
+  font-family: var(--nf-font-display);
+  font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.1rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--nf-ivory);
+}
+.nf-footer-updates p { font-size: var(--nf-text-sm); line-height: 1.65; max-width: 40ch; margin: 0 0 var(--nf-space-5); }
+.nf-footer-wa-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: var(--nf-radius-pill);
+  background: var(--nf-ivory);
+  color: var(--nf-plum);
+  font: 600 var(--nf-text-sm)/1.2 var(--nf-font-body);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: background-color var(--nf-dur-fast) var(--nf-ease);
+}
+.nf-footer-wa-cta .fa-whatsapp { font-size: 18px; color: var(--nf-lavender); }
+.nf-footer-wa-arrow { font-size: 12px; transition: transform var(--nf-dur) var(--nf-ease); }
+.nf-footer-wa-cta:focus-visible { outline: 2px solid var(--nf-gold); outline-offset: 3px; }
+@media (hover: hover) {
+  .nf-footer-wa-cta:hover { background: var(--nf-gold-soft); }
+  .nf-footer-wa-cta:hover .nf-footer-wa-arrow { transform: translateX(3px); }
+}
+
+/* Navigation groups */
+.nf-footer-nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--nf-space-7) var(--nf-space-5);
+}
+.nf-footer-group--shop { grid-column: 1 / -1; }
+.nf-footer-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.nf-footer-pills .nf-pill { min-height: 44px; }
+.nf-footer-links { display: grid; gap: 2px; }
+.nf-footer-links a,
+.nf-footer-legal a,
+.nf-footer-contact-list a {
+  color: rgba(250, 246, 240, 0.78);
+  text-decoration: none;
+  text-decoration-color: transparent;
+  text-underline-offset: 5px;
+  transition: color var(--nf-dur-fast) var(--nf-ease), text-decoration-color var(--nf-dur-fast) var(--nf-ease);
+}
+.nf-footer-links a {
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  font-size: var(--nf-text-base);
+}
+@media (hover: hover) {
+  .nf-footer-links a:hover,
+  .nf-footer-legal a:hover,
+  .nf-footer-contact-list a:hover { color: var(--nf-ivory); text-decoration: underline; text-decoration-color: var(--nf-gold); }
+}
+
+/* Talk to us */
 .nf-footer-wa {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 10px 16px;
-  border: 1px solid rgba(250, 246, 240, 0.25);
+  min-height: 44px;
+  padding: 10px 18px;
+  border: 1px solid rgba(250, 246, 240, 0.28);
   border-radius: var(--nf-radius-pill);
   color: var(--nf-ivory);
   font-size: var(--nf-text-sm);
   text-decoration: none;
   transition: border-color var(--nf-dur-fast) var(--nf-ease), background var(--nf-dur-fast) var(--nf-ease);
 }
-.nf-footer-wa:hover { border-color: var(--nf-gold); background: rgba(184, 147, 95, 0.12); }
-.nf-footer-title {
-  font-family: var(--nf-font-body);
-  font-size: var(--nf-text-xs);
-  font-weight: 600;
-  letter-spacing: var(--nf-tracking-caps);
-  text-transform: uppercase;
-  color: var(--nf-gold);
-  margin-bottom: var(--nf-space-4);
-}
-.nf-footer-col { display: flex; flex-direction: column; gap: 10px; }
-.nf-footer-col a {
-  color: rgba(250, 246, 240, 0.78);
-  font-size: var(--nf-text-sm);
-  text-decoration: none;
-  width: fit-content;
-  overflow-wrap: anywhere;
-  transition: color var(--nf-dur-fast) var(--nf-ease);
-}
-.nf-footer-col a:has(i) { display: inline-flex; align-items: baseline; gap: 8px; }
-.nf-footer-col a i { flex-shrink: 0; width: 14px; color: var(--nf-gold); }
-.nf-footer-col a:hover { color: var(--nf-ivory); }
+.nf-footer-wa .fa-whatsapp { font-size: 16px; color: var(--nf-gold); }
+@media (hover: hover) { .nf-footer-wa:hover { border-color: var(--nf-gold); background: rgba(184, 147, 95, 0.12); } }
+.nf-footer .nf-footer-contact-list { display: grid; gap: 2px; margin-top: var(--nf-space-3); }
+.nf-footer-contact-list a { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; font-size: var(--nf-text-sm); }
+.nf-footer-contact-list i { width: 16px; text-align: center; color: var(--nf-gold); }
+
+/* Bottom bar */
 .nf-footer-bottom {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--nf-space-3) var(--nf-space-5);
+  display: flex; flex-direction: column; gap: var(--nf-space-3);
   margin-top: var(--nf-space-7);
   padding-top: var(--nf-space-5);
   border-top: 1px solid rgba(250, 246, 240, 0.12);
   font-size: var(--nf-text-xs);
+  letter-spacing: 0.02em;
 }
-.nf-footer-legal { display: inline-flex; gap: var(--nf-space-4); }
-.nf-footer-legal a { color: inherit; text-decoration: none; }
-.nf-footer-legal a:hover { color: var(--nf-ivory); }
+.nf-footer-bottom p { margin: 0; }
+.nf-footer-legal { display: flex; flex-wrap: wrap; gap: 0 var(--nf-space-5); }
+.nf-footer-legal a { display: inline-flex; align-items: center; min-height: 40px; color: rgba(250, 246, 240, 0.72); }
+.nf-footer-pay { display: inline-flex; align-items: center; gap: 8px; color: rgba(250, 246, 240, 0.6); }
+.nf-footer-pay i { color: var(--nf-gold); }
 .nf-footer :focus-visible { outline-color: var(--nf-gold); }
+.nf-footer-links a:focus-visible,
+.nf-footer-legal a:focus-visible,
+.nf-footer-contact-list a:focus-visible,
+.nf-footer-wa:focus-visible { outline: 2px solid var(--nf-gold); outline-offset: 3px; border-radius: 2px; }
+
+/* Very narrow phones (~320px): the two link groups stack */
+@media (max-width: 359px) {
+  .nf-footer-nav { grid-template-columns: minmax(0, 1fr); }
+  /* keeps "Get updates on WhatsApp" on one line */
+  .nf-footer-updates { padding: 20px 16px; }
+  .nf-footer-wa-cta { width: 100%; justify-content: center; padding: 12px 14px; gap: 8px; letter-spacing: 0; }
+  .nf-footer-wa-arrow { display: none; }
+}
+/* Tablet: brand across the top, updates beside contact, then the three link groups */
+@media (min-width: 700px) {
+  .nf-footer-main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "brand brand" "updates contact" "nav nav";
+    gap: var(--nf-space-7) var(--nf-space-6);
+  }
+  .nf-footer-nav { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); }
+  .nf-footer-group--shop { grid-column: auto; }
+  .nf-footer-links a { font-size: var(--nf-text-sm); min-height: 40px; }
+  .nf-footer-contact { align-self: center; }
+  .nf-footer-bottom { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--nf-space-2) var(--nf-space-5); }
+}
+/* Desktop: brand and contact on the left; navigation, then the updates band, on the right —
+   two columns of similar height, so neither side leaves a large empty area. */
+@media (min-width: 1080px) {
+  .nf-footer-main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+    grid-template-areas: "brand nav" "contact updates";
+    gap: var(--nf-space-7) clamp(48px, 6vw, 112px);
+  }
+  .nf-footer-nav { align-self: start; padding-top: var(--nf-space-2); }
+  .nf-footer-contact { align-self: end; }
+  .nf-footer-updates {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--nf-space-6);
+    align-items: center;
+  }
+  .nf-footer-updates > * { grid-column: 1; }
+  .nf-footer-updates p { margin-bottom: 0; }
+  .nf-footer-updates .nf-footer-wa-cta { grid-column: 2; grid-row: 1 / span 3; }
+}
+
+/* ---------- "Added" confirmation (cart.js showAddedState) ---------- */
+/* Product cards and the homepage spotlight are coloured in components.css (.add-to-cart.is-added);
+   the product page's own buttons are .btn-primary, so they get the same lavender here. */
+.btn.is-added,
+.btn.is-added:hover { background: var(--nf-lavender); border-color: var(--nf-lavender); color: var(--nf-ivory); transform: none; box-shadow: none; }
+.nf-added-check { display: inline-block; animation: nf-check-pop 360ms var(--nf-ease) both; }
+@keyframes nf-check-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) { .nf-added-check { animation: none; } }
+
+/* ---------- Toasts (toast.js, storefront) ---------- */
+/* Scoped to .nf-toasts so the admin portal (admin.css) and the older .toast rules in
+   style.css/components.css don't apply. A compact plum card sized to its message. */
+.toast-container.nf-toasts {
+  position: fixed;
+  left: auto; right: max(24px, env(safe-area-inset-right)); top: auto;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: var(--nf-z-toast);
+  display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+  width: auto;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+.nf-toasts .toast {
+  display: flex; align-items: center; gap: 12px;
+  width: max-content;
+  max-width: min(400px, calc(100vw - 32px));
+  padding: 10px 8px 10px 12px;
+  border: 1px solid rgba(250, 246, 240, 0.12);
+  border-radius: 14px;
+  background: var(--nf-plum);
+  color: var(--nf-ivory);
+  font: 500 var(--nf-text-sm)/1.45 var(--nf-font-body);
+  box-shadow: 0 18px 40px -18px rgba(30, 18, 32, 0.6), 0 2px 6px rgba(30, 18, 32, 0.12);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 260ms var(--nf-ease), transform 260ms var(--nf-ease);
+}
+.nf-toasts .toast.show { opacity: 1; transform: none; }
+.nf-toasts .toast.is-leaving { opacity: 0; transform: translateY(6px); }
+.nf-toast-mark {
+  flex: 0 0 22px;
+  width: 22px; height: 22px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--nf-lavender);
+  color: var(--nf-ivory);
+  font-size: 11px;
+}
+.nf-toasts .toast-error .nf-toast-mark { background: var(--nf-danger); }
+.nf-toasts .toast-warning .nf-toast-mark { background: var(--nf-gold); color: var(--nf-plum); }
+.nf-toasts .toast-info .nf-toast-mark { background: rgba(250, 246, 240, 0.16); }
+.nf-toasts .toast-error { border-color: rgba(201, 141, 160, 0.4); }
+.nf-toast-text { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.nf-toast-close {
+  flex: 0 0 32px;
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; border-radius: 50%;
+  background: transparent;
+  color: rgba(250, 246, 240, 0.7);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color var(--nf-dur-fast) var(--nf-ease), color var(--nf-dur-fast) var(--nf-ease);
+}
+.nf-toast-close:hover { background: rgba(250, 246, 240, 0.1); color: var(--nf-ivory); }
+.nf-toast-close:focus-visible { outline: 2px solid var(--nf-gold); outline-offset: 1px; }
+/* Phones: centred under the header — clear of checkout buttons and the product page's sticky
+   Add to Cart bar at the bottom — and inside the safe area. */
+@media (max-width: 640px) {
+  .toast-container.nf-toasts {
+    left: 0; right: 0; bottom: auto;
+    top: calc(72px + env(safe-area-inset-top));
+    align-items: center;
+    max-width: none;
+    padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right));
+  }
+  .nf-toasts .toast { max-width: 100%; transform: translateY(-8px); }
+  .nf-toasts .toast.is-leaving { transform: translateY(-6px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nf-toasts .toast, .nf-toasts .toast.is-leaving { transform: none; transition: opacity 120ms linear; }
+}
 
 /* ---------- Mobile drawer refinements (markup from mobile-drawer.js) ---------- */
 /* The header collapses to the drawer at <=960px (7 nav links no longer fit). */
@@ -228,10 +502,6 @@ h1, h2, h3, h4 { font-family: var(--nf-font-display); font-weight: 500; letter-s
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 1080px) {
-  .nf-footer-grid { grid-template-columns: repeat(3, 1fr); }
-  .nf-footer-brand { grid-column: 1 / -1; }
-}
 @media (max-width: 1180px) {
   .nf-header .nav-links { gap: 14px; }
   .nf-header .nav-links a { font-size: 12px; letter-spacing: 0.04em; }
@@ -244,9 +514,13 @@ h1, h2, h3, h4 { font-family: var(--nf-font-display); font-weight: 500; letter-s
   .nf-header .nav-toggle { display: inline-flex; }
   .nf-header .nav-icons .icon-secondary { display: none; } /* account & wishlist live in the drawer on mobile */
 }
+/* Narrowest phones (~320px): the 24px flex gap appeared twice (around the empty desktop nav)
+   and pushed the icons ~27px off-screen. space-between still separates logo and icons; the
+   three 40px buttons and their order are unchanged, only the spacing tightens. */
+@media (max-width: 359px) {
+  .nf-header .navbar { gap: 0; }
+  .nf-header .nav-icons { gap: 4px; margin-left: 12px; }
+}
 @media (max-width: 640px) {
-  .nf-footer-grid { grid-template-columns: 1fr 1fr; gap: var(--nf-space-6) var(--nf-space-5); }
-  .nf-footer-col:last-child { grid-column: 1 / -1; }
-  .nf-footer-bottom { flex-direction: column; }
   .nf-search-form .btn { display: none; }
 }

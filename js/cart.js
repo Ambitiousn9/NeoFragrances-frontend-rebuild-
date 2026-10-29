@@ -27,11 +27,21 @@ function getCart() {
   }
 }
 
+// Returns true only when the cart is really stored: written, then read back unchanged.
+// (Private modes, full storage or blocked site data make the write throw or not stick.)
 function saveCart(cart) {
-  try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) { /* storage unavailable */ }
+  const json = JSON.stringify(cart);
+  let saved = false;
+  try {
+    localStorage.setItem(CART_KEY, json);
+    saved = localStorage.getItem(CART_KEY) === json;
+  } catch (e) { /* storage unavailable */ }
   updateCartCount();
-  document.dispatchEvent(new CustomEvent("cartChanged"));
+  if (saved) document.dispatchEvent(new CustomEvent("cartChanged"));
+  return saved;
 }
+
+const CART_SAVE_ERROR = "We couldn't add this to your bag — your browser isn't allowing this site to save data. Please check your privacy settings and try again.";
 
 function clearCart() {
   try { localStorage.removeItem(CART_KEY); } catch (e) { /* ignore */ }
@@ -51,11 +61,27 @@ function addToCart(productId, qty = 1, offerId = null) {
   } else {
     cart.push({ id: productId, qty: Math.min(qty, CART_MAX_QTY_PER_LINE), offerId: offerId || null });
   }
-  saveCart(cart);
+  return saveCart(cart);
 }
 
 function removeFromCart(productId, offerId = null) {
-  saveCart(getCart().filter(item => !sameLine(item, productId, offerId)));
+  return saveCart(getCart().filter(item => !sameLine(item, productId, offerId)));
+}
+
+// The "✓ Added" confirmation on an add-to-cart button, used only after addToCart() returned
+// true. The width is held while the label is swapped so nothing around the button shifts.
+function showAddedState(btn, restoreHTML) {
+  if (!btn) return;
+  if (!btn.dataset.label) btn.dataset.label = restoreHTML || btn.innerHTML;
+  if (!btn.classList.contains("is-added")) btn.style.minWidth = `${btn.getBoundingClientRect().width}px`;
+  btn.innerHTML = `<i class="fa-solid fa-check nf-added-check" aria-hidden="true"></i>&nbsp; Added`;
+  btn.classList.add("is-added");
+  clearTimeout(btn._addedTimer);
+  btn._addedTimer = setTimeout(() => {
+    btn.innerHTML = btn.dataset.label;
+    btn.classList.remove("is-added");
+    btn.style.minWidth = "";
+  }, 1600);
 }
 
 function updateQty(productId, qty, offerId = null) {
@@ -117,12 +143,11 @@ document.addEventListener("click", (e) => {
   const productId = Number(btn.dataset.id);
   if (!Number.isInteger(productId)) return;
   const offerId = btn.dataset.offerId ? Number(btn.dataset.offerId) : null;
-  addToCart(productId, 1, offerId);
-  // Brief confirmation, then restore the button's original markup (icon + label).
-  if (!btn.dataset.label) btn.dataset.label = btn.innerHTML;
-  btn.innerHTML = `<i class="fa-solid fa-check" aria-hidden="true"></i>&nbsp; Added`;
-  btn.classList.add("is-added");
-  clearTimeout(btn._addedTimer);
-  btn._addedTimer = setTimeout(() => { btn.innerHTML = btn.dataset.label; btn.classList.remove("is-added"); }, 1200);
+  // Confirm only what really happened: no "Added" unless the cart was saved.
+  if (!addToCart(productId, 1, offerId)) {
+    if (typeof showToast === "function") showToast(CART_SAVE_ERROR, "error");
+    return;
+  }
+  showAddedState(btn);
   if (typeof showToast === "function") showToast("Added to cart");
 });

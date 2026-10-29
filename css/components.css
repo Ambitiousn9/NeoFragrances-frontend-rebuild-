@@ -153,7 +153,7 @@
   border-radius: var(--nf-radius-pill);
   font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--nf-text-soft);
 }
-.add-to-cart.is-added { background: var(--nf-success); border-color: var(--nf-success); color: var(--nf-ivory); }
+.add-to-cart.is-added { background: var(--nf-lavender); border-color: var(--nf-lavender); color: var(--nf-ivory); }
 @media (hover: hover) {
   .product-card .view-details-link { opacity: 0.7; transition: opacity var(--nf-dur) var(--nf-ease), color var(--nf-dur-fast) var(--nf-ease); }
   .product-card:hover .view-details-link { opacity: 1; }

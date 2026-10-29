@@ -19,6 +19,8 @@
   --nf-wine-deep: #561E2C;
   --nf-rose: #C98DA0;
   --nf-rose-soft: #F4E6EA;
+  --nf-lavender: #605C94;      /* confirmations: "Added", success toasts */
+  --nf-lavender-deep: #4D497C;
 
   /* ---- Neutrals & text ---- */
   --nf-text: #2B1B2E;

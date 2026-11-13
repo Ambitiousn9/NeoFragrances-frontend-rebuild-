@@ -28,6 +28,7 @@ const NFA = (() => {
     ] },
     { group: "Sales", items: [
       { id: "orders", href: "orders.html", icon: "fa-solid fa-receipt", label: "Orders", count: "pending" },
+      { id: "payment-issues", href: "payment-issues.html", icon: "fa-solid fa-triangle-exclamation", label: "Payment issues", count: "payment_issues" },
       { id: "customers", href: "customers.html", icon: "fa-solid fa-users", label: "Customers" },
       { id: "reviews", href: "reviews.html", icon: "fa-regular fa-star", label: "Reviews" },
     ] },
@@ -82,8 +83,10 @@ const NFA = (() => {
     return res;
   }
   // JSON helper: resolves with data, rejects with an Error carrying status/field/code.
-  async function api(path, { method = "GET", body } = {}) {
-    const res = await apiFetch(path, { method, body: body === undefined ? undefined : JSON.stringify(body) });
+  // `signal` (optional) is an AbortSignal handed to fetch, so a caller can bound the
+  // request. Without it, the request is exactly what it always was.
+  async function api(path, { method = "GET", body, signal } = {}) {
+    const res = await apiFetch(path, { method, body: body === undefined ? undefined : JSON.stringify(body), ...(signal ? { signal } : {}) });
     let data = null;
     try { data = await res.json(); } catch (e) { data = null; }
     if (!res.ok) {
@@ -105,6 +108,8 @@ const NFA = (() => {
       const s = await summary(force);
       setNavCount("low_stock", s.products.low_stock + s.products.out_of_stock, "products low or out of stock");
       setNavCount("pending", s.orders.by_status.Pending, "pending orders");
+      // null when migration 009 (payment_issues) isn't applied yet: no badge.
+      if (s.payment_issues && s.payment_issues.open !== null) setNavCount("payment_issues", s.payment_issues.open, "open payment issues");
     } catch (e) { /* counts are optional */ }
   }
   function setNavCount(key, n, label) {
@@ -183,10 +188,34 @@ const NFA = (() => {
     el.innerHTML = `<span class="adm-avatar" aria-hidden="true">${esc((me.full_name || "A").trim().charAt(0).toUpperCase())}</span><span class="adm-user-name">${esc(me.full_name)}</span>`;
   }
 
+  // Logout revokes the session on the server (POST /api/admin/logout bumps the
+  // account's token version, ending every session of this admin), then always
+  // signs out locally. A direct fetch, not apiFetch: apiFetch redirects on 401/403
+  // before cleanup could run. The request is bounded, and whatever happens —
+  // success, 401, 500, timeout, network error — the stored login is cleared. If the
+  // server is unreachable the local sign-out still completes, but the old token
+  // then stays valid on the server until it expires.
+  const LOGOUT_TIMEOUT_MS = 5000;
   async function logout() {
     if (!(await confirmDialog({ title: "Log out?", text: "You'll need to sign in again to use the admin dashboard.", okLabel: "Log out" }))) return;
-    if (typeof clearAuth === "function") clearAuth();
-    window.location.href = "login.html";
+    const auth = storedAdmin();
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), LOGOUT_TIMEOUT_MS);
+    try {
+      if (auth) {
+        await fetch(`${API_BASE}/api/admin/logout`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${auth.token}` },
+          signal: controller.signal,
+        });
+      }
+    } catch (e) {
+      // Unreachable server or timeout: nothing to report; sign out locally below.
+    } finally {
+      clearTimeout(timer);
+      if (typeof clearAuth === "function") clearAuth();
+      window.location.href = "login.html";
+    }
   }
 
   /* ---------- focus trapping ---------- */

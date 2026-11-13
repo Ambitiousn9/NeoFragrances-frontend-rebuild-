@@ -1,0 +1,30 @@
+# Netlify custom headers — https://docs.netlify.com/routing/headers/
+#
+# ADMIN PORTAL ONLY. Public storefront pages are deliberately not matched here.
+# "/admin/*" covers every page in admin/ (login.html included) and their
+# extension-less pretty URLs. Checked by tests/admin-security-headers-tests.js.
+#
+# Content-Security-Policy, by directive:
+#   default-src 'none'           anything not listed below is refused
+#   script-src  'self'           js/*.js from this site
+#     sha256-sh1uF8…             the inline script in admin/login.html (exact contents)
+#     'unsafe-hashes' sha256-lG2…  only the inline handler onerror="handleImageError(this)"
+#                                (thumbnail fallback in js/admin-core.js); no other handler
+#   style-src-elem               this site, Google Fonts CSS, Font Awesome CSS (cdnjs)
+#   style-src-attr 'unsafe-inline'  the admin modules set style="" attributes in generated
+#                                markup (layout tweaks, chart/skeleton widths); attributes only
+#   style-src (fallback)         for browsers without style-src-elem/-attr; includes
+#                                'unsafe-inline' so those attributes keep working there
+#   font-src                     Google font files, Font Awesome webfonts (cdnjs)
+#   img-src 'self'               product images are images/… paths on this site
+#   connect-src                  the production API (API_BASE in js/main.js)
+#   form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+# No 'unsafe-eval', no wildcard sources.
+
+/admin/*
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-sh1uF8qbNXjjEa7VuzETnJ3Hip3JIlLqTEWYOpUMNg0=' 'unsafe-hashes' 'sha256-lG2RAqaPSxUyEr2bGgzGy3rLi8oCgjaRfBBWUcRzUz8='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self'; connect-src https://neofragrances-server.onrender.com; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  X-Robots-Tag: noindex, nofollow

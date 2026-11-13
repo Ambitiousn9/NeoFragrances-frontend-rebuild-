@@ -10,18 +10,78 @@
    server validates every value again and is the
    authority. A 400 comes back with a `field`, and
    that is what decides which input is flagged.
+
+   ADMIN-4: switching maintenance ON asks for
+   confirmation first (decided from the last
+   server-confirmed state, never the checkbox).
+   Requests are bounded (15 s). When a save gets no
+   usable answer — no response, or any 5xx — the
+   outcome is unknown (the server may have committed),
+   so the page re-reads the setting instead of
+   presenting the old state as fact; if that re-read
+   fails too, the state shows as Unknown and saving
+   is blocked until the page is reloaded.
    ============================================ */
 
 (function () {
   const root = document.getElementById("page-root");
   const { esc, int } = NFA;
   const MESSAGE_MAX = 200; // mirrors MESSAGE_MAX in server settings.js
+  const REQUEST_TIMEOUT_MS = 15000;
+  const NO_RESPONSE = "The server didn't respond, so the change may or may not have been saved.";
+  const LOAD_NO_RESPONSE = "The server didn't respond. Check your connection, then try again.";
+  const CONFIRM_ON = {
+    title: "Turn on maintenance mode?",
+    text: "Customers won’t be able to browse or buy: storefront pages show the maintenance page and customer requests are refused until you turn it off. The admin portal stays available.",
+    okLabel: "Turn on maintenance",
+    danger: true,
+  };
   let config = null, loadError = null;
+  let saving = false;        // explicit in-flight guard (covers the confirmation dialog too)
+  let stateUnknown = false;  // a save's outcome could not be confirmed, even by a re-read
 
   const clampPct = v => Math.min(100, Math.max(0, Math.round(Number(v) || 0)));
 
+  // NFA.api bounded by an AbortController; the timer is cleared on every path.
+  async function timedApi(path, options = {}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    try { return await NFA.api(path, { ...options, signal: controller.signal }); }
+    finally { clearTimeout(timer); }
+  }
+  // No usable HTTP answer: network failure, timeout/abort, or a non-JSON body.
+  const noResponse = e => !e || typeof e.status !== "number";
+
   function statusBadge(on) {
     return `<span class="adm-badge adm-badge--${on ? "live" : "disabled"}">${on ? "ON — storefront offline" : "OFF — storefront live"}</span>`;
+  }
+
+  // Updates the three figures in place from the confirmed config (or Unknown),
+  // without re-rendering the form, so unsaved edits survive.
+  function renderFigures() {
+    const value = document.getElementById("m-state-value");
+    const badge = document.getElementById("m-state-badge");
+    if (stateUnknown) {
+      // Presentation only: `config` keeps the last confirmed values, but none of the
+      // three figures may present them as current while the save's outcome is unknown.
+      if (value) value.textContent = "Unknown";
+      if (badge) badge.innerHTML = `<span class="adm-badge adm-badge--pending">Not confirmed — reload this page</span>`;
+      const pctUnknown = document.getElementById("m-pct-value");
+      if (pctUnknown) pctUnknown.textContent = "Unknown";
+      const changedUnknown = document.getElementById("m-changed-value");
+      if (changedUnknown) changedUnknown.textContent = "—";
+      const byUnknown = document.getElementById("m-changed-meta");
+      if (byUnknown) byUnknown.textContent = "not confirmed";
+      return;
+    }
+    if (value) value.textContent = config.maintenance ? "ON" : "OFF";
+    if (badge) badge.innerHTML = statusBadge(config.maintenance);
+    const pctEl = document.getElementById("m-pct-value");
+    if (pctEl) pctEl.textContent = `${int(clampPct(config.progress))}%`;
+    const changed = document.getElementById("m-changed-value");
+    if (changed) changed.textContent = config.updated_at ? NFA.date(config.updated_at) : "—";
+    const by = document.getElementById("m-changed-meta");
+    if (by) by.textContent = config.updated_by_name || "never set";
   }
 
   function render() {
@@ -32,7 +92,7 @@
       <div class="adm-kpis">
         <div class="adm-kpi"><span class="adm-kpi-label">Maintenance mode</span><span class="adm-kpi-value" id="m-state-value">${config.maintenance ? "ON" : "OFF"}</span><span class="adm-kpi-meta" id="m-state-badge">${statusBadge(config.maintenance)}</span></div>
         <div class="adm-kpi"><span class="adm-kpi-label">Progress</span><span class="adm-kpi-value" id="m-pct-value">${int(pct)}%</span><span class="adm-kpi-meta">shown on the maintenance page</span></div>
-        <div class="adm-kpi"><span class="adm-kpi-label">Last changed</span><span class="adm-kpi-value">${config.updated_at ? esc(NFA.date(config.updated_at)) : "—"}</span><span class="adm-kpi-meta">${config.updated_by_name ? esc(config.updated_by_name) : "never set"}</span></div>
+        <div class="adm-kpi"><span class="adm-kpi-label">Last changed</span><span class="adm-kpi-value" id="m-changed-value">${config.updated_at ? esc(NFA.date(config.updated_at)) : "—"}</span><span class="adm-kpi-meta" id="m-changed-meta">${config.updated_by_name ? esc(config.updated_by_name) : "never set"}</span></div>
       </div>
 
       <div class="adm-panel">
@@ -88,11 +148,43 @@
     form.addEventListener("submit", e => { e.preventDefault(); save(form); });
   }
 
+  function setStatus(text, isError) {
+    const s = document.getElementById("m-status");
+    if (!s) return;
+    s.className = isError ? "adm-form-status is-error" : "adm-form-status";
+    s.textContent = text;
+  }
+
+  // The save's outcome is unknown: re-read the setting (no retry of the POST).
+  async function verifyAfterUnclearSave(lead) {
+    setStatus(`${lead} Checking the current setting…`, true);
+    try {
+      const d = await timedApi("/api/admin/system/maintenance");
+      config = Object.assign({}, config, d);
+      stateUnknown = false;
+      renderFigures();
+      const now = config.maintenance ? "ON — the storefront is offline" : "OFF — the storefront is live";
+      const text = `${lead} Maintenance is currently ${now} (confirmed by the server). Check the values below before saving again.`;
+      setStatus(text, true);
+      NFA.toast(text, "error");
+    } catch (e) {
+      if (NFA.isSessionError(e)) return;
+      stateUnknown = true;
+      renderFigures();
+      const text = `${lead} Couldn't confirm the current setting. Reload this page before changing it again.`;
+      setStatus(text, true);
+      NFA.toast(text, "error");
+    }
+  }
+
   async function save(form) {
+    if (saving) return; // a save (or its confirmation) is already in progress
     NFA.clearFormErrors(form);
-    const status = document.getElementById("m-status");
-    status.textContent = "";
-    status.className = "adm-form-status";
+    setStatus("", false);
+    if (stateUnknown) {
+      setStatus("The current setting couldn't be confirmed. Reload this page before changing it again.", true);
+      return;
+    }
 
     const raw = form.elements.progress.value.trim();
     const body = {
@@ -108,10 +200,34 @@
       return NFA.showFormError(form, "message", `Use ${MESSAGE_MAX} characters or fewer.`);
     }
 
+    saving = true;
     const btn = document.getElementById("m-save");
-    btn.disabled = true;
     try {
-      const saved = await NFA.api("/api/admin/maintenance", { method: "POST", body });
+      // Taking the storefront offline needs an explicit yes. Decided from the last
+      // CONFIRMED state: OFF -> ON only (not ON -> OFF, not edits while already ON).
+      if (body.maintenance && config && config.maintenance === false) {
+        if (!(await NFA.confirm(CONFIRM_ON))) return; // nothing sent, edits kept
+      }
+      if (btn) btn.disabled = true;
+      setStatus("Saving…", false);
+      let saved;
+      try {
+        saved = await timedApi("/api/admin/maintenance", { method: "POST", body });
+      } catch (e) {
+        if (NFA.isSessionError(e)) return;
+        if (noResponse(e)) return await verifyAfterUnclearSave(NO_RESPONSE);
+        if (e.status >= 500) {
+          // The handler rolls back on error, but a COMMIT whose acknowledgement was
+          // lost, or a gateway 502/503/504, can follow a committed write: verify.
+          return await verifyAfterUnclearSave(`${e.message || "The server reported an error."} The change may or may not have been saved.`);
+        }
+        // 4xx: rejected before anything was written — the confirmed state stands.
+        if (e.field) NFA.showFormError(form, e.field, e.message);
+        const text = e.message || "Could not save the configuration.";
+        setStatus(text, true);
+        NFA.toast(text, "error");
+        return;
+      }
       // Trust the server's echo, not the form, so normalisation is visible.
       config = Object.assign({}, config, {
         maintenance: saved.maintenance,
@@ -122,28 +238,20 @@
         ? `Saved — maintenance is ON at ${saved.progress}%`
         : "Saved — maintenance is OFF, the storefront is live");
       // Refresh the audit fields without a full page reload.
-      try { const d = await NFA.api("/api/admin/system/maintenance"); config = Object.assign({}, config, d); } catch (e) { if (NFA.isSessionError(e)) return; }
+      try { const d = await timedApi("/api/admin/system/maintenance"); config = Object.assign({}, config, d); } catch (e) { if (NFA.isSessionError(e)) return; }
       render();
-      const s = document.getElementById("m-status");
-      s.className = "adm-form-status";
-      s.textContent = "Configuration saved.";
-    } catch (e) {
-      if (NFA.isSessionError(e)) return;
-      // A 400 names the offending field; anything else is a general failure.
-      if (e.field) NFA.showFormError(form, e.field, e.message);
-      status.className = "adm-form-status is-error";
-      status.textContent = e.message || "Could not save the configuration.";
-      NFA.toast(e.message || "Could not save the configuration.", "error");
+      setStatus("Configuration saved.", false);
     } finally {
+      saving = false;
       const b = document.getElementById("m-save");
-      if (b) b.disabled = false;
+      if (b) b.disabled = stateUnknown;
     }
   }
 
   async function load() {
     root.setAttribute("aria-busy", "true");
-    try { config = await NFA.api("/api/admin/system/maintenance"); loadError = null; }
-    catch (e) { if (NFA.isSessionError(e)) return; loadError = e.message; }
+    try { config = await timedApi("/api/admin/system/maintenance"); loadError = null; stateUnknown = false; }
+    catch (e) { if (NFA.isSessionError(e)) return; loadError = noResponse(e) ? LOAD_NO_RESPONSE : (e.message || LOAD_NO_RESPONSE); }
     render();
   }
 

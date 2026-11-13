@@ -215,13 +215,18 @@
 /* Readability scrim: dark at the bottom where the text sits, clear at the top. */
 .nf-scent-card::after {
   content: ""; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(to top, rgba(30, 18, 32, 0.86) 0%, rgba(30, 18, 32, 0.62) 32%, rgba(30, 18, 32, 0.12) 64%, rgba(30, 18, 32, 0) 80%);
+  background: linear-gradient(to top, rgba(30, 18, 32, 0.84) 0%, rgba(30, 18, 32, 0.5) 35%, rgba(30, 18, 32, 0.1) 62%, rgba(30, 18, 32, 0) 78%);
 }
-.nf-scent-body { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--nf-space-6); }
+/* a soft shadow keeps the white text crisp now that the scrim's middle is lighter */
+.nf-scent-body { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--nf-space-6); text-shadow: 0 1px 14px rgba(30, 18, 32, 0.45); }
 .nf-scent-card h3 { margin: 0 0 var(--nf-space-1); font-size: clamp(26px, 2.6vw, 34px); line-height: 1.1; color: var(--nf-ivory); }
 .nf-scent-card p { margin: 0; font-size: var(--nf-text-sm); letter-spacing: 0.06em; color: rgba(250, 246, 240, 0.94); }
-.nf-scent-card:hover { box-shadow: var(--nf-shadow-lg); }
-.nf-scent-card:hover img, .nf-scent-card:focus-visible img { transform: scale(1.035); }
+@media (hover: hover) {
+  .nf-scent-card:hover { box-shadow: var(--nf-shadow-lg); }
+  .nf-scent-card:hover img { transform: scale(1.035); }
+}
+.nf-scent-card:focus-visible img { transform: scale(1.035); }
+.nf-scent-card:active { box-shadow: var(--nf-shadow-md); }
 .nf-scent-card:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   .nf-scent-card img { transition: none; }
@@ -263,13 +268,15 @@
   display: flex; flex-direction: column;
   background: var(--nf-paper);
   border: 1px solid var(--nf-line);
-  border-radius: var(--nf-radius-md);
+  border-radius: var(--nf-radius-lg);
+  box-shadow: var(--nf-shadow-sm);
   overflow: hidden;
   color: inherit;
   text-decoration: none;
   transition: transform var(--nf-dur) var(--nf-ease), box-shadow var(--nf-dur) var(--nf-ease), border-color var(--nf-dur) var(--nf-ease);
 }
-.nf-collection-card:hover { transform: translateY(-3px); box-shadow: var(--nf-shadow-lg); border-color: var(--nf-line-strong); }
+.nf-collection-card:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 3px; }
+.nf-collection-card:active { box-shadow: var(--nf-shadow-md); }
 .nf-collection-media {
   display: flex; align-items: flex-end; justify-content: center;
   height: 220px;
@@ -289,9 +296,12 @@
 }
 .nf-collection-media span:nth-child(2) { width: 40%; z-index: 1; }
 .nf-collection-media img, .nf-collection-media svg { width: 100%; height: 100%; object-fit: contain; padding: 10%; }
-.nf-collection-card:hover .nf-collection-media span:nth-child(1) { transform: translateX(-4px) rotate(-2deg); }
-.nf-collection-card:hover .nf-collection-media span:nth-child(2) { transform: translateY(-6px); }
-.nf-collection-card:hover .nf-collection-media span:nth-child(3) { transform: translateX(4px) rotate(2deg); }
+@media (hover: hover) {
+  .nf-collection-card:hover { transform: translateY(-3px); box-shadow: var(--nf-shadow-lg); border-color: var(--nf-line-strong); }
+  .nf-collection-card:hover .nf-collection-media span:nth-child(1) { transform: translateX(-4px) rotate(-2deg); }
+  .nf-collection-card:hover .nf-collection-media span:nth-child(2) { transform: translateY(-6px); }
+  .nf-collection-card:hover .nf-collection-media span:nth-child(3) { transform: translateX(4px) rotate(2deg); }
+}
 .nf-collection-body { padding: var(--nf-space-5); display: flex; flex-direction: column; gap: 6px; }
 .nf-collection-count { font-size: var(--nf-text-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--nf-text-muted); }
 .nf-collection-body h3 { font-size: 30px; margin-bottom: var(--nf-space-3); }
@@ -374,7 +384,7 @@
   .nf-tabs [role=tab] { flex: 1; padding: 9px 10px; }
   .nf-countdown div { min-width: 0; flex: 1; }
   .nf-service-grid { grid-template-columns: 1fr; gap: var(--nf-space-5); }
-  .nf-collection-media { height: 180px; }
+  .nf-collection-media { height: 160px; }
 }
 
 /* "+N more in this offer" under the spotlight product (M6 Phase 6D) */

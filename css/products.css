@@ -135,7 +135,8 @@
 /* ---------- Grid ---------- */
 .nf-shop-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 420px; align-content: start; }
 @media (prefers-reduced-motion: no-preference) {
-  .nf-shop-grid.is-entering > .product-card { animation: nf-shop-in 420ms var(--nf-ease) both; }
+  /* backwards, not both: a held end state (transform: none) would override the card's hover lift for good */
+  .nf-shop-grid.is-entering > .product-card { animation: nf-shop-in 420ms var(--nf-ease) backwards; }
   .nf-shop-grid.is-entering > .product-card:nth-child(3n+2) { animation-delay: 40ms; }
   .nf-shop-grid.is-entering > .product-card:nth-child(3n) { animation-delay: 80ms; }
 }
@@ -157,36 +158,64 @@
 .nf-empty--error > i { color: var(--nf-wine); }
 
 /* ---------- Pagination ---------- */
+/* Editorial pagination: a champagne hairline, then a centred "Page X of Y", then wide outlined
+   pills (arrow before PREVIOUS, after NEXT) around circular page numbers, the current page a solid
+   burgundy circle. Presentation only — the markup, data-page, disabled and aria-current all come
+   unchanged from renderPagination() in js/search.js. The DOM order is
+   Previous, number list, status, Next; "order" moves the status onto its own row above. */
 .nf-pagination {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--nf-space-4);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: var(--nf-space-5) 28px;
   margin-top: var(--nf-space-7);
-  padding-top: var(--nf-space-5);
-  border-top: 1px solid var(--nf-line);
+  padding-top: var(--nf-space-6);
+  border-top: 1px solid var(--nf-gold-soft);
 }
-.nf-page-list { display: flex; align-items: center; gap: 4px; list-style: none; margin: 0; padding: 0; }
-.nf-page-num, .nf-page-step {
-  height: 44px;
-  border: 1px solid transparent;
-  border-radius: var(--nf-radius-sm);
-  background: none;
+.nf-page-status {
+  order: -1; flex: 1 1 100%;
+  text-align: center;
   font: 500 var(--nf-text-sm) var(--nf-font-body);
-  color: var(--nf-text);
+  letter-spacing: 0.04em;
+  color: var(--nf-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+.nf-page-list { display: flex; align-items: center; gap: 10px; list-style: none; margin: 0; padding: 0; }
+.nf-page-num, .nf-page-step {
+  height: 56px;
+  border: 1px solid var(--nf-line-strong);
+  background: transparent;
+  font: 500 15px var(--nf-font-body);
+  color: var(--nf-text-soft);
   cursor: pointer;
   transition: background var(--nf-dur-fast) var(--nf-ease), border-color var(--nf-dur-fast) var(--nf-ease), color var(--nf-dur-fast) var(--nf-ease);
 }
-.nf-page-num { min-width: 44px; font-variant-numeric: tabular-nums; }
-.nf-page-num:hover { border-color: var(--nf-line-strong); background: var(--nf-paper); }
-.nf-page-num[aria-current="page"] { background: var(--nf-plum); color: var(--nf-ivory); border-color: var(--nf-plum); cursor: default; }
-.nf-page-step {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 0 16px;
-  border-color: var(--nf-line-strong);
-  font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+.nf-page-num:focus-visible, .nf-page-step:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 3px; }
+.nf-page-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; min-width: 56px; padding: 0;
+  border-radius: 50%;
+  font-variant-numeric: tabular-nums;
 }
-.nf-page-step:hover:not(:disabled) { background: var(--nf-plum); border-color: var(--nf-plum); color: var(--nf-ivory); }
-.nf-page-step:disabled { opacity: 0.35; cursor: not-allowed; }
-.nf-page-gap { min-width: 24px; text-align: center; color: var(--nf-text-muted); }
-.nf-page-status { display: none; font-size: var(--nf-text-sm); color: var(--nf-text-soft); font-variant-numeric: tabular-nums; }
+.nf-page-num:hover { border-color: var(--nf-gold); color: var(--nf-text); }
+.nf-page-num[aria-current="page"],
+.nf-page-num[aria-current="page"]:hover { background: var(--nf-wine); border-color: var(--nf-wine); color: #FFFFFF; font-weight: 600; cursor: default; }
+.nf-page-step {
+  display: inline-flex; align-items: center; justify-content: center; gap: 14px;
+  min-width: 168px; padding: 0 28px;
+  border-radius: var(--nf-radius-pill);
+  font-weight: 600; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+}
+.nf-page-step i { font-size: 13px; }
+.nf-page-step:hover:not(:disabled) { border-color: var(--nf-gold); color: var(--nf-wine); }
+/* Disabled (first/last page): clearly inactive but still legible — fainter hairline, muted text. */
+.nf-page-step:disabled { border-color: var(--nf-line); color: var(--nf-text-muted); cursor: not-allowed; }
+.nf-page-gap { min-width: 20px; text-align: center; color: var(--nf-text-muted); letter-spacing: 0.12em; user-select: none; }
+/* The single desktop row needs ~850px; the results column beside the 260px filter sidebar only
+   reaches that at about 1280px wide. Below it, the numbers take their own centred row and the two
+   pills sit centred beneath — nothing is squeezed or clipped. */
+@media (max-width: 1279px) and (min-width: 721px) {
+  .nf-page-list { order: 0; flex: 1 1 100%; justify-content: center; }
+  .nf-page-step { order: 1; }
+}
 
 /* ---------- Drawer mode (tablet + mobile) ---------- */
 @media (max-width: 960px) {
@@ -247,10 +276,21 @@
   .nf-filter-toggle { flex: 1; justify-content: center; }
   .nf-sort { flex: 1; }
   .nf-sort label { display: none; }
-  .nf-sort select { width: 100%; }
+  .nf-sort select { width: 100%; font-size: var(--nf-text-base); } /* 16px: stops iOS zooming on focus */
   .nf-shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .nf-pagination { flex-wrap: wrap; }
-  .nf-page-list { display: none; }
+  .nf-pagination { flex-wrap: wrap; gap: var(--nf-space-4) 12px; }
+  /* Phones keep the full design: numbers (with any ellipsis the range algorithm generates) on
+     their own centred row, Previous/Next together on the row beneath. At most 5 circles + 2
+     ellipses are ever generated, which fits 343px (375 wide) at 44px circles. */
+  .nf-page-list { order: 0; flex: 1 1 100%; justify-content: center; gap: 8px; }
+  .nf-page-num { width: 44px; min-width: 44px; height: 44px; font-size: 14px; }
+  .nf-page-gap { min-width: 16px; }
   .nf-page-status { display: block; order: -1; flex: 1 1 100%; text-align: center; }
-  .nf-page-step { flex: 1; justify-content: center; }
+  .nf-page-step { order: 1; flex: 1; justify-content: center; min-width: 0; height: 48px; padding: 0 16px; letter-spacing: 0.14em; }
+}
+@media (max-width: 360px) {
+  /* 320px phones (288px content): slightly smaller circles and gaps keep the same row on screen. */
+  .nf-page-list { gap: 6px; }
+  .nf-page-num { width: 40px; min-width: 40px; height: 40px; }
+  .nf-page-gap { min-width: 14px; }
 }

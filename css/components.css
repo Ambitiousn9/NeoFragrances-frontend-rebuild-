@@ -81,83 +81,230 @@
 .nf-section-head--center { flex-direction: column; align-items: center; text-align: center; }
 .nf-section-head--center .nf-eyebrow::after { content: ""; width: 24px; height: 1px; background: currentColor; opacity: 0.6; }
 
-/* ---------- Product card (markup from productCard() in main.js) ---------- */
+/* ---------- Product card (productCard() in main.js, offerCardHTML() in offers.js) ----------
+   Editorial boutique card. Every card rule is scoped to .product-card: .wishlist-btn is also
+   the product page's static wishlist/share buttons, .add-to-cart is also the homepage
+   spotlight button, and .stock-yes/.stock-no appear on the account and product pages. */
 .product-grid { gap: clamp(16px, 2.2vw, 28px); }
 .product-card {
-  border-radius: var(--nf-radius-md);
-  border: 1px solid var(--nf-line);
-  box-shadow: none;
+  --nf-card-green: #3E7D4F;
+  --nf-card-hover: #6B3FA0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--nf-paper);
-  transition: border-color var(--nf-dur) var(--nf-ease), box-shadow var(--nf-dur) var(--nf-ease), transform var(--nf-dur) var(--nf-ease);
+  border: 1px solid rgba(43, 27, 46, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(43, 27, 46, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.product-card:hover { transform: translateY(-3px); border-color: var(--nf-line-strong); box-shadow: var(--nf-shadow-lg); }
-.product-card:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 2px; }
-.product-media { background: var(--nf-paper); border-bottom: 1px solid var(--nf-line); }
-.product-media img { object-fit: contain; padding: 9%; transition: transform var(--nf-dur-slow) var(--nf-ease); }
-.product-card:hover .product-media img { transform: scale(1.04); }
-.product-badge {
-  top: 12px; left: 12px;
-  border-radius: var(--nf-radius-xs);
-  padding: 5px 9px;
+.product-card:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 3px; }
+
+/* Image stage, matched to the live site (style.css at 7fd98fe): square, warm 160deg gradient,
+   object-fit: cover. Square photos fill the frame; portrait, landscape and near-square
+   images are cropped to the square — accepted by the owner for an exact match. */
+.product-card .product-media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #F0E8DD, #E4D5C6);
+  border-bottom: 0;
+}
+.product-card .product-media img {
+  width: 100%; height: 100%;
+  padding: 0;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+}
+.product-card.is-soldout .product-media img { opacity: 0.85; filter: grayscale(25%); }
+
+/* Badges: stacked top-left, kept clear of the wishlist button and its 44px touch area.
+   Order and text come from the markup (sold out, sale, then the product's own badge). */
+.product-card .product-badges {
+  position: absolute; top: 14px; left: 14px; z-index: 2;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  max-width: calc(100% - 68px);
+}
+.product-card .product-badge {
+  position: static;
+  max-width: 100%;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--nf-wine);
+  color: var(--nf-paper);
+  font-family: var(--nf-font-body);
   font-size: 10px;
-  letter-spacing: 0.12em;
-  background: var(--nf-plum);
-  box-shadow: none;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: normal;
+  overflow-wrap: anywhere; /* a long admin label wraps inside the pill instead of spilling */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
-.product-badge.badge-new { background: var(--nf-gold-soft); color: var(--nf-plum); }
-.wishlist-btn {
-  top: 10px; right: 10px;
-  width: 36px; height: 36px;
-  box-shadow: none;
-  border: 1px solid var(--nf-line);
-  background: rgba(255, 255, 255, 0.94);
+.product-card .product-badge.badge-sale { background: var(--nf-wine); }
+.product-card .product-badge.badge-new { background: #0B7A7E; color: #2B1B2E; box-shadow: none; } /* live site: --teal-deep with --ink text */
+.product-card .product-badge.badge-soldout { background: rgba(255, 255, 255, 0.94); color: var(--nf-text); border: 1px solid rgba(43, 27, 46, 0.18); box-shadow: none; }
+
+/* Wishlist: 32px circle top-right; the saved state (.active, set by wishlist.js) turns the
+   heart wine and plays the existing heartPop from style.css. */
+.product-card .wishlist-btn {
+  position: absolute; top: 12px; right: 12px; z-index: 3;
+  width: 32px; height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--nf-text);
+  box-shadow: 0 2px 6px rgba(43, 27, 46, 0.15);
+  transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }
-.wishlist-btn:hover { transform: none; border-color: var(--nf-wine); color: var(--nf-wine); }
-.product-info { padding: 16px 18px 6px; }
-.product-brand {
+.product-card .wishlist-btn::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; } /* 44px touch area */
+.product-card .wishlist-btn.active,
+.product-card .wishlist-btn.active i { color: var(--nf-wine); }
+.product-card .wishlist-btn:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 2px; }
+
+/* Body: gold brand, Fraunces name (two lines; the full name stays in the DOM, the title and
+   the card's aria-label), category, then price and stock on one line where they fit. */
+.product-card .product-info { display: flex; flex-direction: column; flex: 1; gap: 4px; padding: 18px 18px 6px; }
+.product-card .product-brand {
+  font-family: var(--nf-font-body);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--nf-text-muted);
+  color: var(--nf-gold);
 }
-.product-name {
+.product-card .product-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: 2.5em; /* two lines, so one-line names don't shift the row */
+  margin: 0;
   font-family: var(--nf-font-display);
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 500;
   line-height: 1.25;
+  text-transform: none;
   color: var(--nf-text);
 }
-.product-cat { font-size: 12px; color: var(--nf-text-muted); }
-.product-price { font-family: var(--nf-font-body); font-weight: 600; font-size: 16px; color: var(--nf-plum); }
-.stock-yes { color: var(--nf-success); }
-.product-actions { padding: 12px 18px 18px; }
-.product-actions .add-to-cart { padding: 12px 16px; }
-.view-details-link { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--nf-text-soft); }
+.product-card .product-cat { font-family: var(--nf-font-body); font-size: 12px; color: var(--nf-text-soft); margin-bottom: 8px; }
+.product-card .product-price-row {
+  display: flex; flex-direction: row; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+  gap: 4px 10px;
+  margin-top: auto;
+}
+.product-card .product-prices { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; min-width: 0; }
+.product-card .product-price { font-family: var(--nf-font-body); font-size: 17px; font-weight: 700; color: var(--nf-text); }
+.product-card .product-price--sale { color: var(--nf-wine); }
+.product-card .product-price-original { font-size: 12px; color: var(--nf-text-soft); text-decoration: line-through; }
+.product-card .stock-yes,
+.product-card .stock-no,
+.product-card .stock-low {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--nf-font-body); font-size: 12px; font-weight: 600; line-height: 1.2;
+  white-space: nowrap;
+}
+.product-card .stock-yes::before,
+.product-card .stock-no::before,
+.product-card .stock-low::before { content: ""; flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.product-card .stock-yes { color: var(--nf-card-green); }
+.product-card .stock-no { color: var(--nf-wine); }
+.product-card .stock-low { color: #9A5B13; } /* existing low-stock tone, unchanged */
 
-/* Badges stack (sale % + curated badge), sale pricing, stock states */
-.product-badges { position: absolute; top: 12px; left: 12px; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
-.product-badges .product-badge { position: static; }
-.product-badge.badge-sale { background: var(--nf-wine); color: var(--nf-ivory); }
-.product-prices { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; min-width: 0; }
-.product-price--sale { color: var(--nf-wine); }
-.product-price-original { font-size: 12px; color: var(--nf-text-muted); text-decoration: line-through; }
-.stock-low { color: #9A5B13; display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
-.stock-low::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.product-card.is-soldout .product-media img { opacity: 0.55; filter: grayscale(35%); }
-.product-soldout-tag {
-  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid var(--nf-line);
-  border-radius: var(--nf-radius-pill);
-  font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--nf-text-soft);
+/* Actions: full-width wine Add to cart, then a quiet centred View details link. */
+.product-card .product-actions { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 18px 18px; }
+.product-card .add-to-cart {
+  width: 100%; min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 16px;
+  background: var(--nf-wine);
+  border: 1px solid var(--nf-wine);
+  border-radius: 2px;
+  color: var(--nf-paper);
+  font-family: var(--nf-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
-.add-to-cart.is-added { background: var(--nf-lavender); border-color: var(--nf-lavender); color: var(--nf-ivory); }
+.product-card .add-to-cart.is-added { background: var(--nf-lavender); border-color: var(--nf-lavender); color: var(--nf-ivory); }
+.product-card .add-to-cart:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 2px; }
+/* Sold out: stays disabled, and no hover rule can make it look available. */
+.product-card .add-to-cart:disabled,
+.product-card .add-to-cart:disabled:hover {
+  background: var(--nf-ivory);
+  border-color: var(--nf-line);
+  color: var(--nf-text-soft);
+  opacity: 1;
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+.product-card .view-details-link {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 32px;
+  background: none;
+  font-family: var(--nf-font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--nf-text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.product-card .view-details-link i { font-size: 10px; transition: transform 0.2s ease; }
+.product-card .view-details-link:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 2px; border-radius: 2px; }
+
+/* Pointer devices get the lift, image zoom and button glow; touch devices get no sticky
+   hover (style.css and .btn-primary add hover transforms globally) and a light press. */
 @media (hover: hover) {
-  .product-card .view-details-link { opacity: 0.7; transition: opacity var(--nf-dur) var(--nf-ease), color var(--nf-dur-fast) var(--nf-ease); }
-  .product-card:hover .view-details-link { opacity: 1; }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(43, 27, 46, 0.1); }
+  .product-card:hover .product-media img { transform: scale(1.05); }
+  .product-card .wishlist-btn:hover { background: var(--nf-paper); color: var(--nf-wine); transform: scale(1.1); }
+  .product-card .add-to-cart:not(:disabled):not(.is-added):hover {
+    background: var(--nf-card-hover); border-color: var(--nf-card-hover); color: var(--nf-paper);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px -10px rgba(107, 63, 160, 0.55);
+  }
+  .product-card .view-details-link:hover { color: var(--nf-wine); }
+  .product-card .view-details-link:hover i { transform: translateX(2px); }
 }
+@media (hover: none) {
+  .product-card:hover { transform: none; box-shadow: 0 2px 10px rgba(43, 27, 46, 0.04); }
+  .product-card:hover .product-media img { transform: none; }
+  .product-card .wishlist-btn:hover { transform: none; }
+  .product-card .add-to-cart:not(:disabled):not(.is-added):hover { background: var(--nf-wine); border-color: var(--nf-wine); transform: none; box-shadow: none; }
+  .product-card:active { transform: scale(0.985); }
+  .product-card .add-to-cart:not(:disabled):not(.is-added):active { background: var(--nf-card-hover); border-color: var(--nf-card-hover); }
+}
+/* "In this offer" highlight (offers.js) — placed after the shadows above so it still shows. */
+.product-card.offer-card--in-offer { box-shadow: 0 0 0 2px var(--nf-gold), 0 12px 28px -14px rgba(43, 27, 46, 0.35); }
+@media (prefers-reduced-motion: reduce) {
+  .product-card:hover,
+  .product-card:active,
+  .product-card:hover .product-media img,
+  .product-card .wishlist-btn:hover,
+  .product-card .add-to-cart:not(:disabled):not(.is-added):hover,
+  .product-card .view-details-link:hover i { transform: none; }
+}
+
+/* Product page wishlist/Share squares (.pd-wishlist-btn, style.css). They keep their declared
+   52px size, matching the Add to cart button beside them, but not the card heart's hover
+   scale: a calm wine border and icon instead, as they looked before the card rules were scoped. */
+.pd-cta-row .pd-wishlist-btn:hover { background: var(--nf-paper); border-color: var(--nf-wine); color: var(--nf-wine); transform: none; }
+
+/* Shared states outside the card (homepage spotlight button, account/product stock labels). */
+.stock-yes { color: var(--nf-success); }
+.add-to-cart.is-added { background: var(--nf-lavender); border-color: var(--nf-lavender); color: var(--nf-ivory); }
 
 /* ---------- Search suggestions (header search + products page) ---------- */
 .nf-suggest-host { position: relative; }
@@ -310,11 +457,21 @@ a.nf-info-card:hover { border-color: var(--nf-line-strong); transform: translate
 
 @media (max-width: 640px) {
   .nf-section-head { flex-direction: column; align-items: flex-start; margin-bottom: var(--nf-space-6); }
-  .product-info { padding: 12px 12px 4px; }
-  .product-name { font-size: 15px; }
-  .product-actions { padding: 10px 12px 14px; }
-  /* Keep the card button on one line in narrow two-column grids. */
-  .product-actions .add-to-cart { white-space: nowrap; padding: 12px 8px; letter-spacing: 0.04em; font-size: 11px; }
-  .product-actions .add-to-cart .fa-bag-shopping { display: none; }
+  /* centred heads (scent families, collections) stay centred on phones */
+  .nf-section-head--center { align-items: center; margin-bottom: var(--nf-space-5); }
+  /* Two-column phone grid (cards ~160px wide at 375px): tighter insets and padding, and a
+     slightly smaller name so two lines hold a useful part of it. */
+  .product-card .product-badges { top: 10px; left: 10px; gap: 4px; max-width: calc(100% - 62px); }
+  .product-card .product-badge { padding: 4px 10px; }
+  .product-card .wishlist-btn { top: 10px; right: 10px; }
+  .product-card .product-info { padding: 12px 12px 4px; gap: 3px; }
+  .product-card .product-name { font-size: 17px; }
+  .product-card .product-cat { margin-bottom: 6px; }
+  .product-card .product-actions { padding: 10px 12px 12px; gap: 4px; }
+  .product-card .add-to-cart { padding: 10px 8px; }
   .btn { padding: 14px 22px; }
+}
+@media (max-width: 380px) {
+  /* ~132px cards: drop the bag icon so "Add to cart" stays on one line */
+  .product-card .add-to-cart .fa-bag-shopping { display: none; }
 }

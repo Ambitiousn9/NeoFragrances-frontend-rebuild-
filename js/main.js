@@ -19,11 +19,24 @@
    ============================================ */
 
 // Local development (localhost / 127.0.0.1) talks to the local Express
-// server; every other host (e.g. the live Netlify site) uses Render.
+// server. A private IPv4 address over plain http (the local site opened from
+// another device on the same network, e.g. an iPhone) talks to the Express
+// server on that same machine, port 5000. Every other host (e.g. the live
+// Netlify site) uses Render.
 const LOCAL_HOSTNAMES = ["localhost", "127.0.0.1"];
+// A well-formed private IPv4 literal only (10/8, 172.16/12, 192.168/16). Public
+// addresses, names (.local included), IPv6 and overrides never qualify.
+function nfIsPrivateLanHost(host) {
+  const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
+  if (!m || m.slice(1).some(o => Number(o) > 255 || (o.length > 1 && o[0] === "0"))) return false;
+  const a = Number(m[1]), b = Number(m[2]);
+  return a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168);
+}
 const API_BASE = LOCAL_HOSTNAMES.includes(window.location.hostname)
   ? "http://localhost:5000"
-  : "https://neofragrances-server.onrender.com";
+  : window.location.protocol === "http:" && nfIsPrivateLanHost(window.location.hostname)
+    ? `http://${window.location.hostname}:5000`
+    : "https://neofragrances-server.onrender.com";
 
 // Escapes a value for safe interpolation into HTML text or a quoted
 // attribute. Use on every API/user-derived value placed into innerHTML.
@@ -207,16 +220,16 @@ function productCard(p) {
   <div class="product-card${p.stock ? "" : " is-soldout"}" data-id="${escapeHtml(p.id)}" data-name="${escapeHtml(p.name.toLowerCase())}" data-brand="${escapeHtml(p.brand)}" data-cat="${escapeHtml(p.category)}" data-price="${escapeHtml(p.price)}" tabindex="0" role="link" aria-label="View details for ${escapeHtml(p.name)}">
     <div class="product-media">
       <div class="product-badges">
+        ${p.stock ? "" : `<span class="product-badge badge-soldout">Sold out</span>`}
         ${offer ? `<span class="product-badge badge-sale">−${escapeHtml(offer.discount_percent)}%</span>` : ""}
         ${p.badge ? `<span class="product-badge${p.badge === 'New' ? ' badge-new' : ''}">${escapeHtml(p.badge)}</span>` : ""}
       </div>
       <button class="wishlist-btn" data-id="${escapeHtml(p.id)}" onclick="toggleWishlist(${Number(p.id)}, this)" title="Save to wishlist" aria-label="Save ${escapeHtml(p.name)} to wishlist"><i class="fa-regular fa-heart"></i></button>
       ${productMedia(p.image, p.name)}
-      ${p.stock ? "" : `<span class="product-soldout-tag">Sold out</span>`}
     </div>
     <div class="product-info">
       <span class="product-brand">${escapeHtml(p.brand)}</span>
-      <h3 class="product-name">${escapeHtml(p.name)}</h3>
+      <h3 class="product-name" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</h3>
       <span class="product-cat">${escapeHtml(categoryLabel)}</span>
       <div class="product-price-row">
         <div class="product-prices">${priceBlock}</div>
@@ -224,7 +237,7 @@ function productCard(p) {
       </div>
     </div>
     <div class="product-actions">
-      <button class="btn btn-primary add-to-cart" data-id="${escapeHtml(p.id)}"${offer ? ` data-offer-id="${escapeHtml(offer.id)}"` : ""} ${p.stock ? "" : "disabled"}><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>&nbsp; ${p.stock ? "Add to Cart" : "Sold Out"}</button>
+      <button class="btn btn-primary add-to-cart" data-id="${escapeHtml(p.id)}"${offer ? ` data-offer-id="${escapeHtml(offer.id)}"` : ""} ${p.stock ? "" : "disabled"}><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>&nbsp; ${p.stock ? "Add to cart" : "Sold out"}</button>
       <a href="product-details.html?id=${encodeURIComponent(p.id)}" class="view-details-link">View details <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
     </div>
   </div>`;

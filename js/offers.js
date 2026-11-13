@@ -139,15 +139,18 @@ function renderFeaturedOffer() {
 function offerCardHTML(offer) {
   const stock = offer.stock_qty > 0;
   return `
-  <div class="product-card offer-card" data-id="${escapeHtml(offer.product_id)}" data-offer-type="${escapeHtml(offer.offer_type)}">
+  <div class="product-card offer-card${stock ? "" : " is-soldout"}" data-id="${escapeHtml(offer.product_id)}" data-offer-type="${escapeHtml(offer.offer_type)}">
     <div class="product-media">
-      <span class="product-badge">${escapeHtml(offerDiscountBadge(offer))}</span>
+      <div class="product-badges">
+        ${stock ? "" : `<span class="product-badge badge-soldout">Sold out</span>`}
+        <span class="product-badge badge-sale">${escapeHtml(offerDiscountBadge(offer))}</span>
+      </div>
       <button class="wishlist-btn" data-id="${escapeHtml(offer.product_id)}" onclick="toggleWishlist(${Number(offer.product_id)}, this)" title="Save to wishlist" aria-label="Save to wishlist"><i class="fa-regular fa-heart"></i></button>
       ${productMedia(offer.product_image, offer.product_name)}
     </div>
     <div class="product-info">
       <span class="product-brand">${escapeHtml(offer.brand)}</span>
-      <h3 class="product-name">${escapeHtml(offer.product_name)}</h3>
+      <h3 class="product-name" title="${escapeHtml(offer.product_name)}">${escapeHtml(offer.product_name)}</h3>
       <span class="product-cat">${escapeHtml(capitalize(offer.category))}</span>
       <div class="offer-price-row">
         <span class="offer-price-original">${money(offer.original_price)}</span>
@@ -159,8 +162,8 @@ function offerCardHTML(offer) {
       </div>
     </div>
     <div class="product-actions">
-      <button class="btn btn-primary add-to-cart" data-id="${escapeHtml(offer.product_id)}" data-offer-id="${escapeHtml(offer.id)}" ${stock ? "" : "disabled"} aria-label="Add ${escapeHtml(offer.product_name)} to cart"><i class="fa-solid fa-bag-shopping"></i>&nbsp; Add to Cart</button>
-      <a href="product-details.html?id=${encodeURIComponent(offer.product_id)}" class="view-details-link">View details <i class="fa-solid fa-chevron-right"></i></a>
+      <button class="btn btn-primary add-to-cart" data-id="${escapeHtml(offer.product_id)}" data-offer-id="${escapeHtml(offer.id)}" ${stock ? "" : "disabled"} aria-label="${stock ? `Add ${escapeHtml(offer.product_name)} to cart` : `${escapeHtml(offer.product_name)} is sold out`}"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>&nbsp; ${stock ? "Add to cart" : "Sold out"}</button>
+      <a href="product-details.html?id=${encodeURIComponent(offer.product_id)}" class="view-details-link">View details <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
     </div>
   </div>`;
 }

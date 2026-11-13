@@ -437,6 +437,9 @@ async function changePassword(form) {
     const res = await nfAuthFetch("/api/me/password", { method: "POST", body: JSON.stringify({ currentPassword: current, newPassword: next }) });
     const data = await readJson(res);
     if (!res.ok) { fieldError(form, data.field, data.error || "Could not change your password."); return; }
+    // The change ended every earlier session, this one included; keep this tab signed in
+    // with the fresh token the server returned.
+    if (data.token) { const auth = getAuth(); saveAuth(data.token, auth ? auth.user : null); }
     form.reset();
     fieldError(form, null, "");
     formOk(form, "Your password has been updated.");

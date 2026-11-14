@@ -19,11 +19,16 @@
   they would loop on failed requests and fill the console with errors on the one
   page that is supposed to look calm.
 
-  The one exception is the small inline script at the end of the body: a single
-  read of /api/system/status, which is on the server's maintenance bypass list
-  and therefore still answers while everything else is 503. It only fills in the
-  status message and the progress percentage. If it never answers, the static
-  markup below is what the customer sees.
+  The one exception is the small inline script at the end of the body: it reads
+  /api/system/status, which is on the server's maintenance bypass list and
+  therefore still answers while everything else is 503, on load and then every
+  30 seconds while the tab is visible. It fills in the status message and the
+  progress percentage, and when maintenance has ended it sends a customer whom
+  js/main.js redirected here back to the page they were on. If it never answers,
+  the static markup below is what the customer sees.
+
+  CHANGING THE INLINE SCRIPT CHANGES ITS CSP HASH: update the maintenance hash in
+  _headers (tests/storefront-security-headers-tests.js prints the new one).
 -->
 </head>
 <body class="nf-maint">
@@ -115,11 +120,47 @@
     track.setAttribute("aria-valuetext", `Maintenance is ${pct}% done.`);
   }
 
-  fetch(`${API_BASE}/api/system/status`, { cache: "no-store" })
-    .then(res => (res.ok ? res.json() : null))
-    .then(data => { if (data) paint(data.progress, data.message); })
-    .catch(() => { /* Unreachable API is not an error worth showing here. The
-                      static 0% and default message already on the page stand. */ });
+  // Set by js/main.js just before it redirected the customer here. Only a page that
+  // sent the customer here can set it, so a direct visit (a bookmark, the admin's
+  // "Preview the page" link) is never bounced away. It must resolve to this origin.
+  const RETURN_KEY = "nf_maintenance_return";
+  const POLL_MS = 30000;
+
+  function returnPath() {
+    try {
+      const raw = sessionStorage.getItem(RETURN_KEY);
+      if (typeof raw !== "string" || raw.charAt(0) !== "/") return null;
+      const url = new URL(raw, window.location.origin);
+      if (url.origin !== window.location.origin) return null;
+      if (/\/maintenance(\.html)?$/i.test(url.pathname)) return null;
+      return url.pathname + url.search + url.hash;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function check() {
+    fetch(`${API_BASE}/api/system/status`, { cache: "no-store" })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        if (!data) return;
+        // Only a definite answer from the server ends the wait; an error never does.
+        if (data.maintenance === false) {
+          const back = returnPath();
+          if (back) {
+            try { sessionStorage.removeItem(RETURN_KEY); } catch (err) { /* ignore */ }
+            window.location.replace(back);
+            return;
+          }
+        }
+        paint(data.progress, data.message);
+      })
+      .catch(() => { /* Unreachable API is not an error worth showing here. The
+                        figures already on the page stand until the next check. */ });
+  }
+
+  check();
+  setInterval(() => { if (document.visibilityState !== "hidden") check(); }, POLL_MS);
 })();
 </script>
 

@@ -346,6 +346,9 @@ async function nfCheckMaintenance() {
     if (!res.ok) return false;              // unreadable probe: assume the site is up
     const data = await res.json();
     if (!data || data.maintenance !== true) return false;
+    // Remember where the customer was, so maintenance.html can bring them back to that page
+    // once maintenance ends. Per-tab and best-effort: storage may be unavailable.
+    try { sessionStorage.setItem("nf_maintenance_return", window.location.pathname + window.location.search + window.location.hash); } catch (err) { /* ignore */ }
     window.location.replace(NF_MAINTENANCE_PAGE);
     return true;
   } catch (err) {

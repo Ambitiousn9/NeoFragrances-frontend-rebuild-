@@ -198,7 +198,7 @@ function initRegisterValidation() {
   attachLiveValidation(fullnameInput, { required: true });
   attachLiveValidation(emailInput, { required: true, email: true });
   attachLiveValidation(phoneInput, { required: true, phone: true });
-  attachLiveValidation(passwordInput, { required: true, minLength: 6 });
+  attachLiveValidation(passwordInput, { required: true, minLength: 8 });
   attachLiveValidation(confirmInput, { required: true, matchInput: passwordInput });
 
   // Re-check the confirm field if the password field changes after confirm was already filled in
@@ -214,7 +214,7 @@ function initRegisterValidation() {
       validateField(fullnameInput, { required: true }),
       validateField(emailInput, { required: true, email: true }),
       validateField(phoneInput, { required: true, phone: true }),
-      validateField(passwordInput, { required: true, minLength: 6 }),
+      validateField(passwordInput, { required: true, minLength: 8 }),
       validateField(confirmInput, { required: true, matchInput: passwordInput }),
     ];
     if (!results.every(Boolean)) return;

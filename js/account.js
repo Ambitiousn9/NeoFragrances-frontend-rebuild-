@@ -408,10 +408,10 @@ function renderSecurity() {
         <div class="nf-field nf-field--wide">
           <label for="pw-${k}">${k === "current" ? "Current password" : k === "new" ? "New password" : "Confirm new password"}</label>
           <div class="nf-pw-wrap">
-            <input id="pw-${k}" name="${k}Password" type="password" autocomplete="${k === "current" ? "current-password" : "new-password"}" required ${k !== "current" ? 'minlength="6"' : ""} ${k === "new" ? 'aria-describedby="pw-hint"' : ""}>
+            <input id="pw-${k}" name="${k}Password" type="password" autocomplete="${k === "current" ? "current-password" : "new-password"}" required ${k !== "current" ? 'minlength="8"' : ""} ${k === "new" ? 'aria-describedby="pw-hint"' : ""}>
             <button type="button" class="nf-pw-toggle" data-action="toggle-pw" aria-label="Show password" aria-pressed="false">Show</button>
           </div>
-          ${k === "new" ? `<span class="nf-field-note" id="pw-hint">At least 6 characters.</span>` : ""}
+          ${k === "new" ? `<span class="nf-field-note" id="pw-hint">At least 8 characters.</span>` : ""}
         </div>`).join("")}
       </div>
       <p class="nf-form-status" role="status"></p>
@@ -430,7 +430,7 @@ function sessionNoteHTML() {
 async function changePassword(form) {
   const current = form.currentPassword.value, next = form.newPassword.value, confirm = form.confirmPassword.value;
   if (!current) return fieldError(form, "currentPassword", "Please enter your current password.");
-  if (next.length < 6) return fieldError(form, "newPassword", "Your new password must be at least 6 characters.");
+  if (next.length < 8) return fieldError(form, "newPassword", "Your new password must be at least 8 characters.");
   if (next !== confirm) return fieldError(form, "confirmPassword", "The new passwords don't match.");
   const btn = form.querySelector("[type=submit]"); btn.disabled = true; btn.textContent = "Updating…";
   try {

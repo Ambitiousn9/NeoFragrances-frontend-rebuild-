@@ -109,8 +109,8 @@ async function initResetPasswordPage() {
     const resultEl = document.getElementById("rp-result");
     resultEl.innerHTML = "";
 
-    if (password.length < 6) {
-      resultEl.innerHTML = `<p class="fp-error"><i class="fa-solid fa-circle-exclamation"></i>&nbsp; Password must be at least 6 characters.</p>`;
+    if (password.length < 8) {
+      resultEl.innerHTML = `<p class="fp-error"><i class="fa-solid fa-circle-exclamation"></i>&nbsp; Password must be at least 8 characters.</p>`;
       return;
     }
     if (password !== confirm) {

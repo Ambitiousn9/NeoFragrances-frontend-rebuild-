@@ -113,8 +113,10 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
   // Prefer the admin's own written description. If it's blank, fall back
   // to the auto-generated one built from notes; if notes are also
   // missing/placeholder, fall back to a generic line.
-  const notesComplete = p.notes && p.notes.top && p.notes.middle && p.notes.base
-    && p.notes.top !== "—" && p.notes.middle !== "—" && p.notes.base !== "—";
+  // A note is real only if it contains a letter or digit and no "??" run: the catalogue
+  // uses "—" and "???" as placeholders, and neither may be shown as a fragrance note.
+  const pdRealNote = v => typeof v === "string" && /[\p{L}\p{N}]/u.test(v) && !/\?\?/.test(v);
+  const notesComplete = !!p.notes && pdRealNote(p.notes.top) && pdRealNote(p.notes.middle) && pdRealNote(p.notes.base);
   const pdDescription = p.description && p.description.trim()
     ? p.description
     : notesComplete

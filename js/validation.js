@@ -9,60 +9,15 @@
    Contact is still a demo (no backend endpoint yet).
    ============================================ */
 
-// Inject the small set of styles this needs, so no CSS file has to be touched.
-(function injectValidationStyles() {
-  const style = document.createElement("style");
-  style.textContent = `
-    .field-error {
-      color: #A3273F;
-      font-size: 12px;
-      margin-top: 5px;
-      font-weight: 600;
-    }
-    .field input.invalid, .field select.invalid, .field textarea.invalid {
-      border-color: #A3273F !important;
-      box-shadow: 0 0 0 3px rgba(163,39,63,0.12) !important;
-    }
-    .field input.valid, .field select.valid, .field textarea.valid {
-      border-color: #22733B !important;
-    }
-    .form-success {
-      background: #DAF3E1;
-      color: #22733B;
-      border: 1px solid #b7e3c3;
-      border-radius: 4px;
-      padding: 14px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 18px;
-    }
-    .form-notice {
-      background: #FBF3DA;
-      color: #7A5B00;
-      border: 1px solid #f0e0a8;
-      border-radius: 4px;
-      padding: 14px 16px;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 18px;
-    }
-    .resend-link {
-      background: none;
-      border: none;
-      padding: 0;
-      color: #6B2737;
-      font-weight: 700;
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: inherit;
-    }
-    .resend-link:disabled {
-      color: #a08a8f;
-      cursor: default;
-      text-decoration: none;
-    }
-  `;
-  document.head.appendChild(style);
+// The validation styles live in css/validation.css. They are linked from here, so no page markup
+// has to change, and as a stylesheet rather than an injected <style> element, so the storefront CSP
+// does not have to allow inline style elements.
+(function loadValidationStyles() {
+  if (document.querySelector('link[href="css/validation.css"]')) return;
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "css/validation.css";
+  document.head.appendChild(link);
 })();
 
 function showFieldError(input, message) {

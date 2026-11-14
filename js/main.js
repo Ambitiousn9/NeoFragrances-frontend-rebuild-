@@ -184,7 +184,7 @@ function bottleSVG(fill = "#2B1B2E") {
 }
 
 function productMedia(imagePath, alt) {
-  return `<img src="${escapeHtml(imagePath)}" alt="${escapeHtml(alt)}" loading="lazy" onerror="handleImageError(this)">`;
+  return `<img src="${escapeHtml(imagePath)}" alt="${escapeHtml(alt)}" loading="lazy" data-fallback="bottle">`;
 }
 
 function handleImageError(img) {
@@ -224,7 +224,7 @@ function productCard(p) {
         ${offer ? `<span class="product-badge badge-sale">−${escapeHtml(offer.discount_percent)}%</span>` : ""}
         ${p.badge ? `<span class="product-badge${p.badge === 'New' ? ' badge-new' : ''}">${escapeHtml(p.badge)}</span>` : ""}
       </div>
-      <button class="wishlist-btn" data-id="${escapeHtml(p.id)}" onclick="toggleWishlist(${Number(p.id)}, this)" title="Save to wishlist" aria-label="Save ${escapeHtml(p.name)} to wishlist"><i class="fa-regular fa-heart"></i></button>
+      <button class="wishlist-btn" data-id="${escapeHtml(p.id)}" data-wishlist-toggle title="Save to wishlist" aria-label="Save ${escapeHtml(p.name)} to wishlist"><i class="fa-regular fa-heart"></i></button>
       ${productMedia(p.image, p.name)}
     </div>
     <div class="product-info">
@@ -280,6 +280,22 @@ document.addEventListener("click", (e) => {
 
   navigateToProductFromCard(card);
 });
+
+// Wishlist hearts on product and offer cards (data-wishlist-toggle): one delegated listener
+// instead of a per-card inline onclick, so the storefront CSP can forbid inline handlers.
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-wishlist-toggle]");
+  if (!btn || typeof toggleWishlist !== "function") return;
+  toggleWishlist(Number(btn.dataset.id), btn);
+});
+
+// Missing product images (data-fallback) fall back to the bottle illustration. Capture phase,
+// because "error" events do not bubble; this replaces the old inline onerror handler. Images
+// without data-fallback (e.g. the admin portal's own thumbnails) are left alone.
+document.addEventListener("error", (e) => {
+  const img = e.target;
+  if (img instanceof HTMLImageElement && img.hasAttribute("data-fallback")) handleImageError(img);
+}, true);
 
 document.addEventListener("keydown", (e) => {
   if (e.key !== "Enter" && e.key !== " ") return;

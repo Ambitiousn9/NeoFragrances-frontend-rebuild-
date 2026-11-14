@@ -619,7 +619,8 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("productsReady", async (e) => {
   if (!$id("cart-list")) return;
   if (e.detail.error) {
-    $id("cart-list").innerHTML = `<div class="nf-empty nf-empty--error" role="alert"><h2>We couldn't load your bag</h2><p>Please check your connection and try again.</p><div class="nf-empty-actions"><button type="button" class="btn btn-primary btn-sm" onclick="loadProducts()">Try again</button></div></div>`;
+    $id("cart-list").innerHTML = `<div class="nf-empty nf-empty--error" role="alert"><h2>We couldn't load your bag</h2><p>Please check your connection and try again.</p><div class="nf-empty-actions"><button type="button" class="btn btn-primary btn-sm" id="cart-retry">Try again</button></div></div>`;
+    $id("cart-retry").addEventListener("click", () => loadProducts());
     return;
   }
   await nfLoadActiveOffers();

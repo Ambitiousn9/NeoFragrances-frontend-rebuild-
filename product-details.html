@@ -177,7 +177,7 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
 
             <div class="pd-cta-row">
         <button class="btn btn-primary pd-add-to-cart-btn" id="pd-add-cart" ${p.stock ? "" : "disabled"}><i class="fa-solid fa-bag-shopping"></i>&nbsp; Add to Cart</button>
-        <button class="wishlist-btn pd-wishlist-btn" data-id="${escapeHtml(p.id)}" onclick="toggleWishlist(${Number(p.id)}, this)" title="Save to wishlist"><i class="fa-regular fa-heart"></i></button>
+        <button class="wishlist-btn pd-wishlist-btn" data-id="${escapeHtml(p.id)}" id="pd-wishlist-btn" title="Save to wishlist"><i class="fa-regular fa-heart"></i></button>
         <button class="wishlist-btn pd-wishlist-btn" id="pd-share-btn" title="Share this fragrance">
           <svg width="15" height="15" viewBox="0 0 448 512" fill="currentColor"><path d="M352 224c53 0 96-43 96-96s-43-96-96-96s-96 43-96 96c0 4 .2 8 .7 11.9l-94.1 47C145.4 170.2 121.9 160 96 160c-53 0-96 43-96 96s43 96 96 96c25.9 0 49.4-10.2 66.6-26.9l94.1 47c-.5 3.9-.7 7.8-.7 11.9c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-25.9 0-49.4 10.2-66.6 26.9l-94.1-47c.5-3.9 .7-7.8 .7-11.9s-.2-8-.7-11.9l94.1-47C302.6 213.8 326.1 224 352 224z"/></svg>
         </button>
@@ -261,6 +261,10 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
   showAddedState(e.currentTarget, `<i class="fa-solid fa-bag-shopping"></i>&nbsp; Add to Cart`);
   if (typeof showToast === "function") showToast("Added to cart");
 });
+
+  // A listener rather than an inline onclick, so the page works under the storefront CSP.
+  const wishBtn = document.getElementById("pd-wishlist-btn");
+  wishBtn.addEventListener("click", () => toggleWishlist(Number(p.id), wishBtn));
 
   document.getElementById("pd-share-btn").addEventListener("click", async () => {
     const shareData = {

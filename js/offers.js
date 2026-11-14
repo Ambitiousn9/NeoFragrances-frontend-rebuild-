@@ -145,7 +145,7 @@ function offerCardHTML(offer) {
         ${stock ? "" : `<span class="product-badge badge-soldout">Sold out</span>`}
         <span class="product-badge badge-sale">${escapeHtml(offerDiscountBadge(offer))}</span>
       </div>
-      <button class="wishlist-btn" data-id="${escapeHtml(offer.product_id)}" onclick="toggleWishlist(${Number(offer.product_id)}, this)" title="Save to wishlist" aria-label="Save to wishlist"><i class="fa-regular fa-heart"></i></button>
+      <button class="wishlist-btn" data-id="${escapeHtml(offer.product_id)}" data-wishlist-toggle title="Save to wishlist" aria-label="Save to wishlist"><i class="fa-regular fa-heart"></i></button>
       ${productMedia(offer.product_image, offer.product_name)}
     </div>
     <div class="product-info">

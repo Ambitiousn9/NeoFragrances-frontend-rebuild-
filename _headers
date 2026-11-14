@@ -28,3 +28,439 @@
   Referrer-Policy: no-referrer
   Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
   X-Robots-Tag: noindex, nofollow
+
+# ---------------------------------------------------------------------------------------------
+# PUBLIC STOREFRONT (G-2, 2026-11-13). One rule per page and URL form ("/about" and "/about.html";
+# "/" and "/index.html"), all with the same headers. Exact paths are used on purpose instead of
+# "/*": a "/*" rule would also match /admin/*, and Netlify then sends BOTH rules' headers, so two
+# CSPs would apply to admin pages. Checked by tests/storefront-security-headers-tests.js.
+#
+# Content-Security-Policy, by directive:
+#   default-src 'self'
+#   script-src  'self' + one sha256 per inline <script> in about, learn, login, maintenance,
+#               my-orders, product-details, register, verify-email and wishlist (hashes of the
+#               exact script text — CHANGE A SCRIPT, REGENERATE ITS HASH; the test prints it) +
+#               Google Sign-In (https://accounts.google.com/gsi/client). No 'unsafe-inline',
+#               no 'unsafe-eval', no inline event handlers (the storefront uses listeners).
+#   style-src-elem 'self', Google Fonts CSS, Font Awesome CSS (cdnjs), Google Sign-In styles
+#   style-src-attr 'unsafe-inline'  style="" attributes in pages and generated markup
+#   style-src (fallback) the above plus 'unsafe-inline' for browsers without -elem/-attr
+#   font-src    Google font files, Font Awesome webfonts (cdnjs)
+#   img-src     'self' and data: (the CSS bottle placeholder)
+#   connect-src 'self', the production API (API_BASE in js/main.js), Google Sign-In
+#   frame-src   Google Sign-In; frame-ancestors 'none'; form-action 'self'; base-uri 'none';
+#   object-src 'none'
+# Cross-Origin-Opener-Policy same-origin-allow-popups keeps the Google Sign-In popup working.
+# Verified 2026-11-13 in headless Edge on all 50 paths with no violations (local check; NOT yet
+# verified on Netlify — needs a deploy preview).
+# ---------------------------------------------------------------------------------------------
+
+/about
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/about.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/cart
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/cart.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/contact
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/contact.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/FAQ
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/FAQ.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/forgot-password
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/forgot-password.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/index.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/learn
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/learn.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/login
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/login.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/maintenance
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/maintenance.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/my-account
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/my-account.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/my-orders
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/my-orders.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/order
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/order.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/payment-callback
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/payment-callback.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/privacy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/privacy.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/product-details
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/product-details.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/products
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/products.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/register
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/register.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/reset-password
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/reset-password.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/returns
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/returns.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/shipping
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/shipping.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/special-offers
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/special-offers.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/terms
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/terms.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/track-order
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/track-order.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/verify-email
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/verify-email.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/wishlist
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/wishlist.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-Pm9UxYNgmKXIufiGphotxP2JBX0y8VnEZ/HZN+r7FQE=' 'sha256-YXKoLDA2cD/UsbdeAXg3dWKaSRzjmmYgxeAzYNLP4WM=' 'sha256-awNhiXqUtttu4gSwJ974LEtycOtqKZJD2lTSLwu1mEo=' 'sha256-7acZsXEA+mVvGer9SsCHHUdGJUaok+PVxygkhiJs4Ss=' 'sha256-ZaWW1qh7lrPG7kCUSxFgQwGceGvOn66+agTET5Xcw4M=' 'sha256-+D0kxnemqiyq9Q9lz29/nLv1aXASm7HNmmA9fGTakQE=' 'sha256-zm4qSt6+GNVGmdLhC/QGKCPQo22O634EbiNJ5LZQWQc=' 'sha256-/IUMzCDQtuMUGv7KG8qX8zWdZlZqe7ThHKUBWPLbS4s=' 'sha256-8ybEoJAl3F71TyHGDhvAJAPAQSF8eIxZ7DZhKjTe9QU=' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+
+/css/*
+  X-Content-Type-Options: nosniff
+
+/js/*
+  X-Content-Type-Options: nosniff
+
+/images/*
+  X-Content-Type-Options: nosniff
+

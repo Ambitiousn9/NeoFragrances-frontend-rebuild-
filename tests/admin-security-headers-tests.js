@@ -1,8 +1,8 @@
 // Static regression test for the admin portal's Netlify security headers (ADMIN-2).
 //
 // Reads _headers, the admin HTML shells and the scripts they load, and checks that:
-//   * a "/admin/*" rule exists, covers every page in admin/, and is the ONLY rule
-//     (so the public storefront is not affected);
+//   * a "/admin/*" rule exists, covers every page in admin/, and is the only rule that
+//     matches admin pages (the storefront rules added for G-2 never overlap it);
 //   * the required headers are present with safe values;
 //   * the CSP is restrictive (default-src 'none', no wildcard, no 'unsafe-eval', no
 //     'unsafe-inline' for scripts, framing/base/object locked down);
@@ -37,7 +37,12 @@ for (const line of read("_headers").split("\n")) {
   const m = line.match(/^\s+([A-Za-z0-9-]+):\s*(.*)$/);
   if (m && rules.length) rules[rules.length - 1].headers[m[1].toLowerCase()] = m[2].trim();
 }
-check("H2 exactly one rule, for /admin/* (storefront pages are not matched)", rules.length === 1 && rules[0].path === "/admin/*", rules.map(r => r.path));
+// Since G-2 (2026-11-13) _headers also carries storefront rules (exact page paths) and asset rules;
+// the admin portal must still be governed by its own rule alone — see H2 / H4.
+const adminUrls = fs.readdirSync(path.join(ROOT, "admin")).filter(f => f.endsWith(".html")).flatMap(f => [`/admin/${f}`, `/admin/${f.replace(/\.html$/, "")}`]);
+const matchesEarly = (pattern, url) => new RegExp("^" + pattern.split("*").map(s => s.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*") + "$").test(url);
+const overlapping = adminUrls.filter(u => rules.some(r => r.path !== "/admin/*" && matchesEarly(r.path, u)));
+check("H2 a /admin/* rule exists and no other rule matches any admin page (storefront rules never overlap the admin portal)", rules.filter(r => r.path === "/admin/*").length === 1 && overlapping.length === 0, overlapping);
 const H = (rules.find(r => r.path === "/admin/*") || { headers: {} }).headers;
 
 // Netlify-style matching: "/admin/*" matches any path under /admin/.
@@ -46,7 +51,7 @@ const adminPages = fs.readdirSync(path.join(ROOT, "admin")).filter(f => f.endsWi
 const uncovered = adminPages.flatMap(f => [`/admin/${f}`, `/admin/${f.replace(/\.html$/, "")}`]).filter(u => !rules.some(r => matches(r.path, u)));
 check(`H3 the rule covers all ${adminPages.length} admin pages (with and without .html), login included`, adminPages.includes("login.html") && uncovered.length === 0, uncovered);
 const storefront = ["/", "/index.html", "/shop.html", "/product.html", "/checkout.html", "/account.html", "/payment-callback.html", "/js/main.js", "/css/admin.css", "/administrator.html"];
-check("H4 storefront paths and shared assets are not matched", storefront.every(u => !rules.some(r => matches(r.path, u))), storefront.filter(u => rules.some(r => matches(r.path, u))));
+check("H4 the /admin/* rule does not match storefront paths or shared assets", storefront.every(u => !matches("/admin/*", u)), storefront.filter(u => matches("/admin/*", u)));
 
 // ---------- simple headers ----------
 check("S1 X-Frame-Options: DENY", H["x-frame-options"] === "DENY", H["x-frame-options"]);

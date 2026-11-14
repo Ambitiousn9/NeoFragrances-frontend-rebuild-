@@ -125,7 +125,8 @@ async function loadOrderPage() {
     renderOrder(order, history);
   } catch (e) {
     if (e.message === "Session expired" || e.message === "Not logged in") return;
-    $o("order-root").innerHTML = `<div class="nf-acc-state nf-acc-state--error" role="alert"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><p>We couldn't load this order. Please check your connection and try again.</p><button type="button" class="btn btn-outline btn-sm" onclick="loadOrderPage()">Try again</button></div>`;
+    $o("order-root").innerHTML = `<div class="nf-acc-state nf-acc-state--error" role="alert"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><p>We couldn't load this order. Please check your connection and try again.</p><button type="button" class="btn btn-outline btn-sm" id="order-retry">Try again</button></div>`;
+    $o("order-retry").addEventListener("click", () => loadOrderPage());
   }
 }
 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Netlify picks _headers rules by the requested path, so this page, served for an unknown path,
+     may arrive without the storefront's security headers. It therefore carries its own policy:
+     the /404.html rule's CSP with script-src reduced to 'self' (this page has no inline script)
+     and without frame-ancestors (ignored in a meta element). tests/not-found-page-tests.js keeps
+     it in step with _headers. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://accounts.google.com/gsi/style; style-src-attr 'unsafe-inline'; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://neofragrances-server.onrender.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; form-action 'self'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/images/logo/logo.png" type="image/png">
+<title>Page Not Found — NeoFragrances</title>
+<!-- Netlify serves this page for any missing path, including nested ones such as /a/b, so every
+     asset here is root-absolute, and js/not-found.js makes the shared header's and footer's
+     relative links root-absolute too (the storefront CSP has base-uri 'none', so no <base>). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/responsive.css">
+<link rel="stylesheet" href="/css/mobile-drawer.css">
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/components.css">
+<link rel="stylesheet" href="/css/pages.css">
+<script src="/js/not-found.js"></script>
+</head>
+<body>
+
+<div id="site-header"></div>
+<script src="/js/layout.js"></script>
+<main id="main">
+<section class="nf-coming-soon">
+  <div class="container nf-coming-soon-inner">
+    <span class="nf-eyebrow">Error 404</span>
+    <h1>We couldn't find that page</h1>
+    <p>The page you're looking for doesn't exist or may have moved. You can head back to the shop, or contact us if you need help finding something.</p>
+    <div class="nf-coming-soon-actions">
+      <a href="/products.html" class="btn btn-primary">Shop all fragrances</a>
+      <a href="/index.html" class="btn btn-outline">Go to the homepage</a>
+      <a href="/contact.html" class="btn btn-outline">Contact us</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div id="site-footer"></div>
+
+<script src="/js/main.js"></script>
+<script src="/js/catalog.js"></script>
+<script src="/js/search-suggest.js"></script>
+<script src="/js/motion.js"></script>
+<script src="/js/toast.js"></script>
+<script src="/js/cart.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/wishlist.js"></script>
+<script src="/js/mobile-drawer.js"></script>
+</body>
+</html>

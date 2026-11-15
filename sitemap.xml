@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Public, indexable storefront pages only. Product pages (product-details.html?id=…) are generated
+     from the live catalogue and are not listed here; account, checkout, sign-in and "Coming soon"
+     pages are noindex and excluded. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://neofragrances.netlify.app/</loc></url>
+  <url><loc>https://neofragrances.netlify.app/products.html</loc></url>
+  <url><loc>https://neofragrances.netlify.app/special-offers.html</loc></url>
+  <url><loc>https://neofragrances.netlify.app/learn.html</loc></url>
+  <url><loc>https://neofragrances.netlify.app/about.html</loc></url>
+  <url><loc>https://neofragrances.netlify.app/contact.html</loc></url>
+  <url><loc>https://neofragrances.netlify.app/track-order.html</loc></url>
+  <url><loc>https://neofragrances.netlify.app/privacy.html</loc></url>
+  <url><loc>https://neofragrances.netlify.app/terms.html</loc></url>
+</urlset>

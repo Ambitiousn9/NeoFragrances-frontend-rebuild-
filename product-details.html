@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Fragrance details, price and availability at NeoFragrances.">
 <link rel="icon" href="images/logo/logo.png" type="image/png">
 <title>Product Details — NeoFragrances</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,6 +72,10 @@ document.addEventListener("productsReady", async (e) => {
   const p = id > 0 ? PRODUCTS.find(pr => pr.id === id) : null;
   if (!p) {
     document.title = "Product not found — NeoFragrances";
+    // Not a real product page: keep it out of search results.
+    const noindex = document.createElement("meta");
+    noindex.name = "robots"; noindex.content = "noindex";
+    document.head.appendChild(noindex);
     document.getElementById("pd-breadcrumb").innerHTML =
       `<a href="index.html" style="color:var(--ink-soft); text-decoration:none;">Home</a> &nbsp;›&nbsp;
        <span style="color:var(--ink);">Product not found</span>`;
@@ -104,6 +109,45 @@ document.addEventListener("productsReady", async (e) => {
   const activeOffer = ACTIVE_OFFER_BY_PRODUCT[p.id] || null;
 
   document.title = `${p.name} — NeoFragrances`;
+
+  // Search metadata for this product (R5): a canonical URL naming this product's own id, a
+  // factual description, and schema.org Product data. Only catalogue facts are used: the
+  // generated description fallback and the rating fields are deliberately left out.
+  {
+    const SITE = NF_SITE_ORIGIN; // js/main.js
+    const url = `${SITE}/product-details.html?id=${p.id}`;
+    const price = Number(activeOffer ? activeOffer.sale_price : p.price);
+    const headTag = (selector, tag, attrs) => {
+      let el = document.head.querySelector(selector);
+      if (!el) { el = document.createElement(tag); Object.assign(el, attrs); document.head.appendChild(el); }
+      return el;
+    };
+    headTag('link[rel="canonical"]', "link", { rel: "canonical" }).href = url;
+    headTag('meta[name="description"]', "meta", { name: "description" }).content =
+      `${p.name} by ${p.brand} at NeoFragrances: ${money(price)}, ${p.stock ? "in stock" : "currently out of stock"}.`;
+    const data = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: p.name,
+      sku: String(p.id),
+      brand: { "@type": "Brand", name: p.brand },
+      url,
+      offers: {
+        "@type": "Offer",
+        url,
+        priceCurrency: "GHS",
+        price: price.toFixed(2),
+        availability: `https://schema.org/${p.stock ? "InStock" : "OutOfStock"}`,
+      },
+    };
+    if (p.image && !/placeholder\.jpg$/i.test(p.image)) data.image = `${SITE}/${encodeURI(String(p.image).replace(/^\/+/, ""))}`;
+    if (p.description && p.description.trim()) data.description = p.description.trim();
+    const ld = document.createElement("script");
+    ld.type = "application/ld+json";
+    ld.id = "pd-structured-data";
+    ld.textContent = JSON.stringify(data).replace(/</g, "\\u003c");
+    document.head.appendChild(ld);
+  }
 const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
   const sizeMatch = p.name.match(/(\d+)\s?ml/i);
   const concentration = concMatch ? { EDP: "Eau de Parfum", EDT: "Eau de Toilette", EDC: "Eau de Cologne" }[concMatch[0].toUpperCase()] : null;

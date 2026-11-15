@@ -38,6 +38,13 @@ const API_BASE = LOCAL_HOSTNAMES.includes(window.location.hostname)
     ? `http://${window.location.hostname}:5000`
     : "https://neofragrances-server.onrender.com";
 
+// The storefront's public production address: canonical links, share tags and product
+// structured data are built from it. The static files (page <head> tags, sitemap.xml,
+// robots.txt) cannot read this constant and repeat the value; tests/site-origin-tests.js
+// fails if any of them disagrees with it. To move to a custom domain, change this value,
+// then update the files that test lists.
+const NF_SITE_ORIGIN = "https://neofragrances.netlify.app";
+
 // Escapes a value for safe interpolation into HTML text or a quoted
 // attribute. Use on every API/user-derived value placed into innerHTML.
 function escapeHtml(value) {

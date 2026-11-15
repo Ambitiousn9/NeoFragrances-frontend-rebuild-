@@ -39,6 +39,7 @@ function nfCurrentNavKey() {
   if (page === "products.html") return ["men", "women", "unisex"].includes(category) ? category : "shop";
   if (page === "product-details.html") return "shop";
   if (page === "special-offers.html") return "offers";
+  if (page === "learn.html") return "guide";
   if (page === "about.html") return "about";
   if (page === "contact.html") return "contact";
   return "";
@@ -51,6 +52,7 @@ function nfHeaderHTML() {
     ["women", "products.html?category=women", "Women"],
     ["unisex", "products.html?category=unisex", "Unisex"],
     ["offers", "special-offers.html", "Offers"],
+    ["guide", "learn.html", "Fragrance Guide"],
     ["about", "about.html", "About"],
     ["contact", "contact.html", "Contact"],
   ];
@@ -111,6 +113,7 @@ function nfFooterHTML() {
     ["shipping.html", "Shipping &amp; Delivery"],
     ["returns.html", "Returns &amp; Refunds"],
     ["FAQ.html", "FAQ"],
+    ["learn.html", "Fragrance Guide"],
   ];
   const account = [
     ["my-account.html", "My Account"],

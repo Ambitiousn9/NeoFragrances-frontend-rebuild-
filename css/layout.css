@@ -482,7 +482,7 @@ h1, h2, h3, h4 { font-family: var(--nf-font-display); font-weight: 500; letter-s
 }
 
 /* ---------- Mobile drawer refinements (markup from mobile-drawer.js) ---------- */
-/* The header collapses to the drawer at <=960px (7 nav links no longer fit). */
+/* The header collapses to the drawer at <=960px (the 8 nav links no longer fit). */
 @media (max-width: 960px) {
   /* Shadow + visibility only while open: no shadow bleed at the screen edge, and
      off-canvas links can't be reached by keyboard while the drawer is closed. */
@@ -504,7 +504,11 @@ h1, h2, h3, h4 { font-family: var(--nf-font-display); font-weight: 500; letter-s
 /* ---------- Responsive ---------- */
 @media (max-width: 1180px) {
   .nf-header .nav-links { gap: 14px; }
-  .nf-header .nav-links a { font-size: 12px; letter-spacing: 0.04em; }
+  .nf-header .nav-links a { font-size: 12px; letter-spacing: 0.04em; white-space: nowrap; }
+}
+/* 8 links ("Fragrance Guide" added, P3.1): keep each label on one line down to the 960px collapse. */
+@media (max-width: 1080px) {
+  .nf-header .nav-links { gap: 10px; }
 }
 @media (max-width: 960px) {
   .nf-header .nav-links { display: none; }

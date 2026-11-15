@@ -40,6 +40,7 @@ function mnavBuildMarkup() {
           <a href="products.html?category=women" class="mnav-link"><i class="fa-solid fa-venus"></i> Women</a>
           <a href="products.html?category=unisex" class="mnav-link"><i class="fa-solid fa-venus-mars"></i> Unisex</a>
           <a href="special-offers.html" class="mnav-link" data-page="special-offers.html"><i class="fa-solid fa-tag"></i> Special Offers</a>
+          <a href="learn.html" class="mnav-link" data-page="learn.html"><i class="fa-solid fa-book-open"></i> Fragrance Guide</a>
         </div>
 
         <div class="mnav-section">

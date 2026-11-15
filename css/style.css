@@ -824,6 +824,9 @@ select:focus, .filter-select:focus {
 .pd-note-card i { font-size: 20px; color: var(--gold); margin-bottom: 10px; }
 .pd-note-card h5 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
 .pd-note-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+/* Glossary links to the Fragrance Guide (learn.html): keep the label's look, mark it as a link. */
+.pd-guide-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--gold); text-underline-offset: 3px; }
+.pd-guide-link:hover, .pd-guide-link:focus-visible { color: var(--wine); text-decoration-style: solid; }
 
 .pd-sticky-bar {
   position: fixed; left: 0; right: 0; bottom: 0;

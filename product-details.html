@@ -107,6 +107,8 @@ document.addEventListener("productsReady", async (e) => {
 const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
   const sizeMatch = p.name.match(/(\d+)\s?ml/i);
   const concentration = concMatch ? { EDP: "Eau de Parfum", EDT: "Eau de Toilette", EDC: "Eau de Cologne" }[concMatch[0].toUpperCase()] : null;
+  // Fragrance Guide glossary entries (learn.html) for the terms this page shows.
+  const concentrationTerm = concMatch ? { EDP: "term-eau-de-parfum", EDT: "term-eau-de-toilette", EDC: "term-eau-de-cologne" }[concMatch[0].toUpperCase()] : null;
   const size = sizeMatch ? `${sizeMatch[1]}ml` : null;
   const hasRating = p.reviewCount > 0;
 
@@ -201,16 +203,16 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
         <div class="pd-tab-panel active" id="tab-details">
           <div class="pd-details-grid">
             <div><i class="fa-solid fa-venus-mars"></i><div><strong>Gender</strong><span>${escapeHtml(capitalize(p.category))}</span></div></div>
-            ${concentration ? `<div><i class="fa-solid fa-flask"></i><div><strong>Concentration</strong><span>${escapeHtml(concentration)}</span></div></div>` : ""}
+            ${concentration ? `<div><i class="fa-solid fa-flask"></i><div><strong>Concentration</strong><span><a class="pd-guide-link" href="learn.html#${concentrationTerm}">${escapeHtml(concentration)}</a></span></div></div>` : ""}
             ${size ? `<div><i class="fa-solid fa-bottle-droplet"></i><div><strong>Size</strong><span>${escapeHtml(size)}</span></div></div>` : ""}
           </div>
         </div>
         <div class="pd-tab-panel" id="tab-notes">
           ${notesComplete ? `
           <div class="pd-notes-grid">
-            <div class="pd-note-card"><i class="fa-solid fa-lemon"></i><h5>Top Notes</h5><p>${escapeHtml(p.notes.top)}</p></div>
-            <div class="pd-note-card"><i class="fa-solid fa-gem"></i><h5>Heart Notes</h5><p>${escapeHtml(p.notes.middle)}</p></div>
-            <div class="pd-note-card"><i class="fa-solid fa-tree"></i><h5>Base Notes</h5><p>${escapeHtml(p.notes.base)}</p></div>
+            <div class="pd-note-card"><i class="fa-solid fa-lemon"></i><h5><a class="pd-guide-link" href="learn.html#term-top-notes">Top Notes</a></h5><p>${escapeHtml(p.notes.top)}</p></div>
+            <div class="pd-note-card"><i class="fa-solid fa-gem"></i><h5><a class="pd-guide-link" href="learn.html#term-heart-notes">Heart Notes</a></h5><p>${escapeHtml(p.notes.middle)}</p></div>
+            <div class="pd-note-card"><i class="fa-solid fa-tree"></i><h5><a class="pd-guide-link" href="learn.html#term-base-notes">Base Notes</a></h5><p>${escapeHtml(p.notes.base)}</p></div>
           </div>
           ` : `<p style="color:var(--ink-soft); font-size:14px;">Fragrance notes haven't been added for this product yet.</p>`}
         </div>

@@ -12,6 +12,7 @@
 /* Anchored targets clear the sticky header (72px desktop, 62px mobile). */
 .nf-guide-section,
 .nf-guide-family,
+.nf-guide-maceration,
 .nf-glossary-letter,
 .nf-glossary dl > div { scroll-margin-top: 96px; }
 
@@ -52,6 +53,10 @@
 /* The petal band spans the card grid as a slim texture, desaturated toward the brand's wine tones. */
 .nf-guide-band { max-width: none; }
 .nf-guide-band img { aspect-ratio: 4 / 1; filter: saturate(0.7); }
+
+/* Portrait educational card display (preserves full 4:5 image composition without cropping) */
+.nf-guide-figure--portrait { max-width: 440px; }
+.nf-guide-figure--portrait img { aspect-ratio: 4 / 5; object-fit: contain; }
 
 /* ---------- Layout: contents rail + reading column ---------- */
 .nf-guide-layout {
@@ -106,6 +111,9 @@
 }
 .nf-guide-section > h2 { font-size: var(--nf-display-sm); line-height: 1.1; margin-bottom: var(--nf-space-5); }
 .nf-guide-subhead { font-size: var(--nf-text-xl); margin: var(--nf-space-7) 0 var(--nf-space-3); }
+
+.nf-guide-maceration { margin-top: var(--nf-space-7); }
+.nf-guide-maceration .nf-guide-subhead { margin-top: 0; }
 
 .nf-guide-prose { max-width: 68ch; }
 .nf-guide-prose p { font-size: var(--nf-text-base); line-height: 1.8; color: var(--nf-text-soft); }
@@ -261,6 +269,7 @@
 @media (max-width: 960px) {
   .nf-guide-section,
   .nf-guide-family,
+  .nf-guide-maceration,
   .nf-glossary-letter,
   .nf-glossary dl > div { scroll-margin-top: 80px; }
   .nf-guide-layout { grid-template-columns: 1fr; padding-top: var(--nf-space-7); }

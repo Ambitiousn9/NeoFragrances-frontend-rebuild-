@@ -157,8 +157,11 @@ function nfAttachSearchSuggest(input, handlers = {}) {
     go.query(term);
   }
 
-  input.addEventListener("input", scheduleRender);
-  input.addEventListener("focus", () => { if (!input.value.trim() || panel.hidden) render(); });
+  // On pages that defer the catalogue (<body data-catalog="lazy">), starting a search fetches it;
+  // the productsReady listener below then refreshes the open panel. Elsewhere this is a no-op.
+  const ensureCatalog = () => { if (typeof nfEnsureCatalog === "function") nfEnsureCatalog(); };
+  input.addEventListener("input", () => { ensureCatalog(); scheduleRender(); });
+  input.addEventListener("focus", () => { ensureCatalog(); if (!input.value.trim() || panel.hidden) render(); });
   input.addEventListener("keydown", (e) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();

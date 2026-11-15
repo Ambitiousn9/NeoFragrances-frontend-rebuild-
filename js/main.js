@@ -365,11 +365,27 @@ async function nfCheckMaintenance() {
   }
 }
 
+// Fetches the catalogue at most once per page; productsReady fires when it arrives.
+let nfCatalogRequested = false;
+function nfEnsureCatalog() {
+  if (nfCatalogRequested) return;
+  nfCatalogRequested = true;
+  loadProducts();
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Admin pages load their own data (/api/admin/...) and opt out with <body data-catalog="off">.
   if (document.body.dataset.catalog === "off") return;
   // Fire the probe alongside the catalog load rather than awaiting it first, so
   // a normal page is never slowed down by it.
   nfCheckMaintenance();
-  loadProducts();
+  // Pages whose own content never uses the product list declare <body data-catalog="lazy"> (R6):
+  // the maintenance check above still runs, but the full catalogue is only fetched when the
+  // visitor starts a header search (search-suggest.js calls nfEnsureCatalog). Scripts that only
+  // need the signed-in customer's data (the wishlist count) listen for nfCatalogDeferred instead.
+  if (document.body.dataset.catalog === "lazy") {
+    document.dispatchEvent(new CustomEvent("nfCatalogDeferred"));
+    return;
+  }
+  nfEnsureCatalog();
 });

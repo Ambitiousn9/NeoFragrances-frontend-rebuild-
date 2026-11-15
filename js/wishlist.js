@@ -95,3 +95,11 @@ document.addEventListener("productsReady", async (e) => {
   await loadWishlist();
   refreshWishlistIcons();
 });
+
+// Pages that defer the catalogue (main.js, data-catalog="lazy") never fire productsReady on load,
+// but the drawer's wishlist count still needs the signed-in customer's wishlist.
+document.addEventListener("nfCatalogDeferred", async () => {
+  await loadWishlist();
+  refreshWishlistIcons();
+  if (typeof mnavRenderWishlistCount === "function") mnavRenderWishlistCount();
+});

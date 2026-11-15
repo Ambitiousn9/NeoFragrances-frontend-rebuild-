@@ -13,7 +13,9 @@
    Type: Fraunces (display) + Inter (body/UI)
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
+/* Fonts: every page that loads this file links Google Fonts itself in <head>, including Inter 700
+   (R6). The old @import here requested a second, overlapping font stylesheet, and only after this
+   file had downloaded. */
 
 /* Design tokens (colours, fonts, legacy aliases) live in css/tokens.css,
    which every page loads before this file. */

@@ -111,6 +111,9 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
   const concentrationTerm = concMatch ? { EDP: "term-eau-de-parfum", EDT: "term-eau-de-toilette", EDC: "term-eau-de-cologne" }[concMatch[0].toUpperCase()] : null;
   const size = sizeMatch ? `${sizeMatch[1]}ml` : null;
   const hasRating = p.reviewCount > 0;
+  // Highest quantity the selector offers: the stock on hand, capped at the cart's per-line limit.
+  // 0 for a sold-out product (both quantity buttons are then disabled, as is Add to Cart).
+  const maxQty = Math.max(0, Math.min(Number(p.stockQty) || 0, typeof CART_MAX_QTY_PER_LINE === "number" ? CART_MAX_QTY_PER_LINE : 50));
 
   // Prefer the admin's own written description. If it's blank, fall back
   // to the auto-generated one built from notes; if notes are also
@@ -172,11 +175,11 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
 
       <p class="pd-desc">${escapeHtml(pdDescription)}</p>
 
-      <div class="pd-qty-label">Quantity</div>
-      <div class="qty-control">
-        <button id="qty-minus">−</button>
-        <span id="qty-value">1</span>
-        <button id="qty-plus">+</button>
+      <div class="pd-qty-label" id="pd-qty-label">Quantity</div>
+      <div class="qty-control" role="group" aria-labelledby="pd-qty-label">
+        <button type="button" id="qty-minus" aria-label="Decrease quantity" disabled>−</button>
+        <span id="qty-value" aria-live="polite" aria-atomic="true">1</span>
+        <button type="button" id="qty-plus" aria-label="Increase quantity" ${maxQty > 1 ? "" : "disabled"}>+</button>
       </div>
 
             <div class="pd-cta-row">
@@ -249,13 +252,17 @@ const concMatch = p.name.match(/\b(EDP|EDT|EDC)\b/i);
     bar.classList.toggle("show", ctaRow.getBoundingClientRect().bottom < 0);
   });
 
+  // The quantity stays between 1 and maxQty (stock on hand, at most the cart's per-line limit);
+  // each button is disabled at its end of the range.
   let qty = 1;
-  document.getElementById("qty-plus").addEventListener("click", () => {
-    qty++; document.getElementById("qty-value").textContent = qty;
-  });
-  document.getElementById("qty-minus").addEventListener("click", () => {
-    qty = Math.max(1, qty - 1); document.getElementById("qty-value").textContent = qty;
-  });
+  const setQty = (next) => {
+    qty = Math.min(Math.max(1, next), Math.max(1, maxQty));
+    document.getElementById("qty-value").textContent = qty;
+    document.getElementById("qty-minus").disabled = qty <= 1;
+    document.getElementById("qty-plus").disabled = qty >= maxQty;
+  };
+  document.getElementById("qty-plus").addEventListener("click", () => setQty(qty + 1));
+  document.getElementById("qty-minus").addEventListener("click", () => setQty(qty - 1));
     document.getElementById("pd-add-cart").addEventListener("click", (e) => {
   if (!addToCart(p.id, qty, activeOffer ? activeOffer.id : null)) {
     if (typeof showToast === "function") showToast(CART_SAVE_ERROR, "error");

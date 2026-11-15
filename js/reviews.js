@@ -65,7 +65,7 @@ function renderReviewForm(productId) {
   el.innerHTML = `
     <h4 style="margin-bottom:12px; font-size:16px;">Write a Review</h4>
     <div class="field">
-      <label>Rating</label>
+      <label for="review-rating">Rating</label>
       <select id="review-rating" style="width:160px; padding:10px; border:1px solid var(--line); border-radius:4px; font-family:var(--font-body);">
         <option value="5">5 - Excellent</option>
         <option value="4">4 - Good</option>
@@ -75,11 +75,11 @@ function renderReviewForm(productId) {
       </select>
     </div>
     <div class="field">
-      <label>Comment</label>
+      <label for="review-comment">Comment</label>
       <textarea id="review-comment" rows="3" style="width:100%; padding:10px; border:1px solid var(--line); border-radius:4px; font-family:var(--font-body);" placeholder="Share your thoughts..."></textarea>
     </div>
     <button class="btn btn-primary btn-sm" id="submit-review-btn">Submit Review</button>
-    <p id="review-msg" style="font-size:13px; margin-top:10px;"></p>
+    <p id="review-msg" role="status" aria-live="polite" style="font-size:13px; margin-top:10px;"></p>
   `;
 
   document.getElementById("submit-review-btn").addEventListener("click", async () => {

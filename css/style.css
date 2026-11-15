@@ -754,7 +754,8 @@ select:focus, .filter-select:focus {
   justify-content: center;
   transition: background 0.15s ease;
 }
-.qty-control button:hover { background: var(--line); }
+.qty-control button:hover:not(:disabled) { background: var(--line); }
+.qty-control button:disabled { color: var(--ink-soft); opacity: 0.45; cursor: not-allowed; }
 .qty-control span {
   width: 44px;
   text-align: center;

@@ -157,7 +157,9 @@
     </div>
   </section>
 
-  <!-- ============ Real reviews (hidden unless genuine reviews exist) ============ -->
+  <!-- ============ Real reviews (hidden unless genuine reviews exist) ============
+       GET /api/reviews/highlights. 0 eligible reviews: the section stays hidden; 1–2: a static
+       grid; 3 or more: a continuous right-to-left marquee with a Pause/Play button (js/home.js). -->
   <section class="nf-section nf-reviews" id="reviews" aria-labelledby="reviews-title" hidden>
     <div class="container">
       <div class="nf-section-head" data-reveal>
@@ -165,9 +167,13 @@
           <span class="nf-eyebrow">Customer Reviews</span>
           <h2 id="reviews-title">In their words</h2>
         </div>
+        <button type="button" class="nf-reviews-toggle" id="reviews-toggle" aria-controls="reviews-marquee" hidden>
+          <i class="fa-solid fa-pause" aria-hidden="true"></i><span>Pause</span>
+        </button>
       </div>
       <div class="nf-review-grid" id="review-grid"></div>
     </div>
+    <div class="nf-reviews-marquee" id="reviews-marquee" hidden></div>
   </section>
 
   <!-- ============ Service (verified capabilities only) ============ -->

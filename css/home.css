@@ -344,6 +344,53 @@
 .nf-review-card figcaption a { color: var(--nf-text-muted); font-size: var(--nf-text-xs); text-decoration: none; }
 .nf-review-card figcaption a:hover { color: var(--nf-wine); }
 
+/* ---------- Reviews: continuous right-to-left strip (R11, 3+ reviews) ----------
+   home.js renders the reviews twice inside .nf-reviews-track; the second group is a
+   decorative copy (aria-hidden, links tabindex=-1), so translateX(-50%) lands exactly on
+   its start and the loop has no jump. It pauses on hover, on keyboard focus and with the
+   Pause/Play button. Reduced motion: one static row that scrolls sideways by hand. */
+.nf-reviews-toggle {
+  display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;
+  min-height: 40px; padding: 8px 16px;
+  border: 1px solid var(--nf-line-strong); border-radius: 999px;
+  background: transparent; color: var(--nf-text);
+  font: inherit; font-size: var(--nf-text-sm); font-weight: 500; cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.nf-reviews-toggle:hover { border-color: var(--nf-wine); color: var(--nf-wine); }
+.nf-reviews-toggle:focus-visible { outline: 2px solid var(--nf-wine); outline-offset: 2px; }
+.nf-reviews-toggle i { font-size: 11px; }
+.nf-reviews-toggle[hidden] { display: none; }
+
+.nf-reviews-marquee { margin-top: var(--nf-space-6); padding: 4px 0; }
+.nf-reviews-track { display: flex; width: max-content; }
+.nf-reviews-group, .nf-reviews-extra { display: flex; flex-shrink: 0; gap: var(--nf-space-5); }
+.nf-reviews-group { padding-right: var(--nf-space-5); }          /* one gap at each group's end: both halves identical */
+.nf-reviews-marquee .nf-review-card { flex: 0 0 clamp(260px, 78vw, 340px); }
+.nf-reviews-marquee .nf-review-card blockquote {
+  font-size: 18px;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .nf-reviews-marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+  }
+  .nf-reviews-track { animation: nf-marquee var(--nf-reviews-duration, 120s) linear infinite; will-change: transform; }
+  .nf-reviews-marquee.is-paused .nf-reviews-track,
+  .nf-reviews-marquee:focus-within .nf-reviews-track { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .nf-reviews-marquee:hover .nf-reviews-track { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nf-reviews-toggle { display: none; }
+  .nf-reviews-marquee { overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px var(--nf-gutter, 20px) 12px; }
+  .nf-reviews-marquee .nf-review-card { scroll-snap-align: start; }
+  .nf-reviews-group[aria-hidden="true"], .nf-reviews-extra { display: none; }
+}
+
 /* ---------- Service ---------- */
 .nf-service { border-top: 1px solid var(--nf-line); border-bottom: 1px solid var(--nf-line); }
 .nf-service-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--nf-space-6); }

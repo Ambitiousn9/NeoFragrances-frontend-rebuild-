@@ -4,7 +4,7 @@
    - PRODUCTS (main.js, GET /api/products)
    - active offers (GET /api/offers/active — the
      server already excludes expired/disabled offers)
-   - genuine reviews (GET /api/products/:id/reviews)
+   - genuine reviews (GET /api/reviews/highlights)
    Every data-driven section starts hidden and is
    only revealed when there is real content for it.
 
@@ -19,8 +19,9 @@ const HOME_PICKS_LIMIT = 8;
 // The scent-family section appears only when EVERY family has at least this many active,
 // in-stock products with an owner-assigned family (see homeScentFamiliesEligible).
 const HOME_SCENT_MIN_IN_STOCK = 5;
-const HOME_REVIEW_PRODUCTS = 6;      // how many reviewed products to fetch reviews for
-const HOME_REVIEWS_LIMIT = 3;
+// Reviews (R11, owner decisions D15): 0 eligible → hidden, 1–2 → static, 3+ → moving strip.
+const HOME_REVIEWS_MARQUEE_MIN = 3;
+const HOME_REVIEWS_PX_PER_SECOND = 30;
 
 let homeCountdownTimer = null;
 // Re-renders the visible picks tab (set once products are rendered) — used when offer prices arrive.
@@ -320,50 +321,108 @@ async function homeLoadOffers({ refresh = false } = {}) {
   }
 }
 
-/* ---------- Genuine reviews ---------- */
-function homeReviewerName(fullName) {
-  const parts = String(fullName || "").trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return "Customer";
-  return parts.length > 1 ? `${parts[0]} ${parts[parts.length - 1].charAt(0)}.` : parts[0];
+/* ---------- Genuine reviews (R11) ----------
+   GET /api/reviews/highlights returns only genuine, visible reviews of active products that
+   have text, any star rating, with a short reviewer name built on the server. Nothing here
+   creates, edits or filters reviews by rating. Owner decisions (D15):
+     0 reviews  → the section stays hidden;
+     1–2        → a static grid;
+     3 or more  → a continuous right-to-left strip (~30 px/s) that pauses on hover, on keyboard
+                  focus and with the visible Pause/Play button. The strip holds the reviews
+                  twice: the second group is a decorative copy (aria-hidden, links tabindex=-1),
+                  so translateX(-50%) lands exactly on its start and the loop never jumps.
+                  Visitors who prefer reduced motion get one static, swipeable row instead. */
+function homeReviewsMode(count) {
+  if (!count) return "hidden";
+  return count >= HOME_REVIEWS_MARQUEE_MIN ? "marquee" : "static";
 }
 
-async function homeLoadReviews() {
-  const reviewed = PRODUCTS.filter(p => p.reviewCount > 0)
-    .sort((a, b) => b.reviewCount - a.reviewCount)
-    .slice(0, HOME_REVIEW_PRODUCTS);
-  if (reviewed.length === 0) return;
-
-  const results = await Promise.all(reviewed.map(async p => {
-    try {
-      const res = await fetch(`${API_BASE}/api/products/${encodeURIComponent(p.id)}/reviews`);
-      const rows = res.ok ? await res.json() : [];
-      return rows.map(r => ({ ...r, product: p }));
-    } catch (err) {
-      return [];
-    }
-  }));
-
-  const reviews = results.flat()
-    .filter(r => r.comment && String(r.comment).trim() && Number(r.rating) >= 4)
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-    .slice(0, HOME_REVIEWS_LIMIT);
-  if (reviews.length === 0) return; // no genuine reviews → section stays hidden
-
-  const grid = document.getElementById("review-grid");
-  grid.innerHTML = reviews.map((r, i) => `
-    <figure class="nf-review-card" data-reveal data-reveal-delay="${i}">
-      <div class="nf-review-stars" aria-label="${escapeHtml(r.rating)} out of 5 stars">
-        ${[1, 2, 3, 4, 5].map(n => `<i class="fa-solid fa-star${n <= Number(r.rating) ? "" : " is-empty"}" aria-hidden="true"></i>`).join("")}
+function homeReviewCardHTML(r, { decorative = false, revealDelay = null } = {}) {
+  const rating = Math.max(0, Math.min(5, Number(r.rating) || 0));
+  const product = r.product && r.product.id ? r.product : null;
+  return `
+    <figure class="nf-review-card"${revealDelay === null ? "" : ` data-reveal data-reveal-delay="${revealDelay}"`}${decorative ? "" : ' role="listitem"'}>
+      <div class="nf-review-stars" role="img" aria-label="${rating} out of 5 stars">
+        ${[1, 2, 3, 4, 5].map(n => `<i class="fa-solid fa-star${n <= rating ? "" : " is-empty"}" aria-hidden="true"></i>`).join("")}
       </div>
       <blockquote>${escapeHtml(r.comment)}</blockquote>
       <figcaption>
-        <strong>${escapeHtml(homeReviewerName(r.full_name))}</strong>
-        ${r.is_verified_purchase ? `<span class="nf-review-verified"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified purchase</span>` : ""}
-        <a href="product-details.html?id=${encodeURIComponent(r.product.id)}">${escapeHtml(r.product.name)}</a>
+        <strong>${escapeHtml(r.reviewer || "Customer")}</strong>
+        ${r.verified ? `<span class="nf-review-verified"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified purchase</span>` : ""}
+        ${product ? `<a href="product-details.html?id=${encodeURIComponent(product.id)}"${decorative ? ' tabindex="-1"' : ""}>${escapeHtml(product.name)}</a>` : ""}
       </figcaption>
-    </figure>`).join("");
+    </figure>`;
+}
+
+async function homeFetchReviewHighlights() {
+  try {
+    const res = await fetch(`${API_BASE}/api/reviews/highlights`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    const list = Array.isArray(data && data.reviews) ? data.reviews : [];
+    // Defensive: the server already sends only reviews with text.
+    return list.filter(r => r && typeof r.comment === "string" && r.comment.trim());
+  } catch (err) {
+    return [];
+  }
+}
+
+function homeRenderStaticReviews(reviews) {
+  const grid = document.getElementById("review-grid");
+  grid.setAttribute("role", "list");
+  grid.innerHTML = reviews.map((r, i) => homeReviewCardHTML(r, { revealDelay: i })).join("");
   homeShow("reviews");
   homeRevealIn(grid);
+}
+
+function homeRenderReviewMarquee(reviews) {
+  const marquee = document.getElementById("reviews-marquee");
+  const toggle = document.getElementById("reviews-toggle");
+  const cards = decorative => reviews.map(r => homeReviewCardHTML(r, { decorative })).join("");
+  marquee.innerHTML =
+    `<div class="nf-reviews-track">` +
+    `<div class="nf-reviews-group" role="list" aria-label="Customer reviews">${cards(false)}</div>` +
+    `<div class="nf-reviews-group" aria-hidden="true">${cards(true)}</div></div>`;
+  document.getElementById("review-grid").remove();
+  marquee.hidden = false;
+  toggle.hidden = false;
+  homeShow("reviews");
+
+  // Constant speed whatever the number of reviews: duration = one group's width / speed. A group
+  // narrower than the strip would leave a gap, so repeat its reviews (as extra decorative copies,
+  // in both groups so they stay identical) until it is wide enough. Measured again once the web
+  // fonts have loaded and when the window size changes.
+  const groups = marquee.querySelectorAll(".nf-reviews-group");
+  const fit = () => {
+    for (let i = 0; i < 8 && groups[0].scrollWidth < marquee.clientWidth; i++) {
+      groups.forEach(g => g.insertAdjacentHTML("beforeend", `<div class="nf-reviews-extra" aria-hidden="true">${cards(true)}</div>`));
+    }
+    const width = groups[0].getBoundingClientRect().width;
+    if (width > 0) marquee.style.setProperty("--nf-reviews-duration", `${Math.round(width / HOME_REVIEWS_PX_PER_SECOND)}s`);
+  };
+  fit();
+  document.fonts?.ready.then(fit);
+  let resizeTimer = null;
+  window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(fit, 200); });
+
+  // Visible Pause/Play control (hover and keyboard focus also pause, in css/home.css).
+  const label = toggle.querySelector("span"), icon = toggle.querySelector("i");
+  const setPaused = paused => {
+    marquee.classList.toggle("is-paused", paused);
+    label.textContent = paused ? "Play" : "Pause";
+    icon.className = paused ? "fa-solid fa-play" : "fa-solid fa-pause";
+    toggle.setAttribute("aria-label", paused ? "Play scrolling reviews" : "Pause scrolling reviews");
+  };
+  setPaused(false);
+  toggle.addEventListener("click", () => setPaused(!marquee.classList.contains("is-paused")));
+}
+
+async function homeLoadReviews() {
+  const reviews = await homeFetchReviewHighlights();
+  const mode = homeReviewsMode(reviews.length);
+  if (mode === "hidden") return; // no genuine reviews with text → the section stays hidden
+  if (mode === "static") homeRenderStaticReviews(reviews);
+  else homeRenderReviewMarquee(reviews);
 }
 
 /* ---------- Boot ---------- */
@@ -374,6 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   document.getElementById("picks-grid").innerHTML = skeletonGrid(4);
   homeLoadOffers();
+  homeLoadReviews(); // independent of the catalogue (GET /api/reviews/highlights)
 });
 
 document.addEventListener("productsReady", (e) => {
@@ -389,5 +449,4 @@ document.addEventListener("productsReady", (e) => {
   homeRenderScentFamilies();
   homeRenderPicks();
   homeRenderCollections();
-  homeLoadReviews();
 });
